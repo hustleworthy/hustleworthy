@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Websites {
+  sNo                       Int    @unique
+  websiteName               String?
+  url                       String?
+  signUpBonus               String?
+  payoutMethods             String?
+  minimumWithdrawl          String?
+  noteEarningPotential      String?
+  earningPotentialIn1hr     String?
+  earningPotentialinaMonth  String?
+  countriesSupported        String?
+  payoutFrequency           String?
+  video                     String?
+  type                      String?
+  expertReview              String?
+  expertRating              String?
+  expertTips                String?
+  isitLegit                 String?
+  waystoEarn                String?
+  about                     String?
+  @@map("websites")
+}
