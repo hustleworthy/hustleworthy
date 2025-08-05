@@ -2,4 +2,13 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+# Next.js build output
+.next
+out
+
+# Other build artifacts
+.vercel
+.turbo
+
+# Prisma generated files
 /generated/prisma
