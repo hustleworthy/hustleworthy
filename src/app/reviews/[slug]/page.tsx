@@ -4,7 +4,7 @@ import { Star, CheckCircle, X, User, Calendar, MessageSquare, ExternalLink, Edit
 import Image from 'next/image'
 
 interface ReviewPageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
@@ -234,7 +234,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  User Reviews | <span className="text-blue-600">{website.name}</span>
+                  User Reviews | <span className="text-blue-600">{website.websiteName}</span>
                 </h2>
                 <button className="btn-primary">
                   Write a review
@@ -325,7 +325,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               <ul className="space-y-2 text-sm">
                 <li className="flex justify-between">
                   <span className="text-gray-600">User Reviews</span>
-                  <span>{website.totalReviews}</span>
+                  <span>0</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-600">Hosting Plan</span>

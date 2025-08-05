@@ -775,7 +775,7 @@ export default async function Home() {
 
               {/* Quick Links */}
               <div>
-                <h4 className="text-lg font-semibold mb-6 text-white">Quick Links 1</h4>
+                <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
                 <ul className="space-y-3">
                   <li><a href="/reviews" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">All Reviews</a></li>
                   <li><a href="/hosting-services-2025" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Top Picks 2025</a></li>
