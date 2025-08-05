@@ -44,7 +44,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   <div className="w-40 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
                     <div className="text-center">
                       <div className="text-gray-400 text-xs">
-                        <Image alt="aa" width={100} height={200} src="https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2Fexpected design (1).png?alt=media"/>
+                        <Image alt="logo" width={100} height={200} style={{width: '100%'}} src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2F${website.websiteName}.png?alt=media`}/>
                       </div>
                     </div>
                   </div>
@@ -167,10 +167,26 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               </div>
             </div>
 
-            {/* Video Placeholder */}
-            <div className="bg-gray-200 rounded-lg p-16 text-center">
-              <h3 className="text-2xl font-bold text-gray-600 mb-4">VIDEO</h3>
-              <p className="text-gray-500">Video review coming soon</p>
+            {/* Video Review Section */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
+              <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+                <video 
+                  className="w-full h-full object-cover"
+                  controls
+                  preload="metadata"
+                  poster=""
+                >
+                  <source 
+                    src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Fvideos%2F${website.websiteName}.mp4?alt=media`} 
+                    type="video/mp4" 
+                  />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <p className="text-gray-600 mt-4 text-center">
+                Watch our comprehensive video review of {website.websiteName || 'this platform'}
+              </p>
             </div>
 
             {/* Earning Potential */}
