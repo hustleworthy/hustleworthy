@@ -11,10 +11,10 @@ export async function POST(req: Request) {
 
   const { content, reviewId } = await req.json()
 
-  const dbUser = await prisma.User.findUnique({ where: { email: user.email } })
+  const dbUser = await prisma.user.findUnique({ where: { email: user.email } })
   if (!dbUser) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  const reply = await prisma.Reply.create({
+  const reply = await prisma.reply.create({
     data: {
       content,
       reviewId,
