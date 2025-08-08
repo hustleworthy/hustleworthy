@@ -1,7 +1,11 @@
+'use client'
+
 import Link from 'next/link'
-import { Search } from 'lucide-react'
+import { Search, User, LogOut } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Header() {
+  const { data: session, status } = useSession()
   return (
     <header className="text-white shadow-lg backdrop-blur-sm" style={{background: 'linear-gradient(90deg, #01579b 0%, #0277bd 50%, #03a9f4 100%)'}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,13 +33,49 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Monthly Pick Badge */}
+          {/* Monthly Pick Badge & Auth */}
           <div className="flex items-center space-x-4">
             <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-white to-gray-100 text-black px-4 py-2 rounded-full shadow-lg border border-white/20">
               <span className="text-sm font-medium">⭐ Monthly Pick:</span>
               <span className="text-sm font-bold text-white px-3 py-1 rounded-full text-xs shadow-md" style={{background: '#03a9f4'}}>
                 BigCashWeb
               </span>
+            </div>
+            
+            {/* Auth Section */}
+            <div className="flex items-center space-x-2">
+              {status === 'loading' ? (
+                <div className="animate-pulse bg-white/20 rounded-full px-4 py-2 w-20 h-8"></div>
+              ) : session ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-white text-sm font-medium">
+                    Welcome, {session.user?.name || session.user?.email}
+                  </span>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <LogOut size={16} />
+                    <span className="text-sm">Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link
+                    href="/auth/login"
+                    className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <User size={16} />
+                    <span className="text-sm">Login</span>
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="bg-white text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -21,8 +21,32 @@ export interface Website {
   isitLegit?: string | null
   waystoEarn?: string | null
   about?: string | null
+  reviews: Review[]
+}
+
+export interface Review {
+  id: string
+  content: string
   createdAt: Date
-  updatedAt: Date
+  user: User
+  userId: string
+  websiteId: number
+  replies: Reply[]
+}
+
+export interface User {
+  id: string
+  name: string
+  email: string
+}
+
+export interface Reply {
+  id: string
+  content: string
+  createdAt: Date
+  user: User
+  userId: string
+  reviewId: string
 }
 
 export const websites: Website[] = [
@@ -47,8 +71,7 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, App Trials, Games, Micro-tasks',
     about: 'PollPay offers multiple ways to earn money online through surveys, app testing, and various micro-tasks. The platform is owned by Prodege and provides reliable payouts.',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    reviews: []
   },
   {
     id: '2',
@@ -71,15 +94,14 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, Market Research, Product Testing',
     about: 'CashApp Surveys connects users with market research opportunities and provides quick payouts through popular payment apps.',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    reviews: []
   }
 ]
 
 // Database utility functions
 function transformWebsiteData(data: any): Website {
   return {
-    id: data.id,
+    id: data.sNo?.toString() || data.id?.toString() || '', // Use sNo as id since that's what we're referencing
     sNo: data.sNo,
     websiteName: data.websiteName,
     url: data.url,
@@ -99,8 +121,7 @@ function transformWebsiteData(data: any): Website {
     isitLegit: data.isitLegit,
     waystoEarn: data.waystoEarn,
     about: data.about,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt
+    reviews: data.reviews || []
   }
 }
 
@@ -113,6 +134,18 @@ export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
           equals: slug,
           mode: 'insensitive'
         }
+      },
+      include: {
+        reviews: {
+          include: {
+            user: true,
+            replies: {
+              include: {
+                user: true
+              }
+            }
+          }
+        }
       }
     })
     
@@ -124,6 +157,18 @@ export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
           websiteName: {
             contains: nameFromSlug,
             mode: 'insensitive'
+          }
+        },
+        include: {
+          reviews: {
+            include: {
+              user: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
+            }
           }
         }
       })

@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getWebsiteBySlug } from '@/data/websites'
 import { Star, CheckCircle, X, User, Calendar, MessageSquare, ExternalLink, Edit } from 'lucide-react'
 import Image from 'next/image'
+import ReviewForm from '@/components/review/ReviewForm'
+import ReplyForm from '@/components/review/ReplyForm'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -302,6 +304,33 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                     </div>
                   </div>
                 ))} */}
+
+
+                <ReviewForm websiteId={website.sNo.toString() || ''} />
+
+      {/* List of Reviews */}
+      <div className="space-y-6 mt-10">
+        {website.reviews.map((review) => (
+          <div key={review.id} className="border p-4 rounded-md">
+            <p className="font-semibold">{review.user.name}</p>
+            <p>{review.content}</p>
+
+            {/* Replies */}
+            <div className="ml-4 mt-3 space-y-2">
+              {review.replies.map(reply => (
+                <div key={reply.id} className="border-l-2 pl-3 text-sm text-gray-700">
+                  <p className="font-medium">{reply.user.name}</p>
+                  <p>{reply.content}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Reply Form */}
+            <ReplyForm reviewId={review.id} />
+          </div>
+        ))}
+      </div>
+
               </div>
             </div>
           </div>

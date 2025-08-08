@@ -30,5 +30,37 @@ model Websites {
   isitLegit                 String?
   waystoEarn                String?
   about                     String?
+  reviews                   Review[]
   @@map("websites")
 }
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String?
+  reviews   Review[]
+  replies   Reply[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  content    String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  website    Websites @relation(fields: [websiteId], references: [sNo])
+  websiteId  Int
+  replies    Reply[]
+}
+
+model Reply {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  String
+}
+
