@@ -4,6 +4,7 @@ import { Star, CheckCircle, X, User, Calendar, MessageSquare, ExternalLink, Edit
 import Image from 'next/image'
 import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
+import Footer from '@/components/Footer'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -58,8 +59,33 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   <h2 className="text-xl text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h2>
                   
                   <div className="flex flex-wrap items-center gap-4 mb-4">
-                    <a href="#" className="text-blue-500 hover:text-blue-600 text-sm">Rating Methodology</a>
-                    <a href="#" className="text-blue-500 hover:text-blue-600 text-sm">Advertising disclosure</a>
+                   <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
+                     Rating Methodology
+                     {/* Tooltip */}
+                                           <span
+                        className="absolute bottom-full left-0 mb-2 
+                                   px-4 py-3 text-xs text-gray-700 bg-gray-100 rounded 
+                                   opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                   whitespace-normal w-64 z-10 leading-relaxed"
+                      >
+                       We personally test and check each app before writing our review, in addition to it we spend hours reading other user experiences and seeing facts before making our judgement.
+                     <span className="absolute top-full left-6 w-2 h-2 bg-gray-100 rotate-45 -mt-1"></span>
+                    </span>
+                  </a>
+
+                                         <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
+                       Advertising disclosure
+                       {/* Tooltip */}
+                       <span
+                         className="absolute bottom-full left-0 mb-2 
+                                    px-4 py-3 text-xs text-gray-700 bg-gray-100 rounded 
+                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                    whitespace-normal w-64 z-10 leading-relaxed"
+                       >
+                        We do not promote any app or service with affiliate links, all our reviews are honest and transparent. That being said, we do offer providers the option to feature themselves on our platform through advertisement.
+                       <span className="absolute top-full left-6 w-2 h-2 bg-gray-100 rotate-45 -mt-1"></span>
+                      </span>
+                    </a>
                   </div>
                   
                   <div className="flex items-center gap-3 mb-6">
@@ -110,24 +136,20 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                     <span className="text-gray-500 font-semibold text-lg">Stats</span>
                   </div>
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700">Minimum Withdraw</span>
+                    <span className="text-gray-700 w-2/3">Minimum Withdraw</span>
                     <span className="font-semibold text-gray-900">{website.minimumWithdrawl || 'N/A'}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700">Countries supported</span>
-                    <span className="font-semibold text-gray-900">{website.countriesSupported || 'N/A'}</span>
+                  <div className="flex justify-between py-1">
+                    <span className="text-gray-700 w-2/3">Countries supported</span>
+                    <span className="font-semibold text-gray-900 w-1/3 text-right">{website.countriesSupported || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700">Earning Potential (1hr)</span>
+                    <span className="text-gray-700 w-2/3">Earning Potential (1hr)</span>
                     <span className="font-semibold text-gray-900">{website.earningPotentialIn1hr || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700">Signup Bonus</span>
+                    <span className="text-gray-700 w-2/3">Signup Bonus</span>
                     <span className="font-semibold text-gray-900">{website.signUpBonus || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700"></span>
-                    <button className="text-blue-500 hover:text-blue-600 text-sm font-medium">Show all</button>
                   </div>
                 </div>
 
@@ -141,35 +163,14 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   >
                     Visit {website.websiteName || 'Website'}
                   </a>
-                  <button className="bg-transparent border-2 border-black text-black font-semibold px-8 py-3 w-full transition-colors rounded-full">
-                    Affiliate Disclosure
-                  </button>
+                  <p className="text-gray-700 text-center text-sm">Honest Review with no Affiliate ties to the featured platform.</p>
                 </div>
                 
               </div>
             </div>
 
-            {/* Expert Review */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-4">
-                  <User className="h-6 w-6 text-gray-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Expert Review</h3>
-                  <p className="text-gray-600">Professional Analysis</p>
-                  <p className="text-sm text-gray-500">Updated recently</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
-                  {website.expertReview || 'No expert review available'}
-                </p>
-              </div>
-            </div>
-
             {/* Video Review Section */}
+            { website.video && 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
               <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
@@ -190,9 +191,10 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 Watch our comprehensive video review of {website.websiteName || 'this platform'}
               </p>
             </div>
+           }
 
             {/* Earning Potential */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Earning Potential</h2>
               <p className="text-gray-700 mb-6">
                 {website.noteEarningPotential || 'Earning potential information not available.'}
@@ -216,7 +218,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </div>
 
             {/* Tips to Earn More */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div id="tips-to-earn" className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Tips to Earn More</h2>
               <div className="text-gray-700 leading-relaxed">
                 {website.expertTips || 'No tips available'}
@@ -224,7 +226,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </div>
 
             {/* Payment Details */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div id="payout-details" className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment Details</h2>
               <div className="overflow-x-auto">
                 <table className="w-full border border-gray-200">
@@ -242,14 +244,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               </div>
             </div>
 
-            {/* FAQ Section */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">FAQ Section (Optional)</h2>
-              <p className="text-gray-600">Frequently asked questions will be displayed here.</p>
-            </div>
-
             {/* User Reviews */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div id="user-reviews" className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">
                   User Reviews | <span className="text-blue-600">{website.websiteName}</span>
@@ -365,7 +361,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </div>
 
             {/* Expert Review Stats */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="font-bold text-gray-900 mb-4">Expert Review</h3>
               <ul className="space-y-2 text-sm">
                 <li className="flex justify-between">
@@ -392,6 +388,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 } 
