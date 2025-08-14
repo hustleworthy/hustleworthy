@@ -16,7 +16,7 @@ function StarRating({ rating, className }: { rating: number; className?: string 
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
-          className={`h-5 w-5 ${
+          className={`h-4 w-4 ${
             i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
           }`}
         />
@@ -32,6 +32,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   if (!website) {
     notFound()
   }
+
+  // Calculate average user rating
+  const userRatings = website.reviews.filter(review => review.rating).map(review => review.rating)
+  const averageUserRating = userRatings.length > 0 
+    ? userRatings.reduce((sum, rating) => sum + rating, 0) / userRatings.length 
+    : 0
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -250,9 +256,9 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 <h2 className="text-2xl font-bold text-gray-900">
                   User Reviews | <span className="text-blue-600">{website.websiteName}</span>
                 </h2>
-                <button className="btn-primary">
+                <a href="#review-form" className="btn-primary">
                   Write a review
-                </button>
+                </a>
               </div>
 
               <div className="space-y-6">
@@ -302,14 +308,39 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 ))} */}
 
 
-                <ReviewForm websiteId={website.sNo.toString() || ''} />
+                <div id="review-form">
+                  <ReviewForm websiteId={website.sNo.toString() || ''} />
+                </div>
 
       {/* List of Reviews */}
       <div className="space-y-6 mt-10">
         {website.reviews.map((review) => (
           <div key={review.id} className="border p-4 rounded-md">
-            <p className="font-semibold">{review.user.name}</p>
-            <p>{review.content}</p>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <Image 
+                  src="/images/profile-picture.png" 
+                  alt="User avatar" 
+                  width={32} 
+                  height={32} 
+                  className="rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-semibold">{review.user.name}</p>
+                  <StarRating rating={review.rating || 0} className="mt-1" />
+                </div>
+              </div>
+              { /* the date shown as like 12th sept 2025*/}
+              <span className="text-xs text-gray-500">{review.createdAt.toLocaleString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+              })}</span>
+            </div>
+            <p className="mt-3">{review.content}</p>
+
+            {/* Reply Form */}
+            <ReplyForm reviewId={review.id} />
 
             {/* Replies */}
             <div className="ml-4 mt-3 space-y-2">
@@ -320,9 +351,6 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 </div>
               ))}
             </div>
-
-            {/* Reply Form */}
-            <ReplyForm reviewId={review.id} />
           </div>
         ))}
       </div>
@@ -332,7 +360,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-8 lg:self-start lg:max-h-screen lg:overflow-y-auto">
             {/* Legitimacy Check */}
             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
@@ -352,11 +380,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
               <div className="mb-4">
                 <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">
-                  SCALAHOSTING
+                  Top Monthly Pick
                 </span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">Visit ScalaHosting</h3>
-              <p className="text-sm text-gray-600 mb-4">Check Coupons</p>
+              <h3 className="font-bold text-gray-900 mb-2">{website.websiteName || 'Website'}</h3>
+              <p className="text-sm text-gray-600 mb-4"><a href="#user-reviews">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 
@@ -366,7 +394,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               <ul className="space-y-2 text-sm">
                 <li className="flex justify-between">
                   <span className="text-gray-600">User Reviews</span>
-                  <span>0</span>
+                  <span>{averageUserRating.toFixed(1)}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-600">Hosting Plan</span>

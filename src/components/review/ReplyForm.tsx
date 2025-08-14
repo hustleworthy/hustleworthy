@@ -7,6 +7,7 @@ export default function ReplyForm({ reviewId }: { reviewId: string }) {
   const { data: session, status } = useSession()
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showReplyForm, setShowReplyForm] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -33,20 +34,20 @@ export default function ReplyForm({ reviewId }: { reviewId: string }) {
 
   if (!session) {
     return (
-      <div className="mt-3 p-3 bg-gray-50 border rounded text-center text-sm">
         <span className="text-gray-600">
           <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium">
-            Sign in
+            Reply
           </Link>
-          {' '}to reply to this review
         </span>
-      </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 space-y-2">
-      <textarea 
+    <>
+    <span className="text-blue-600 text-xs" onClick={() => setShowReplyForm(!showReplyForm)}>Reply</span>
+    {showReplyForm && (
+      <form onSubmit={handleSubmit} className="mt-3 space-y-2">
+        <textarea 
         value={content} 
         onChange={(e) => setContent(e.target.value)} 
         required
@@ -55,17 +56,16 @@ export default function ReplyForm({ reviewId }: { reviewId: string }) {
         rows={3}
       />
       <div className="flex justify-between items-center">
-        <span className="text-xs text-gray-500">
-          Replying as: {session.user?.name || session.user?.email}
-        </span>
         <button 
           type="submit" 
           disabled={loading || !content.trim()}
-          className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white px-3 py-1 text-sm rounded transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-3 py-1 text-sm rounded"
         >
           {loading ? 'Replying...' : 'Reply'}
-        </button>
-      </div>
-    </form>
+          </button>
+        </div>
+      </form>
+    )}
+    </>
   )
 }

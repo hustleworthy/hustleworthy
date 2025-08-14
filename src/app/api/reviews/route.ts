@@ -25,12 +25,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { content, websiteId } = await req.json()
-    console.log('Request data:', { content, websiteId })
+    const { content, websiteId, rating } = await req.json()
+    console.log('Request data:', { content, websiteId, rating })
 
-    if (!content || !websiteId) {
-      console.log('Missing content or websiteId')
-      return NextResponse.json({ error: 'Content and websiteId are required' }, { status: 400 })
+    if (!content || !websiteId || !rating) {
+      console.log('Missing content, websiteId, or rating')
+      return NextResponse.json({ error: 'Content, websiteId, and rating are required' }, { status: 400 })
+    }
+
+    // Validate rating is between 1 and 5
+    if (rating < 1 || rating > 5) {
+      console.log('Invalid rating value:', rating)
+      return NextResponse.json({ error: 'Rating must be between 1 and 5' }, { status: 400 })
     }
 
     const dbUser = await prisma.user.findUnique({ where: { email: user.email } })
@@ -55,6 +61,7 @@ export async function POST(req: Request) {
     const review = await prisma.review.create({
       data: {
         content,
+        rating: parseInt(rating),
         websiteId: parseInt(websiteId),
         userId: dbUser.id,
       }
