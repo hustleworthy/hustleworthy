@@ -35,7 +35,7 @@ export default function ReplyForm({ reviewId }: { reviewId: string }) {
   if (!session) {
     return (
         <span className="text-gray-600">
-          <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 text-xs">
             Reply
           </Link>
         </span>

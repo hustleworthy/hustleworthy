@@ -111,11 +111,6 @@ export default function ReviewForm({ websiteId }: { websiteId: string }) {
                 />
               </button>
             ))}
-            <span className="ml-2 text-sm text-gray-600">
-              {rating > 0 && (
-                `${rating} star${rating !== 1 ? 's' : ''}`
-              )}
-            </span>
           </div>
         </div>
 
