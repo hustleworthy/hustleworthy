@@ -15,7 +15,7 @@ const seedData = [
     earningPotentialinaMonth: '$300',
     countriesSupported: 'Global',
     payoutFrequency: '5-7 Days',
-    video: null,
+    video: 0,
     type: 'Survey Sites',
     expertReview: 'PollPay is a legitimate platform that pays users for surveys, app trials, games and other "micro-tasks." Its major pros are wide availability and multiple payout options (PayPal, gift cards). Major cons include a relatively high $25 USD payout threshold, occasional low-paying "game" tasks (often $0.01/minute at higher levels), and support issues prior to the Prodege acquisition. Earnings are modest; better as a supplemental side income than a primary source.',
     expertRating: '4.9',
