@@ -142,7 +142,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                     <span className="text-gray-500 font-semibold text-lg">Stats</span>
                   </div>
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-700 w-2/3">Minimum Withdraw</span>
+                    <span className="text-gray-700 w-2/3">Minimum Withdrawal</span>
                     <span className="font-semibold text-gray-900">{website.minimumWithdrawl || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between py-1">
@@ -256,9 +256,6 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 <h2 className="text-2xl font-bold text-gray-900">
                   User Reviews | <span className="text-blue-600">{website.websiteName}</span>
                 </h2>
-                <a href="#review-form" className="btn-primary">
-                  Write a review
-                </a>
               </div>
 
               <div className="space-y-6">
@@ -363,10 +360,10 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-8 lg:self-start lg:max-h-screen lg:overflow-y-auto">
             {/* Legitimacy Check */}
             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
                 Is {website.websiteName || 'Website'} Legit?
               </h3>
-              <div className="mb-4">
+              <div className="mb-1">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <CheckCircle className="h-8 w-8 text-green-600" />
                 </div>
@@ -383,35 +380,29 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   Top Monthly Pick
                 </span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{website.websiteName || 'Website'}</h3>
-              <p className="text-sm text-gray-600 mb-4"><a href="#user-reviews">Check Detailed Review</a></p>
+              <h3 className="font-bold text-gray-900 mb-2">Swagbucks</h3>
+              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/swagbucks">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 
             {/* Expert Review Stats */}
             <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="font-bold text-gray-900 mb-4">Expert Review</h3>
               <ul className="space-y-2 text-sm">
                 <li className="flex justify-between">
-                  <span className="text-gray-600">User Reviews</span>
+                  <a href="#earning-potential" className="text-gray-600">Earning Potential</a>
+                </li>
+                <li className="flex justify-between">
+                  <a href="#tips-to-earn" className="text-gray-600">Tips to Earn</a>
+                </li>
+                <li className="flex justify-between">
+                  <a href="#payout-details" className="text-gray-600">Payout Details</a>
+                </li>
+                <li className="flex justify-between">
+                  <a href="#user-reviews" className="text-gray-600">User Reviews</a>
                   <span>{averageUserRating.toFixed(1)}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-600">Hosting Plan</span>
-                  <span>-</span>
-                </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-600">FAQ</span>
-                  <span>-</span>
-                </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-600">Alternatives</span>
-                  <span>-</span>
-                </li>
               </ul>
-              <button className="btn-primary w-full mt-4 text-sm">
-                Write a review
-              </button>
+              <a href="#review-form" className="btn-primary block w-full mt-8 py-2.5 text-center text-sm cursor-pointer hover:bg-blue-700">Write a review</a>
             </div>
           </div>
         </div>

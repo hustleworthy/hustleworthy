@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Websites {
-  sNo                       Int    @unique
+  sNo                       Int       @unique
   websiteName               String?
   url                       String?
   signUpBonus               String?
@@ -22,7 +22,7 @@ model Websites {
   earningPotentialinaMonth  String?
   countriesSupported        String?
   payoutFrequency           String?
-  video                     String?
+  video                     Int      @default(0)
   type                      String?
   expertReview              String?
   expertRating              String?
@@ -63,5 +63,12 @@ model Reply {
   userId    String
   review    Review   @relation(fields: [reviewId], references: [id])
   reviewId  String
+}
+
+model NewsletterSubscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
 }
 

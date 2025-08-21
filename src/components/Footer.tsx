@@ -1,6 +1,53 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
 
 export default function Footer() {
+  const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState<'success' | 'error' | ''>('')
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!email || !email.includes('@')) {
+      setMessage('Please enter a valid email address')
+      setMessageType('error')
+      return
+    }
+
+    setIsSubmitting(true)
+    setMessage('')
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage(data.message)
+        setMessageType('success')
+        setEmail('')
+      } else {
+        setMessage(data.error)
+        setMessageType('error')
+      }
+    } catch (error) {
+      setMessage('Something went wrong. Please try again.')
+      setMessageType('error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer Content */}
@@ -64,16 +111,32 @@ export default function Footer() {
             <div>
               <h4 className="text-lg font-semibold mb-6 text-white">Stay Updated</h4>
               <p className="text-gray-400 mb-4">Get the latest reviews and earning opportunities delivered to your inbox.</p>
-              <div className="space-y-3">
+              <form onSubmit={handleSubscribe} className="space-y-3">
                 <input 
                   type="email" 
                   placeholder="Enter your email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#03a9f4] transition-colors duration-300"
+                  disabled={isSubmitting}
                 />
-                <button className="w-full bg-gradient-to-r from-[#03a9f4] to-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-500 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
-                  Subscribe Now
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-[#03a9f4] to-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-500 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe Now'}
                 </button>
-              </div>
+              </form>
+              {message && (
+                <div className={`mt-3 p-3 rounded-lg text-sm ${
+                  messageType === 'success' 
+                    ? 'bg-green-900/20 border border-green-700 text-green-400' 
+                    : 'bg-red-900/20 border border-red-700 text-red-400'
+                }`}>
+                  {message}
+                </div>
+              )}
               <p className="text-xs text-gray-500 mt-3">
                 ✓ Weekly earning tips &nbsp;&nbsp; ✓ New site alerts &nbsp;&nbsp; ✓ No spam
               </p>

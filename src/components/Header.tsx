@@ -23,28 +23,6 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {isReviewsPage ? (
-              // Reviews page navigation
-              <>
-                <a href="#expert-review" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium cursor-pointer">
-                  Expert Review
-                </a>
-                <a href="#earning-potential" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium cursor-pointer">
-                  Earning Potential
-                </a>
-                <a href="#tips-to-earn" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium cursor-pointer">
-                  Tips to Earn
-                </a>
-                <a href="#payout-details" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium cursor-pointer">
-                  Payout Details
-                </a>
-                <a href="#user-reviews" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium cursor-pointer">
-                  User Reviews
-                </a>
-              </>
-            ) : (
-              // General navigation
-              <>
                 <Link href="/" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Home
                 </Link>
@@ -57,21 +35,17 @@ export default function Header() {
                 <Link href="/blog" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Blog
                 </Link>
-              </>
-            )}
           </nav>
 
           {/* Monthly Pick Badge & Auth */}
           <div className="flex items-center space-x-4">
-           { !isReviewsPage ? 
+            
             <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-white to-gray-100 text-black px-4 py-2 rounded-full shadow-lg border border-white/20">
               <span className="text-sm font-medium">⭐ Monthly Pick:</span>
               <span className="text-sm font-bold text-white px-3 py-1 rounded-full text-xs shadow-md" style={{background: '#03a9f4'}}>
-                BigCashWeb
+                <a href="/reviews/bigcashweb" target="_blank">BigCashWeb</a>
               </span>
-              </div>
-           : ''
-           }
+            </div>
 
             {/* Auth Section */}
             <div className="flex items-center space-x-2">

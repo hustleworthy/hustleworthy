@@ -1,10 +1,60 @@
 import Link from 'next/link'
 import { Star, TrendingUp, Shield, Users } from 'lucide-react'
 import { getFeaturedWebsites } from '@/data/websites'
+import { client } from '@/lib/microcms'
+import { slugify } from '@/lib/slugify'
 import Footer from '@/components/Footer'
+
+type Tag = {
+  id: string;
+  name: string;
+};
+
+type Writer = {
+  id: string;
+  name: string;
+  profile: string;
+  image?: {
+    url: string;
+    height: number;
+    width: number;
+  };
+};
+
+type Blog = {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  thumbnail?: {
+    url: string;
+    height: number;
+    width: number;
+  };
+  tags: Tag[];
+  writer: Writer;
+  publishedAt?: string;
+};
 
 export default async function Home() {
   const featuredWebsites = await getFeaturedWebsites(3)
+  
+  // Fetch latest blog posts for the news section
+  let blogData: { contents: Blog[]; totalCount: number };
+  try {
+    blogData = await client.get<{ contents: Blog[]; totalCount: number }>({ 
+      endpoint: "blog",
+      queries: {
+        limit: 6,
+        orders: '-publishedAt', // Order by published date, newest first
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    // Fallback to empty array if API call fails
+    blogData = { contents: [], totalCount: 0 };
+  }
+
   return (
     <div className="min-h-screen">
       {/* Hero Banner Section */}
@@ -446,179 +496,69 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* News Article 1 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-gradient-to-r from-blue-500 to-blue-700">
-                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
-                    </svg>
-                    <p className="text-sm">CloudFest Event</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  CloudFest Just Announced Six New Sessions for Miami Event
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  CloudFest just announced six new sessions for CloudFest USA 2025 in Miami, intentionally designed for anyone interested...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/31/2025</span>
-                </div>
-              </div>
-            </article>
-
-            {/* News Article 2 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-black flex items-center justify-center">
-                <div className="text-center text-white">
-                  <div className="flex items-center justify-center space-x-4">
-                    <div className="text-4xl font-bold">PayPal</div>
-                    <div className="w-px h-8 bg-white"></div>
-                    <div className="text-4xl font-bold">WIX</div>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  With PayPal Built In, Wix Sends Clear Message to Hosts
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  Wix is once again influencing the hosting industry, this time by embedding PayPal into its payments platform. U.S.-based...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/30/2025</span>
-                </div>
-              </div>
-            </article>
-
-            {/* News Article 3 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-gradient-to-r from-teal-600 to-gray-800">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="mb-4">
-                      <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-lg">
-                        <span className="text-2xl">📱</span>
+            {blogData.contents.length > 0 ? (
+              blogData.contents.map((blog) => (
+              <Link key={blog.id} href={`/blog/${slugify(blog.title)}`} className="block">
+                <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+                  <div className="relative h-48 bg-gradient-to-r from-blue-500 to-blue-700">
+                    {blog.thumbnail ? (
+                      <img 
+                        src={blog.thumbnail.url} 
+                        alt={blog.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                        <div className="text-center text-white">
+                          <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+                          </svg>
+                          <p className="text-sm">Blog Post</p>
+                        </div>
                       </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      {blog.description}
+                    </p>
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <span className="font-medium">By: {blog.writer.name}</span>
+                      </div>
+                      <span>{blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce"></div>
-                      <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    </div>
-                    <p className="text-sm mt-2">Loading...</p>
                   </div>
+                </article>
+              </Link>
+            ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <div className="text-gray-500 text-lg">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p>No blog posts available at the moment.</p>
+                  <p className="text-sm mt-2">Check back soon for the latest updates!</p>
                 </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  Why Are SMBs Still Losing $20k a Year to Downtime?
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  Downtime is costing small businesses $20,172, or 15%, annually in average revenue lost, according to a recent Liquid Web...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/29/2025</span>
-                </div>
-              </div>
-            </article>
-
-            {/* News Article 4 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-gradient-to-r from-purple-600 to-pink-600">
-                <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <p className="text-sm">AI Revolution</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  AI-Powered Surveys Now Paying 300% More Than Traditional Methods
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  New AI-enhanced survey platforms are revolutionizing the market research industry, offering participants significantly higher rewards...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/28/2025</span>
-                </div>
-              </div>
-            </article>
-
-            {/* News Article 5 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-gradient-to-r from-green-500 to-emerald-600">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                    </svg>
-                    <p className="text-sm">Crypto Earnings</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  Cryptocurrency Reward Apps Hit Record User Growth in Q3 2025
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  The latest quarter has seen unprecedented growth in cryptocurrency reward applications, with user adoption increasing by 400%...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/27/2025</span>
-                </div>
-              </div>
-            </article>
-
-            {/* News Article 6 */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-              <div className="relative h-48 bg-gradient-to-r from-orange-500 to-red-500">
-                <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                    </svg>
-                    <p className="text-sm">Market Analysis</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#03a9f4] transition-colors">
-                  Remote Work Platforms Report 65% Increase in Freelancer Earnings
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  Major remote work platforms are reporting significant increases in freelancer earnings, with skill-based matching improving...
-                </p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="font-medium">By: Jordan Sprogis</span>
-                  </div>
-                  <span>7/26/2025</span>
-                </div>
-              </div>
-            </article>
+            )}
+          </div>
+          
+          {/* View All Posts Button */}
+          <div className="text-center mt-12">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center px-8 py-4 bg-[#03a9f4] text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300 shadow-lg hover:shadow-xl"
+            >
+              <span>View All News</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>

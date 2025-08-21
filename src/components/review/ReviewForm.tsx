@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Star } from 'lucide-react'
+import LoginPopup from '../auth/LoginPopup'
+import { toast } from 'react-hot-toast'
 
 export default function ReviewForm({ websiteId }: { websiteId: string }) {
   const { data: session, status } = useSession()
@@ -10,17 +12,25 @@ export default function ReviewForm({ websiteId }: { websiteId: string }) {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [showLoginPopup, setShowLoginPopup] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
 
-    console.log('Form submission started')
-    console.log('Session data:', session)
-    console.log('Request data:', { content, websiteId, rating })
+    // console.log('Form submission started')
+    // console.log('Session data:', session)
+    // console.log('Request data:', { content, websiteId, rating })
+
+    // Check if user is authenticated first
+    if (!session) {
+      setShowLoginPopup(true)
+      setLoading(false)
+      return
+    }
 
     if (rating === 0) {
-      alert('Please select a rating')
+      toast.error('Please select a rating')
       setLoading(false)
       return
     }
@@ -36,18 +46,30 @@ export default function ReviewForm({ websiteId }: { websiteId: string }) {
 
       if (!response.ok) {
         console.error('API Error:', data)
-        alert(`Error: ${data.error || 'Failed to submit review'}`)
+        
+        // Check if it's an authentication error
+        if (response.status === 401 || data.error?.includes('authentication') || data.error?.includes('unauthorized')) {
+          setShowLoginPopup(true)
+          return
+        }
+        
+        toast.error(`Error: ${data.error || 'Failed to submit review'}`)
         return
       }
 
       console.log('Review created successfully:', data)
       setContent('')
       setRating(0)
-      alert('Review submitted successfully!')
+      toast.success('Review submitted successfully!')
       window.location.reload()
     } catch (error) {
       console.error('Request failed:', error)
-      alert('Failed to submit review. Please try again.')
+      // Check if user might not be authenticated
+      if (!session) {
+        setShowLoginPopup(true)
+      } else {
+        toast.error('Failed to submit review. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -84,8 +106,20 @@ export default function ReviewForm({ websiteId }: { websiteId: string }) {
   //   )
   // }
 
+  const handleLoginSuccess = () => {
+    // Refresh the page to update the session
+    window.location.reload()
+  }
+
   return (
     <div className="space-y-3">
+      <LoginPopup 
+        isOpen={showLoginPopup}
+        onClose={() => setShowLoginPopup(false)}
+        title="Sign in"
+        onSuccess={handleLoginSuccess}
+      />
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Star Rating */}
         <div className="space-y-2">
