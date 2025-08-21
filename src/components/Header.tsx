@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Search, User, LogOut } from 'lucide-react'
 import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
@@ -16,7 +17,7 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-bold text-white">
-              Hustleworthy
+              <Image src="/images/logo.png" alt="Hustleworthy" width={125} height={100} />
             </Link>
           </div>
 
