@@ -52,7 +52,7 @@ export default function ReplyForm({ reviewId }: { reviewId: string }) {
         onChange={(e) => setContent(e.target.value)} 
         required
         placeholder="Reply to this review..."
-        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" 
+        className="text-gray-700 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" 
         rows={3}
       />
       <div className="flex justify-between items-center">

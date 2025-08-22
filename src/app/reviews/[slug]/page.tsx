@@ -280,12 +280,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 <table className="w-full border border-gray-200">
                   <tbody>
                     <tr className="border-b border-gray-200">
-                      <td className="px-4 py-3 bg-gray-50 font-medium">Monthly Earning Potential</td>
-                      <td className="px-4 py-3">{website.earningPotentialinaMonth || 'N/A'}</td>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Monthly Earning Potential</td>
+                      <td className="px-4 py-3 text-gray-700">{website.earningPotentialinaMonth || 'N/A'}</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 bg-gray-50 font-medium">Hourly Earning Potential</td>
-                      <td className="px-4 py-3">{website.earningPotentialIn1hr || 'N/A'}</td>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Hourly Earning Potential</td>
+                      <td className="px-4 py-3 text-gray-700">{website.earningPotentialIn1hr || 'N/A'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -307,12 +307,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 <table className="w-full border border-gray-200">
                   <tbody>
                     <tr className="border-b border-gray-200">
-                      <td className="px-4 py-3 bg-gray-50 font-medium">Payout Methods</td>
-                      <td className="px-4 py-3">{website.payoutMethods || 'N/A'}</td>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Payout Methods</td>
+                      <td className="px-4 py-3 text-gray-700">{website.payoutMethods || 'N/A'}</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 bg-gray-50 font-medium">Payout Frequency</td>
-                      <td className="px-4 py-3">{website.payoutFrequency || 'N/A'}</td>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Payout Frequency</td>
+                      <td className="px-4 py-3 text-gray-700">{website.payoutFrequency || 'N/A'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -392,7 +392,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   className="rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-semibold">{review.user.name}</p>
+                  <p className="font-semibold text-gray-700">{review.user.name}</p>
                   <StarRating rating={review.rating || 0} className="mt-1" />
                 </div>
               </div>
@@ -403,7 +403,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 year: 'numeric'
               })}</span>
             </div>
-            <p className="mt-3">{review.content}</p>
+            <p className="mt-3 text-gray-700">{review.content}</p>
 
             {/* Reply Form */}
             <ReplyForm reviewId={review.id} />
@@ -412,8 +412,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             <div className="ml-4 mt-3 space-y-2">
               {review.replies.map(reply => (
                 <div key={reply.id} className="border-l-2 pl-3 text-sm text-gray-700">
-                  <p className="font-medium">{reply.user.name}</p>
-                  <p>{reply.content}</p>
+                  <p className="font-medium text-gray-700">{reply.user.name}</p>
+                  <p className="text-gray-700">{reply.content}</p>
                 </div>
               ))}
             </div>
