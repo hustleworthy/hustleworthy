@@ -8,7 +8,7 @@ import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
 
 interface ReviewPageProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
@@ -27,7 +27,7 @@ function StarRating({ rating, className }: { rating: number; className?: string 
 }
 
 export default async function ReviewPage({ params }: ReviewPageProps) {
-  const { slug } = await params
+  const { slug } = params
   const website = await getWebsiteBySlug(slug)
 
   if (!website) {
