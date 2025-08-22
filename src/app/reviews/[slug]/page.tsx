@@ -8,7 +8,7 @@ import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
 
 interface ReviewPageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
@@ -27,7 +27,7 @@ function StarRating({ rating, className }: { rating: number; className?: string 
 }
 
 export default async function ReviewPage({ params }: ReviewPageProps) {
-  const { slug } = params
+  const { slug } = await params
   const website = await getWebsiteBySlug(slug)
 
   if (!website) {
@@ -482,8 +482,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   )
 } 
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
   const website = await getWebsiteBySlug(slug)
 
   const websiteName = website?.websiteName || 'This Website'
