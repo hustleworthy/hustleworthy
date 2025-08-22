@@ -26,7 +26,7 @@ export default function Header() {
                 <Link href="/" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Home
                 </Link>
-                <Link href="/reviews" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
+                <Link href="/best" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Reviews
                 </Link>
                 <Link href="/comparisons" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">

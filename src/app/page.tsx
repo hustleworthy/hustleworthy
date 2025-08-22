@@ -294,6 +294,13 @@ export default async function Home() {
               </svg>
             </a>
             
+            <Link href="/best" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
+              <span>Best Sites</span>
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </Link>
+            
             <Link href="/guides" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
               <span>How To Guides</span>
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,7 +308,7 @@ export default async function Home() {
               </svg>
             </Link>
             
-            <Link href="/hosting-reviews" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
+            <Link href="/best" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
               <span>Reviews</span>
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -637,7 +644,7 @@ export default async function Home() {
             {/* Premium CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link 
-                href="/reviews" 
+                href="/best" 
                 className="group relative inline-flex items-center justify-center px-10 py-4 bg-white text-[#03a9f4] font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-white/25 border border-white/20 backdrop-blur-sm"
               >
                 <span className="relative z-10 flex items-center">
@@ -653,7 +660,7 @@ export default async function Home() {
               </Link>
               
               <Link 
-                href="/hosting-services-2025" 
+                href="/best" 
                 className="group inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold text-lg rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/50"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
