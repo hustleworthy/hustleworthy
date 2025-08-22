@@ -122,7 +122,7 @@ export default async function BestPage() {
                           {website.signUpBonus}
                         </div>
                         <a 
-                          href={website.url} 
+                          href={website.url || '#'} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="inline-block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 text-center"
@@ -181,7 +181,7 @@ export default async function BestPage() {
                     
                     <div className="pt-4">
                       <a 
-                        href={website.url} 
+                        href={website.url || '#'} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-orange-500 hover:text-orange-600 underline font-medium"
@@ -205,7 +205,7 @@ export default async function BestPage() {
                       <div className="flex items-center mr-4">
                         <div className="flex text-yellow-400">
                           {[...Array(5)].map((_, i) => (
-                            <svg key={i} className={`w-5 h-5 ${i < Math.floor(parseFloat(website.expertRating)) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 24 24">
+                            <svg key={i} className={`w-5 h-5 ${i < Math.floor(parseFloat(String(website.expertRating ?? '0'))) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
                           ))}
