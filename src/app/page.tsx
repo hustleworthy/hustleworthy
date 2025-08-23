@@ -308,7 +308,7 @@ export default async function Home() {
               </svg>
             </Link>
             
-            <Link href="/best" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
+            <Link href="/reviews" className="text-gray-700 hover:text-[#03a9f4] px-4 py-3 text-sm font-medium flex items-center transition-all duration-200 hover:bg-gray-100 rounded-lg nav-secondary-link">
               <span>Reviews</span>
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

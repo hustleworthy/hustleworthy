@@ -2,13 +2,38 @@ import { Metadata } from 'next'
 import { getFeaturedWebsites } from '@/data/websites'
 import Footer from '@/components/Footer'
 
+// Helper function to parse rating from "4.5 out of 5" format
+function parseRating(rating: string): number {
+  if (!rating) return 0
+  
+  // Handle "4.5 out of 5" format
+  if (rating.includes('out of')) {
+    const match = rating.match(/(\d+\.?\d*)\s*out\s*of\s*(\d+)/i)
+    if (match) {
+      return parseFloat(match[1])
+    }
+  }
+  
+  // Handle "4.5/5" format
+  if (rating.includes('/')) {
+    const match = rating.match(/(\d+\.?\d*)\s*\/\s*(\d+)/i)
+    if (match) {
+      return parseFloat(match[1])
+    }
+  }
+  
+  // Handle simple number format
+  const num = parseFloat(rating)
+  return isNaN(num) ? 0 : num
+}
+
 export const metadata: Metadata = {
   title: 'Best Online Money Making Website',
   description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that actually pay. See our top-rated GPT sites, reviews & payment proofs.',
 }
 
 export default async function BestPage() {
-  // Fetch the latest 5 websites
+  // Fetch 5 websites: Swagbucks at top + 4 others by expert rating
   const websites = await getFeaturedWebsites(5)
 
   return (
@@ -95,13 +120,13 @@ export default async function BestPage() {
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                         <span className="text-sm font-bold text-gray-800">
-                          {index === 0 ? 'Top Overall' : `Top ${website.type}`}
+                          {index === 0 ? 'Top Overall' : `Top ${website.type || 'Rated'}`}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="text-white text-sm font-medium">
-                    #{index + 1} in {website.type}
+                    {index === 0 ? '#1 Overall' : `#${index + 1} in ${website.type || 'Expert Rated'}`}
                   </div>
                 </div>
               </div>
@@ -197,24 +222,17 @@ export default async function BestPage() {
                   <div className="flex items-center justify-between mb-6">
                     <h4 className="text-2xl font-bold text-gray-900 flex items-center">
                       Our Expert's Review
-                      <svg className="w-5 h-5 text-yellow-500 ml-2" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
                     </h4>
                     <div className="flex items-center">
                       <div className="flex items-center mr-4">
                         <div className="flex text-yellow-400">
                           {[...Array(5)].map((_, i) => (
-                            <svg key={i} className={`w-5 h-5 ${i < Math.floor(parseFloat(String(website.expertRating ?? '0'))) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 24 24">
+                            <svg key={i} className={`w-5 h-5 ${i < Math.floor(parseRating(website.expertRating ?? '0')) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
                           ))}
                         </div>
-                        <span className="ml-2 text-lg font-bold text-gray-900">{website.expertRating}/5.0</span>
                       </div>
-                      <svg className="w-5 h-5 text-gray-400 cursor-help" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
                     </div>
                   </div>
 

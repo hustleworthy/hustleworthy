@@ -26,11 +26,11 @@ export default function Header() {
                 <Link href="/" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Home
                 </Link>
-                <Link href="/best" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
+                <Link href="/reviews" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Reviews
                 </Link>
-                <Link href="/comparisons" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
-                  Comparisons
+                <Link href="/best" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
+                  Top Picks
                 </Link>
                 <Link href="/blog" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                   Blog
@@ -43,7 +43,7 @@ export default function Header() {
             <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-white to-gray-100 text-black px-4 py-2 rounded-full shadow-lg border border-white/20">
               <span className="text-sm font-medium">⭐ Monthly Pick:</span>
               <span className="text-sm font-bold text-white px-3 py-1 rounded-full text-xs shadow-md" style={{background: '#03a9f4'}}>
-                <a href="/reviews/bigcashweb" target="_blank">BigCashWeb</a>
+                <a href="/reviews/swagbucks" target="_blank">Swagbucks</a>
               </span>
             </div>
 
