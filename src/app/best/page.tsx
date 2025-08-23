@@ -258,7 +258,7 @@ export default async function BestPage() {
                       </blockquote>
                       <div className="mt-4">
                         <a 
-                                                     href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
+                                                     href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`}
                           className="text-[#03a9f4] hover:text-blue-600 font-medium underline"
                         >
                           Go to full review

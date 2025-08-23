@@ -450,7 +450,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 </span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Swagbucks</h3>
-              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/swagbucks">Check Detailed Review</a></p>
+              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/Swagbucks">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 

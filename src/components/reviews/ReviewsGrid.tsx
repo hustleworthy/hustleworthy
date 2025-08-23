@@ -89,7 +89,7 @@ export default function ReviewsGrid({ websites, showAllResults = false }: Review
                   {/* Go to Full Review Button */}
                   <div className="flex justify-end pt-2">
                     <a 
-                      href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
+                      href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 text-sm"
                     >
                       Go to Full Review
