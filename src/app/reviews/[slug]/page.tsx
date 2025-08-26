@@ -517,7 +517,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const expertRating = (website?.expertRating || '').split(' ')[0] || 'Our'
   const earningMonthly = website?.earningPotentialinaMonth || 'an extra $0'
 
-  const title = `Is ${websiteName} Worth it? Our Honest ${expertRating} Review`
+  const title = `Is ${websiteName} worth it? Read Expert & User Reviews`
   const description = `Our review answers if ${websiteName} is legit. Read User reviews, cashout threshold, proof of payment, and how to earn up to ${earningMonthly} a month.`
 
   return {

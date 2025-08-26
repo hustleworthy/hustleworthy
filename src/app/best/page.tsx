@@ -29,7 +29,7 @@ function parseRating(rating: string): number {
 }
 
 export const metadata: Metadata = {
-  title: 'Best Online Money Making Website',
+  title: 'Best Money Making Websites ( 100+ Sites Tested )',
   description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that actually pay. See our top-rated GPT sites, reviews & payment proofs.',
 }
 
@@ -147,9 +147,19 @@ export default async function BestPage() {
                         >
                           <WebsiteImage websiteName={website.websiteName || 'Website'} />
                         </a>
-                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        <h3 className="text-3xl md:text-3xl font-bold text-gray-900 mb-4">
                         {website.websiteName}
                       </h3>
+                      </div>
+                      <div className="text-center">
+                        <a 
+                          rel="nofollow noopener"
+                          href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`} 
+                          target="_blank" 
+                          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold w-full py-3 transition-colors rounded-full text-center inline-block"
+                        >
+                          View detailed review
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -254,7 +264,8 @@ export default async function BestPage() {
                       </blockquote>
                       <div className="mt-4">
                         <a 
-                                                     href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`}
+                          rel="nofollow noopener"
+                          href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`}
                           className="text-[#03a9f4] hover:text-blue-600 font-medium underline"
                         >
                           Go to full review
