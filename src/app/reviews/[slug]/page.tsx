@@ -82,7 +82,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         '@type': 'Review',
         author: {
           '@type': 'Person',
-          name: 'GPTCritic Team',
+          name: 'Folasade Oluwagbenga',
           jobTitle: 'Money Making Expert'
         },
         reviewRating: {
@@ -97,7 +97,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         dateModified: new Date().toISOString().split('T')[0],
         publisher: {
           '@type': 'Organization',
-          name: 'GPTCritic'
+          name: 'Hustleworthy'
         }
       },
       ...reviewsForSchema
@@ -267,6 +267,30 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               </p>
             </div>
            }
+
+          {/* Expert Review */}
+           <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
+              
+              {/* Expert Profile */}
+              <div className="flex items-center mb-2 p-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                  <img 
+                    src="/images/Folasade-Oluwagbenga.png" 
+                    alt="Folasade Oluwagbenga" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Folasade Oluwagbenga</h3>
+                  <p className="text-gray-600">Money Making Expert</p>
+                </div>
+              </div>
+              
+              <p className="text-gray-700 mb-6">
+                {website.expertReview || 'Expert review information not available.'}
+              </p>
+            </div>
 
             {/* Earning Potential */}
             <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
@@ -449,14 +473,17 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   Top Monthly Pick
                 </span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">Swagbucks</h3>
-              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/Swagbucks">Check Detailed Review</a></p>
+              <h3 className="font-bold text-gray-900 mb-2">BigCashWeb</h3>
+              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/Bigcashweb">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 
             {/* Expert Review Stats */}
             <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
               <ul className="space-y-2 text-sm">
+                <li className="flex justify-between">
+                  <a href="#expert-review" className="text-gray-600">Expert Review</a>
+                </li>
                 <li className="flex justify-between">
                   <a href="#earning-potential" className="text-gray-600">Earning Potential</a>
                 </li>

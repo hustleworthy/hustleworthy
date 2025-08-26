@@ -7,7 +7,7 @@ import Providers from '@/components/Providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Hustleworthy - Website Reviews & Ratings',
+  title: 'Hustle Worthy - Find Legit Money Making Websites',
   description: 'Discover and review money-making websites with detailed ratings, payment methods, and user experiences.',
   icons: {
     icon: [

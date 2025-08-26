@@ -53,7 +53,7 @@ export default function ReviewsGrid({ websites, showAllResults = false }: Review
                     </div>
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mt-3 text-center">
-                    {website.websiteName || 'Unknown Website'}
+                    <a href={website.url || '#'} target="_blank" rel="noopener noreferrer">{website.websiteName || 'Unknown Website'}</a>
                   </h3>
                 </div>
 

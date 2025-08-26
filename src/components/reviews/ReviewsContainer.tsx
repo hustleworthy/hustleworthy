@@ -5,6 +5,8 @@ import { Website } from '@/data/websites'
 import ReviewsGrid from './ReviewsGrid'
 import FilterPopup, { FilterCriteria } from './FilterPopup'
 
+type SortOption = 'default' | 'earning-high-to-low' | 'withdrawal-low-to-high' | 'rating-high-to-low'
+
 export default function ReviewsContainer() {
   const [websites, setWebsites] = useState<Website[]>([])
   const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
@@ -12,6 +14,7 @@ export default function ReviewsContainer() {
   const [error, setError] = useState<string | null>(null)
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterCriteria | null>(null)
+  const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
     const fetchWebsites = async () => {
@@ -38,6 +41,44 @@ export default function ReviewsContainer() {
     fetchWebsites()
   }, [])
 
+  // Apply sorting to the filtered websites
+  const applySorting = (websitesToSort: Website[], sortOption: SortOption) => {
+    const sorted = [...websitesToSort]
+    
+    switch (sortOption) {
+      case 'earning-high-to-low':
+        return sorted.sort((a, b) => {
+          const earningA = parseFloat(a.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
+          const earningB = parseFloat(b.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
+          return earningB - earningA
+        })
+      
+      case 'withdrawal-low-to-high':
+        return sorted.sort((a, b) => {
+          const withdrawalA = parseFloat(a.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
+          const withdrawalB = parseFloat(b.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
+          return withdrawalA - withdrawalB
+        })
+      
+      case 'rating-high-to-low':
+        return sorted.sort((a, b) => {
+          const ratingA = parseFloat(a.expertRating?.split(' ')[0] || '0')
+          const ratingB = parseFloat(b.expertRating?.split(' ')[0] || '0')
+          return ratingB - ratingA
+        })
+      
+      default:
+        return sorted
+    }
+  }
+
+  // Update sorting when sortBy changes
+  useEffect(() => {
+    const currentWebsites = activeFilters ? filteredWebsites : websites
+    const sortedWebsites = applySorting(currentWebsites, sortBy)
+    setFilteredWebsites(sortedWebsites)
+  }, [sortBy, activeFilters, websites])
+
   const applyFilters = (filters: FilterCriteria) => {
     let filtered = [...websites]
 
@@ -59,12 +100,15 @@ export default function ReviewsContainer() {
       })
     }
 
-    setFilteredWebsites(filtered)
+    // Apply sorting to filtered results
+    const sortedFiltered = applySorting(filtered, sortBy)
+    setFilteredWebsites(sortedFiltered)
     setActiveFilters(filters)
   }
 
   const clearFilters = () => {
-    setFilteredWebsites(websites)
+    const sortedWebsites = applySorting(websites, sortBy)
+    setFilteredWebsites(sortedWebsites)
     setActiveFilters(null)
   }
 
@@ -74,6 +118,10 @@ export default function ReviewsContainer() {
 
   const closeFilterPopup = () => {
     setIsFilterPopupOpen(false)
+  }
+
+  const handleSortChange = (newSortBy: SortOption) => {
+    setSortBy(newSortBy)
   }
 
   if (isLoading) {
@@ -137,6 +185,25 @@ export default function ReviewsContainer() {
               )}
             </div>
             <div className="flex items-center gap-3">
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => handleSortChange(e.target.value as SortOption)}
+                  className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="default">Sort by</option>
+                  <option value="earning-high-to-low">Earning Potential (High to Low)</option>
+                  <option value="withdrawal-low-to-high">Minimum Withdrawal (Low to High)</option>
+                  <option value="rating-high-to-low">Ratings (High to Low)</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+              
               {activeFilters && (
                 <button
                   onClick={clearFilters}

@@ -3,7 +3,7 @@ import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
 
 export const metadata: Metadata = {
-  title: 'Website Reviews - Expert Analysis & User Feedback',
+  title: 'List Of Money Making Sites - Hustle Worthy',
   description: 'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.',
 }
 
@@ -14,7 +14,7 @@ export default function ReviewsPage() {
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto px-6 py-16 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Website Reviews
+            Money Making Site Reviews
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">
             Expert analysis and user feedback on the best money-making websites. 

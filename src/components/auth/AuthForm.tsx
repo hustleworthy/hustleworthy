@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -17,7 +17,44 @@ export default function AuthForm({ type }: AuthFormProps) {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [captchaAnswer, setCaptchaAnswer] = useState('')
+  const [captchaQuestion, setCaptchaQuestion] = useState('')
+  const [captchaSolution, setCaptchaSolution] = useState('')
   const router = useRouter()
+
+  // Generate a new captcha question
+  const generateCaptcha = () => {
+    const captchaOptions = [
+      { question: 'Type the word "human"', answer: 'human' },
+      { question: 'Type "yes" to confirm you are human', answer: 'yes' },
+      { question: 'What color is the sky? (one word)', answer: 'blue' },
+      { question: 'Type "real" to prove you are not a bot', answer: 'real' },
+      { question: 'What do you call a baby cat?', answer: 'kitten' },
+      { question: 'Type "person" to continue', answer: 'person' },
+      { question: 'What is 2+2? (spell it out)', answer: 'four' },
+      { question: 'Type "alive" to verify you are human', answer: 'alive' },
+      { question: 'What do you call a baby dog?', answer: 'puppy' },
+      { question: 'Type "thinking" to show you can think', answer: 'thinking' },
+      { question: 'What is the opposite of "no"?', answer: 'yes' },
+      { question: 'Type "conscious" to proceed', answer: 'conscious' },
+      { question: 'What do you call a baby bird?', answer: 'chick' },
+      { question: 'Type "aware" to confirm awareness', answer: 'aware' },
+      { question: 'What is the first letter of the alphabet?', answer: 'a' }
+    ]
+    
+    const randomCaptcha = captchaOptions[Math.floor(Math.random() * captchaOptions.length)]
+    
+    setCaptchaQuestion(randomCaptcha.question)
+    setCaptchaSolution(randomCaptcha.answer.toLowerCase())
+    setCaptchaAnswer('')
+  }
+
+  // Generate captcha on component mount and when type changes
+  useEffect(() => {
+    if (type === 'signup') {
+      generateCaptcha()
+    }
+  }, [type])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -33,6 +70,14 @@ export default function AuthForm({ type }: AuthFormProps) {
 
     try {
       if (type === 'signup') {
+        // Validate captcha for signup
+        if (captchaAnswer.toLowerCase().trim() !== captchaSolution) {
+          setError('Please answer the captcha correctly')
+          generateCaptcha() // Generate new captcha on wrong answer
+          setLoading(false)
+          return
+        }
+
         // Sign up
         const response = await fetch('/api/auth/signup', {
           method: 'POST',
@@ -44,6 +89,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
         if (!response.ok) {
           setError(data.error || 'Failed to create account')
+          generateCaptcha() // Generate new captcha on error
           return
         }
 
@@ -77,6 +123,9 @@ export default function AuthForm({ type }: AuthFormProps) {
       }
     } catch (error) {
       setError('An unexpected error occurred')
+      if (type === 'signup') {
+        generateCaptcha() // Generate new captcha on error
+      }
     } finally {
       setLoading(false)
     }
@@ -154,12 +203,42 @@ export default function AuthForm({ type }: AuthFormProps) {
                 type="password"
                 autoComplete={type === 'login' ? 'current-password' : 'new-password'}
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${
+                  type === 'signup' ? '' : 'rounded-b-md'
+                } focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
+            {type === 'signup' && (
+              <div>
+                <label htmlFor="captcha" className="sr-only">
+                  Captcha
+                </label>
+                <div className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-b-md bg-gray-50">
+                  <span className="text-sm text-gray-700">{captchaQuestion}</span>
+                  <button
+                    type="button"
+                    onClick={generateCaptcha}
+                    className="text-blue-600 hover:text-blue-500 text-sm font-medium ml-2"
+                    title="Get a different question"
+                  >
+                    ↻
+                  </button>
+                </div>
+                <input
+                  id="captcha"
+                  name="captcha"
+                  type="text"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Type your answer here"
+                  value={captchaAnswer}
+                  onChange={(e) => setCaptchaAnswer(e.target.value)}
+                />
+              </div>
+            )}
           </div>
 
           {error && (

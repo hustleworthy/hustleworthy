@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { getFeaturedWebsites } from '@/data/websites'
 import Footer from '@/components/Footer'
+import WebsiteImage from '@/components/WebsiteImage'
 
 // Helper function to parse rating from "4.5 out of 5" format
 function parseRating(rating: string): number {
@@ -133,33 +134,28 @@ export default async function BestPage() {
 
               {/* Main Content */}
               <div className="p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Left Side - Branding & CTA */}
                   <div className="space-y-6">
                     <div className="text-center lg:text-left">
-                      <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                        {website.websiteName}
-                      </h3>
-                      
-                      <div className="bg-gray-50 rounded-xl p-6 mb-6">
-                        <div className="text-sm text-gray-600 mb-2">Monthly Starting Price</div>
-                        <div className="text-4xl font-bold text-gray-900 mb-4">
-                          {website.signUpBonus}
-                        </div>
+                      <div className="bg-gray-50 rounded-xl p-6 mb-6 text-center">
                         <a 
                           href={website.url || '#'} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="inline-block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 text-center"
+                          className="inline-block text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 text-center"
                         >
-                          VISIT SITE 
+                          <WebsiteImage websiteName={website.websiteName || 'Website'} />
                         </a>
+                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        {website.websiteName}
+                      </h3>
                       </div>
                     </div>
                   </div>
 
                   {/* Right Side - Features */}
-                  <div className="space-y-4">
+                  <div className="space-y-4 lg:col-span-2">
                     <h4 className="text-xl font-bold text-gray-900 mb-4">Key Features</h4>
                     <ul className="space-y-3">
                       <li className="flex items-start">
@@ -269,7 +265,7 @@ export default async function BestPage() {
                 </div>
 
                 {/* Features Table */}
-                <div className="border-t border-gray-200 mt-8 pt-8">
+                {/* <div className="border-t border-gray-200 mt-8 pt-8">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div className="text-center">
                       <div className="bg-gray-50 rounded-lg p-4">
@@ -296,7 +292,8 @@ export default async function BestPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+
               </div>
             </div>
           ))}

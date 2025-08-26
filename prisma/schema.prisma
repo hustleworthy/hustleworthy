@@ -30,6 +30,10 @@ model Websites {
   isitLegit                 String?
   waystoEarn                String?
   about                     String?
+  authorName                String?
+  authorImageUrl            String?
+  authorLinkedIn            String?
+  authorProfile             String?
   reviews                   Review[]
   @@map("websites")
 }

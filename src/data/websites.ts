@@ -323,7 +323,7 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
     const swagbucks = await prisma.websites.findFirst({
       where: {
         websiteName: {
-          contains: 'Swagbucks'
+          contains: 'Bigcashweb'
         }
       }
     })
@@ -333,7 +333,7 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
       where: {
         websiteName: {
           not: {
-            contains: 'Swagbucks'
+            contains: 'Bigcashweb'
           }
         }
       },
@@ -356,12 +356,12 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
     // Fallback to mock data if database connection fails
     // Find Swagbucks in mock data
     const swagbucks = websites.find(w => 
-      w.websiteName?.toLowerCase().includes('swagbucks')
+      w.websiteName?.includes('Bigcashweb')
     )
     
     // Get remaining websites ordered by expert rating
     const remainingWebsites = websites
-      .filter(w => !w.websiteName?.toLowerCase().includes('swagbucks'))
+      .filter(w => !w.websiteName?.includes('Bigcashweb'))
       .sort((a, b) => {
         const ratingA = parseRating(a.expertRating || '0')
         const ratingB = parseRating(b.expertRating || '0')
