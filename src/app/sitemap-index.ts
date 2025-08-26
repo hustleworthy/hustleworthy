@@ -1,0 +1,20 @@
+import { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.vercel.app'
+  
+  return [
+    {
+      url: `${baseUrl}/sitemap.xml`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/blog/sitemap.xml`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/reviews/sitemap.xml`,
+      lastModified: new Date(),
+    },
+  ]
+}
