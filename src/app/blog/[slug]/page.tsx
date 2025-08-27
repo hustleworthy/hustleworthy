@@ -179,7 +179,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
             )}
 
             {/* Article Content */}
-            <article className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+            <article className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-gray-900">
               {/* Tags */}
               {post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-3 mb-8">
@@ -224,6 +224,9 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                   </h4>
                   <p className="text-gray-600 leading-relaxed">
                     {post.writer?.profile || 'Content writer and money-making website expert at Hustleworthy.'}
+                  </p>
+                  <p className="text-gray-600 leading-relaxed">
+                  Folasade Oluwagbenga is a content strategist and writer specializing in online business, digital marketing, and personal finance. With a focus on actionable insights and clear step-by-step guidance, she creates content that helps readers not only learn but implement strategies to grow income streams. Her writing combines SEO expertise with a conversational, human tone that builds trust with audiences while delivering strong search performance.
                   </p>
                 </div>
               </div>
