@@ -1,4 +1,3 @@
-import React from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getWebsiteBySlug } from '@/data/websites'
@@ -7,6 +6,7 @@ import Image from 'next/image'
 import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
+import VideoReview from '@/components/VideoReview'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -246,51 +246,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </div>
 
             {/* Video Review Section */}
-            {(() => {
-              const videoUrl = `https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Fvideos%2F${website.websiteName}.mp4?alt=media`;
-              const [videoExists, setVideoExists] = React.useState(false);
-              const [isLoading, setIsLoading] = React.useState(true);
-
-              React.useEffect(() => {
-                const checkVideoExists = async () => {
-                  try {
-                    const response = await fetch(videoUrl, { method: 'HEAD' });
-                    setVideoExists(response.ok);
-                  } catch (error) {
-                    setVideoExists(false);
-                  } finally {
-                    setIsLoading(false);
-                  }
-                };
-                checkVideoExists();
-              }, [videoUrl]);
-
-              if (isLoading) return null;
-              if (!videoExists) return null;
-
-              return (
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
-                  <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-                    <video 
-                      className="w-full h-full object-cover"
-                      controls
-                      preload="metadata"
-                      poster=""
-                    >
-                      <source 
-                        src={videoUrl} 
-                        type="video/mp4" 
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                  <p className="text-gray-600 mt-4 text-center">
-                    Watch our comprehensive video review of {website.websiteName || 'this platform'}
-                  </p>
-                </div>
-              );
-            })()}
+            <VideoReview websiteName={website.websiteName || ''} />
 
           {/* Expert Review */}
            <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
