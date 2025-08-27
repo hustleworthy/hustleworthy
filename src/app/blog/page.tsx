@@ -1,5 +1,6 @@
 import { client } from "@/lib/microcms";
 import BlogListing from '@/components/blog/BlogListing';
+import Footer from '@/components/Footer';
 
 type Tag = {
   id: string;
@@ -68,6 +69,9 @@ export default async function BlogPage() {
           initialLimit={INITIAL_LIMIT}
         />
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

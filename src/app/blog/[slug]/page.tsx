@@ -2,6 +2,7 @@ import { client } from "@/lib/microcms";
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { slugify, findPostBySlug } from '@/lib/slugify';
+import Footer from '@/components/Footer';
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>
@@ -72,7 +73,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
     };
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 blog-post">
         {/* Hero Section */}
         <div className="hero-banner relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20"></div>
@@ -242,6 +243,9 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
             </div>
           </div>
         </div>
+        
+        {/* Footer */}
+        <Footer />
       </div>
     );
   } catch (error) {

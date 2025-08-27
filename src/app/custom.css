@@ -1,0 +1,26 @@
+/* Custom CSS for Hustleworthy */
+/* Add your custom styles here */
+.blog-post p {
+  margin-bottom: 12px;
+}
+.blog-post h2 {
+  margin: 25px 0 6px;
+}
+.blog-post ul {
+  list-style: disc;
+  margin: 10px 0 20px 30px;
+}
+.blog-post ul li {
+  line-height: 30px;
+}
+.blog-post table {
+  border: 1px solid #999;
+  margin: 10px 0 25px;
+}
+.blog-post table tr:first-child td {
+  font-weight: 800;
+}
+.blog-post table td {
+  border: 1px solid #999;
+  padding: 10px;
+}
