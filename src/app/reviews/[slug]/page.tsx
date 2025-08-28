@@ -249,11 +249,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             { website.video === 'yes' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
              <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
-             <div className="relative bg-black rounded-lg overflow-hidden">
+             <div className="relative bg-black rounded-lg overflow-hidden align-middle">
               <video 
                controls
                preload="metadata"
-               className="min-h-[280px]"
+               className="min-h-[380px] w-full"
               >
                <source 
                 src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Fvideos%2F${website.websiteName}.mp4?alt=media`} 
