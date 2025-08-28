@@ -246,9 +246,26 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </div>
 
             {/* Video Review Section */}
-            <VideoReview websiteName={website.websiteName || ''} />
+            { website.video === 'yes' && (
+            <div className="bg-white rounded-lg shadow-sm p-6">
+             <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
+             <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+              <video 
+               className="w-full h-full object-cover"
+               controls
+               preload="metadata"
+              >
+               <source 
+                src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Fvideos%2F${website.websiteName}.mp4?alt=media`} 
+                type="video/mp4" 
+               />
+               Your browser does not support the video tag.
+               </video>
+              </div>
+             </div>
+            )}
 
-          {/* Expert Review */}
+            {/* Expert Review */}
            <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
               
