@@ -6,7 +6,6 @@ import Image from 'next/image'
 import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
-import VideoReview from '@/components/VideoReview'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
