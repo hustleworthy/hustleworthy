@@ -103,7 +103,6 @@ export default function Footer() {
                 <li><Link href="/reviews" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">All Reviews</Link></li>
                 <li><Link href="/best" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Top Picks 2025</Link></li>
                 <li><Link href="/blog" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Blog</Link></li>
-                <li><Link href="/guides" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Earning Guides</Link></li>
               </ul>
             </div>
 
