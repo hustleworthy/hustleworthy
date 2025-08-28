@@ -249,9 +249,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             { website.video === 'yes' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
              <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Review</h2>
-             <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+             <div className="relative bg-black rounded-lg overflow-hidden">
               <video 
-               className="w-full h-full object-cover"
                controls
                preload="metadata"
               >
