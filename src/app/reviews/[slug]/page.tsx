@@ -136,9 +136,9 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   <div className="flex flex-wrap items-center gap-4 mb-4">
                    <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
                      Rating Methodology
-                     {/* Tooltip */}
+                     {/* Tooltip - Hidden on mobile devices */}
                                            <span
-                        className="absolute bottom-full left-0 mb-2 
+                        className="hidden md:block absolute bottom-full left-0 mb-2 
                                    px-4 py-3 text-xs text-gray-700 bg-gray-100 rounded 
                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
                                    whitespace-normal w-64 z-10 leading-relaxed"
@@ -150,9 +150,9 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
 
                                          <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
                        Advertising disclosure
-                       {/* Tooltip */}
+                       {/* Tooltip - Hidden on mobile devices */}
                        <span
-                         className="absolute bottom-full left-0 mb-2 
+                         className="hidden md:block absolute bottom-full left-0 mb-2 
                                     px-4 py-3 text-xs text-gray-700 bg-gray-100 rounded 
                                     opacity-0 group-hover:opacity-100 transition-opacity duration-300
                                     whitespace-normal w-64 z-10 leading-relaxed"
