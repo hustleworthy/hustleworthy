@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { client } from "@/lib/microcms"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.com'
   
   try {
     // Fetch all blog posts

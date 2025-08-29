@@ -2,9 +2,9 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://hustleworthy.vercel.app/sitemap.xml
-Sitemap: https://hustleworthy.vercel.app/blog/sitemap.xml
-Sitemap: https://hustleworthy.vercel.app/reviews/sitemap.xml
+Sitemap: https://hustleworthy.com/sitemap.xml
+Sitemap: https://hustleworthy.com/blog/sitemap.xml
+Sitemap: https://hustleworthy.com/reviews/sitemap.xml
 
 # Disallow admin and private areas
 Disallow: /admin/
