@@ -244,7 +244,7 @@ function transformWebsiteData(data: any): Website {
 
 export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
   try {
-    // Try to find by websiteName (exact match first, then case-insensitive)
+    // Try to find by websiteName (exact match first)
     let website = await prisma.websites.findFirst({
       where: { 
         websiteName: {
@@ -265,13 +265,38 @@ export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
       }
     })
     
+    // If not found, try case-insensitive exact match
+    if (!website) {
+      website = await prisma.websites.findFirst({
+        where: { 
+          websiteName: {
+            equals: slug,
+            mode: 'insensitive'
+          }
+        },
+        include: {
+          reviews: {
+            include: {
+              user: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
+            }
+          }
+        }
+      })
+    }
+    
     // If not found, try with slug format (replace dashes with spaces)
     if (!website) {
       const nameFromSlug = slug.replace(/-/g, ' ')
       website = await prisma.websites.findFirst({
         where: { 
           websiteName: {
-            contains: nameFromSlug
+            contains: nameFromSlug,
+            mode: 'insensitive'
           }
         },
         include: {
@@ -296,7 +321,7 @@ export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
     console.error('Database connection error, falling back to mock data:', error)
     // Fallback to mock data if database connection fails
     return websites.find(w => 
-      w.websiteName?.toLowerCase().replace(/\s+/g, '-') === slug
+      w.websiteName?.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
     ) || null
   }
 }
