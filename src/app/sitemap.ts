@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getAllWebsites } from '@/data/websites'
+import { client } from "@/lib/microcms"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.com'
@@ -7,6 +8,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Fetch all websites
     const websites = await getAllWebsites()
+
+    // Fetch all blog posts
+    let blogEntries: any[] = []
+    try {
+      const blogData = await client.get<{ contents: any[] }>({
+        endpoint: "blog",
+        queries: {
+          limit: 1000, // Fetch all blog posts
+          orders: '-publishedAt',
+        },
+      })
+      
+      blogEntries = blogData.contents.map((post) => ({
+        url: `${baseUrl}/blog/${post.id}`,
+        lastModified: new Date(post.publishedAt || post.updatedAt || new Date()),
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      }))
+    } catch (blogError) {
+      console.error('Error fetching blog posts for sitemap:', blogError)
+    }
 
     // Static pages
     const staticPages = [
@@ -68,8 +90,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
-    // Combine static pages with review entries
-    return [...staticPages, ...reviewEntries]
+    // Combine all entries: static pages, review entries, and blog entries
+    return [...staticPages, ...reviewEntries, ...blogEntries]
   } catch (error) {
     console.error('Error generating sitemap:', error)
     // Return only static pages if there's an error
