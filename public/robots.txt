@@ -3,8 +3,6 @@ Allow: /
 
 # Sitemap
 Sitemap: https://hustleworthy.com/sitemap.xml
-Sitemap: https://hustleworthy.com/blog/sitemap.xml
-Sitemap: https://hustleworthy.com/reviews/sitemap.xml
 
 # Disallow admin and private areas
 Disallow: /admin/
