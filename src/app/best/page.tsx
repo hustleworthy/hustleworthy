@@ -154,7 +154,7 @@ export default async function BestPage() {
                       <div className="text-center">
                         <a 
                           rel="nofollow noopener"
-                          href={`/reviews/${(website.websiteName || 'website').replace(/\s+/g, '-')}`} 
+                          href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`} 
                           target="_blank" 
                           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold w-full py-3 transition-colors rounded-full text-center inline-block"
                         >
