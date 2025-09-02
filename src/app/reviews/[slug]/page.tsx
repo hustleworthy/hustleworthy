@@ -43,9 +43,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   // Build JSON-LD Schema.org structure
   const expertRatingValue = parseFloat((website.expertRating || '0').toString().split(' ')[0]) || 0
   const ratingCount = website.reviews.filter(r => typeof r.rating === 'number').length
-  const aggregateRatingValue = ratingCount > 0
-    ? (website.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / ratingCount)
-    : expertRatingValue
+  //THIS WILL SHOW AVERAGE OF ALL RATINGS, USER ratings + EXPERT ratings
+  const userRatingSum = website.reviews.reduce((sum, r) => sum + (r.rating || 0), 0)
+  const totalRatings = ratingCount + (expertRatingValue > 0 ? 1 : 0)
+  const aggregateRatingValue = totalRatings > 0
+    ? (userRatingSum + expertRatingValue) / totalRatings
+    : 0
 
   const reviewsForSchema = website.reviews.slice(0, 20).map(r => ({
     '@type': 'Review',
@@ -74,8 +77,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
       ratingValue: aggregateRatingValue.toFixed(1),
       bestRating: '5',
       worstRating: '1',
-      ratingCount: ratingCount.toString(),
-      reviewCount: ratingCount.toString()
+      ratingCount: totalRatings.toString(),
+      reviewCount: totalRatings.toString()
     },
     review: [
       {
