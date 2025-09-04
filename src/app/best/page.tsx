@@ -30,7 +30,7 @@ function parseRating(rating: string): number {
 
 export const metadata: Metadata = {
   title: 'Best Money Making Websites ( 100+ Sites Tested )',
-  description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that actually pay. See our top-rated GPT sites, reviews & payment proofs.',
+  description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that are actually legit. See our top-rated GPT sites, reviews & payment proofs.',
 }
 
 export default async function BestPage() {
@@ -48,7 +48,7 @@ export default async function BestPage() {
             Best Online Money Making Websites
           </h1>
           <p className="text-xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
-            Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that actually pay.
+            Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that are actually legit.
           </p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default async function BestPage() {
                 Our experts at GPT Critic exhaustively tested and reviewed every major money-making platform, analyzing earning potential, payout reliability, task availability, ease of use, and much more.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Below are our expert's picks for the best Get-Paid-To (GPT) sites of the year, based on their personal experience with each one. Whether you're looking to earn gift cards, PayPal cash, or just some extra spending money, this list has you covered.
+                Below are our expert's picks for the best Get-Paid-To (GPT) sites of the year, based on their personal experience with each one.
               </p>
             </div>
           </div>
@@ -209,17 +209,6 @@ export default async function BestPage() {
                        </span>
                       </li>
                     </ul>
-                    
-                    <div className="pt-4">
-                      <a 
-                        href={website.url || '#'} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-orange-500 hover:text-orange-600 underline font-medium"
-                      >
-                                                 Get started on {website.websiteName || 'this platform'} now.
-                      </a>
-                    </div>
                   </div>
                 </div>
 
