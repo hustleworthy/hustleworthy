@@ -6,6 +6,7 @@ import Image from 'next/image'
 import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
+import WebsiteImage from '@/components/WebsiteImage'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -123,11 +124,17 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 {/* Logo Section */}
                 <div className="flex-shrink-0">
                   <div className="w-40 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
-                    <div className="text-center">
-                      <div className="text-gray-400 text-xs">
-                        <Image alt="logo" width={100} height={200} style={{width: '100%'}} src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2F${website.websiteName}.png?alt=media`}/>
+                                          <div className="text-center">
+                        <div className="text-gray-400 text-xs">
+                          <WebsiteImage 
+                            websiteName={website.websiteName || ''}
+                            alt={`${website.websiteName} logo`} 
+                            width={100} 
+                            height={100} 
+                            style={{width: '100%'}} 
+                          />
+                        </div>
                       </div>
-                    </div>
                   </div>
                 </div>
                 

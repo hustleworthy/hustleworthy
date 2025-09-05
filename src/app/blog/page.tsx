@@ -1,6 +1,7 @@
 import { client } from "@/lib/microcms";
 import BlogListing from '@/components/blog/BlogListing';
 import Footer from '@/components/Footer';
+import { Metadata } from 'next';
 
 type Tag = {
   id: string;
@@ -32,6 +33,11 @@ type Blog = {
   writer: Writer;
   publishedAt?: string;
 };
+
+export const metadata: Metadata = {
+  title: 'Blog - Hustle Worthy',
+  description: 'Blog - Hustle Worthy',
+}
 
 export default async function BlogPage() {
   const INITIAL_LIMIT = 6;
