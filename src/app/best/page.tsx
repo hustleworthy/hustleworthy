@@ -145,7 +145,13 @@ export default async function BestPage() {
                           rel="noopener noreferrer"
                           className="inline-block text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 text-center"
                         >
-                          <WebsiteImage websiteName={website.websiteName || 'Website'} />
+                          <WebsiteImage 
+                            websiteName={website.websiteName || 'Website'}
+                            alt={`${website.websiteName} logo`}
+                            width={100}
+                            height={100}
+                            style={{width: '100%'}}
+                          />
                         </a>
                         <h3 className="text-3xl md:text-3xl font-bold text-gray-900 mb-4">
                         {website.websiteName}
