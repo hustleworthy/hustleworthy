@@ -7,6 +7,7 @@ import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
 import WebsiteImage from '@/components/WebsiteImage'
+import { getDisplayName } from '@/lib/displayUtils'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -14,7 +15,7 @@ interface ReviewPageProps {
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div className={`flex items-center justify-start ${className}`}>
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
@@ -422,7 +423,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   className="rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-semibold text-gray-700">{review.user.name}</p>
+                  <p className="font-semibold text-gray-700">{getDisplayName(review.user.name)}</p>
                   <StarRating rating={review.rating || 0} className="mt-1" />
                 </div>
               </div>
@@ -442,7 +443,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             <div className="ml-4 mt-3 space-y-2">
               {review.replies.map(reply => (
                 <div key={reply.id} className="border-l-2 pl-3 text-sm text-gray-700">
-                  <p className="font-medium text-gray-700">{reply.user.name}</p>
+                  <p className="font-medium text-gray-700">{getDisplayName(reply.user.name)}</p>
                   <p className="text-gray-700">{reply.content}</p>
                 </div>
               ))}
