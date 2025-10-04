@@ -21,6 +21,7 @@ export interface Website {
   isitLegit?: string | null
   waystoEarn?: string | null
   about?: string | null
+  investment?: string | null
   reviews: Review[]
 }
 
@@ -238,6 +239,7 @@ function transformWebsiteData(data: any): Website {
     isitLegit: data.isitLegit,
     waystoEarn: data.waystoEarn,
     about: data.about,
+    investment: data.investment,
     reviews: data.reviews || []
   }
 }
@@ -339,6 +341,142 @@ export async function getAllWebsites(): Promise<Website[]> {
     console.error('Database connection error, falling back to mock data:', error)
     // Fallback to mock data if database connection fails
     return websites
+  }
+}
+
+// Function to get count of websites for a specific category
+export async function getWebsiteCountForCategory(category: string): Promise<number> {
+  try {
+    const websites = await getAllWebsites()
+    
+    // Filter websites by ways to earn category using the same logic as WaysToEarnContainer
+    const filteredWebsites = websites.filter(website => {
+      const websiteWaysToEarn = website.waystoEarn || ''
+      // Split the ways to earn string by comma and clean up whitespace
+      const websiteWaysList = websiteWaysToEarn
+        .split(',')
+        .map(way => way.trim().toLowerCase())
+      
+      const targetCategoryLower = category.toLowerCase()
+      
+      // Check if this category exists in the website's ways
+      return websiteWaysList.some(websiteWay => {
+        // Exact match
+        if (websiteWay === targetCategoryLower) {
+          return true
+        }
+        
+        // Handle specific mappings for common variations
+        const wayMappings: Record<string, string[]> = {
+          'watching videos': ['watching videos', 'videos', 'video watching'],
+          'playing games': ['playing games', 'games', 'gaming'],
+          'taking surveys': ['taking surveys', 'surveys', 'survey'],
+          'doing data entry': ['doing data entry', 'data entry'],
+          'installing apps': ['installing apps', 'app install', 'app trials'],
+          'doing tasks': ['doing tasks', 'tasks', 'micro-tasks'],
+          'watching ads': ['watching ads', 'ads', 'ad viewing'],
+          'writing reviews': ['writing reviews', 'reviews'],
+          'answering questions': ['answering questions', 'questions'],
+          'listening to music': ['listening to music', 'music'],
+          'shopping online': ['shopping online', 'shopping', 'online shopping'],
+          'typing': ['typing', 'data entry', 'transcription'],
+          'testing': ['testing', 'app testing', 'website testing', 'product testing'],
+          'reading': ['reading', 'reading emails', 'content reading'],
+          'referrals': ['referrals', 'referring friends', 'affiliate'],
+          'sharing internet': ['sharing internet', 'passive income', 'bandwidth sharing'],
+          'writing': ['writing', 'content writing', 'article writing'],
+          'chatting': ['chatting', 'chat support', 'customer service']
+        }
+        
+        // Check if the target category has any mappings
+        const mappings = wayMappings[targetCategoryLower]
+        if (mappings) {
+          return mappings.some(mapping => websiteWay.includes(mapping))
+        }
+        
+        // For other categories, check if the website way contains the target category
+        if (targetCategoryLower.length > 3) {
+          return websiteWay.includes(targetCategoryLower)
+        }
+        
+        return false
+      })
+    })
+    
+    return filteredWebsites.length
+  } catch (error) {
+    console.error('Error getting website count for category:', error)
+    // Return a default count if there's an error
+    return 0
+  }
+}
+
+// Function to get count of websites for a specific payout method
+export async function getWebsiteCountForPayoutMethod(payoutMethod: string): Promise<number> {
+  try {
+    const websites = await getAllWebsites()
+    
+    // Filter websites by payout method using the same logic as PayoutMethodsContainer
+    const filteredWebsites = websites.filter(website => {
+      const websitePayoutMethods = website.payoutMethods || ''
+      // Split the payout methods string by comma and clean up whitespace
+      const websiteMethodsList = websitePayoutMethods
+        .split(',')
+        .map(method => method.trim().toLowerCase())
+      
+      const targetMethodLower = payoutMethod.toLowerCase()
+      
+      // Check if this payout method exists in the website's methods
+      return websiteMethodsList.some(websiteMethod => {
+        // Exact match
+        if (websiteMethod === targetMethodLower) {
+          return true
+        }
+        
+        // Handle specific mappings for common variations
+        const methodMappings: Record<string, string[]> = {
+          'paypal': ['paypal', 'paypal cash'],
+          'bank transfer': ['bank transfer', 'bank', 'wire transfer', 'direct deposit', 'ach'],
+          'check': ['check', 'cheque', 'paper check'],
+          'payoneer': ['payoneer', 'payoneer card'],
+          'skrill': ['skrill', 'skrill wallet'],
+          'wise': ['wise', 'transferwise', 'wise transfer'],
+          'revolut': ['revolut', 'revolut card'],
+          'venmo': ['venmo'],
+          'zelle': ['zelle'],
+          'papara': ['papara'],
+          'qiwi': ['qiwi', 'qiwi wallet'],
+          'yoomoney': ['yoomoney', 'yandex.money', 'yandex money'],
+          'gift cards': ['gift cards', 'gift card', 'vouchers', 'rewards'],
+          'amazon gift card': ['amazon gift card', 'amazon', 'amazon voucher'],
+          'visa prepaid card': ['visa prepaid', 'visa card', 'prepaid visa'],
+          'mastercard prepaid card': ['mastercard prepaid', 'mastercard', 'prepaid mastercard'],
+          'cryptocurrency': ['cryptocurrency', 'crypto', 'digital currency'],
+          'bitcoin': ['bitcoin', 'btc'],
+          'ethereum': ['ethereum', 'eth'],
+          'litecoin': ['litecoin', 'ltc']
+        }
+        
+        // Check if the target method has any mappings
+        const mappings = methodMappings[targetMethodLower]
+        if (mappings) {
+          return mappings.some(mapping => websiteMethod.includes(mapping))
+        }
+        
+        // For other methods, check if the website method contains the target method
+        if (targetMethodLower.length > 3) {
+          return websiteMethod.includes(targetMethodLower)
+        }
+        
+        return false
+      })
+    })
+    
+    return filteredWebsites.length
+  } catch (error) {
+    console.error('Error getting website count for payout method:', error)
+    // Return a default count if there's an error
+    return 0
   }
 }
 

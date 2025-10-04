@@ -3,17 +3,21 @@
 import { useState, useEffect } from 'react'
 import { Website } from '@/data/websites'
 import ReviewsGrid from './ReviewsGrid'
-import FilterPopup, { FilterCriteria } from './FilterPopup'
-
-type SortOption = 'default' | 'earning-high-to-low' | 'withdrawal-low-to-high' | 'rating-high-to-low'
+import FilterSidebar, { FilterCriteria, SortOption } from './FilterSidebar'
 
 export default function ReviewsContainer() {
   const [websites, setWebsites] = useState<Website[]>([])
   const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false)
-  const [activeFilters, setActiveFilters] = useState<FilterCriteria | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [filters, setFilters] = useState<FilterCriteria>({
+    expertRating: '',
+    earningPotential: '',
+    waysToEarn: [],
+    payoutMethods: [],
+    investmentRequired: false
+  })
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
@@ -72,19 +76,30 @@ export default function ReviewsContainer() {
     }
   }
 
-  // Update sorting when sortBy changes
-  useEffect(() => {
-    const currentWebsites = activeFilters ? filteredWebsites : websites
-    const sortedWebsites = applySorting(currentWebsites, sortBy)
-    setFilteredWebsites(sortedWebsites)
-  }, [sortBy, activeFilters, websites])
+  // Check if filters are active
+  const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.payoutMethods.length > 0 || filters.investmentRequired)
 
-  const applyFilters = (filters: FilterCriteria) => {
-    let filtered = [...websites]
+  // Update filtering and sorting when filters or sortBy changes
+  useEffect(() => {
+    let result = [...websites]
+    
+    // Apply filters if any are active
+    if (hasActiveFilters) {
+      result = applyFilters(result, filters)
+    }
+    
+    // Apply sorting
+    result = applySorting(result, sortBy)
+    
+    setFilteredWebsites(result)
+  }, [websites, filters, sortBy, hasActiveFilters])
+
+  const applyFilters = (websitesToFilter: Website[], filterCriteria: FilterCriteria) => {
+    let filtered = [...websitesToFilter]
 
     // Apply expert rating filter
-    if (filters.expertRating) {
-      const minRating = parseFloat(filters.expertRating)
+    if (filterCriteria.expertRating) {
+      const minRating = parseFloat(filterCriteria.expertRating)
       filtered = filtered.filter(website => {
         const rating = parseFloat(website.expertRating?.split(' ')[0] || '0')
         return rating >= minRating
@@ -92,37 +107,142 @@ export default function ReviewsContainer() {
     }
 
     // Apply hourly earning potential filter
-    if (filters.earningPotential) {
-      const minEarning = parseFloat(filters.earningPotential)
+    if (filterCriteria.earningPotential) {
+      const minEarning = parseFloat(filterCriteria.earningPotential)
       filtered = filtered.filter(website => {
         const earning = parseFloat(website.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
         return earning >= minEarning
       })
     }
 
-    // Apply sorting to filtered results
-    const sortedFiltered = applySorting(filtered, sortBy)
-    setFilteredWebsites(sortedFiltered)
-    setActiveFilters(filters)
+    // Apply ways to earn filter
+    if (filterCriteria.waysToEarn && filterCriteria.waysToEarn.length > 0) {
+      filtered = filtered.filter(website => {
+        const websiteWaysToEarn = website.waystoEarn || ''
+        // Split the ways to earn string by comma and clean up whitespace
+        const websiteWaysList = websiteWaysToEarn
+          .split(',')
+          .map(way => way.trim().toLowerCase())
+        
+        // Check if ALL selected ways are present (AND logic)
+        return filterCriteria.waysToEarn.every(selectedWay => {
+          const selectedWayLower = selectedWay.toLowerCase()
+          
+          // Check if this selected way exists in the website's ways
+          return websiteWaysList.some(websiteWay => {
+            // Exact match
+            if (websiteWay === selectedWayLower) {
+              return true
+            }
+            
+            // Handle specific mappings for common variations
+            const wayMappings: Record<string, string[]> = {
+              'watching videos': ['watching videos', 'videos', 'video watching'],
+              'playing games': ['playing games', 'games', 'gaming'],
+              'taking surveys': ['taking surveys', 'surveys', 'survey'],
+              'doing data entry': ['doing data entry', 'data entry'],
+              'installing apps': ['installing apps', 'app install', 'app trials'],
+              'doing tasks': ['doing tasks', 'tasks', 'micro-tasks'],
+              'watching ads': ['watching ads', 'ads', 'ad viewing'],
+              'writing reviews': ['writing reviews', 'reviews'],
+              'answering questions': ['answering questions', 'questions'],
+              'listening to music': ['listening to music', 'music'],
+              'shopping online': ['shopping online', 'shopping', 'online shopping']
+            }
+            
+            // Check if the selected way has any mappings
+            const mappings = wayMappings[selectedWayLower]
+            if (mappings) {
+              return mappings.some(mapping => websiteWay.includes(mapping))
+            }
+            
+            // For other ways, check if the website way contains the selected way
+            if (selectedWayLower.length > 3) {
+              return websiteWay.includes(selectedWayLower)
+            }
+            
+            return false
+          })
+        })
+      })
+    }
+
+    // Apply payout methods filter
+    if (filterCriteria.payoutMethods && filterCriteria.payoutMethods.length > 0) {
+      filtered = filtered.filter(website => {
+        const websitePayoutMethods = website.payoutMethods || ''
+        // Split the payout methods string by comma and clean up whitespace
+        const websiteMethodsList = websitePayoutMethods
+          .split(',')
+          .map(method => method.trim().toLowerCase())
+        
+        // Check if ALL selected methods are present (AND logic)
+        return filterCriteria.payoutMethods.every(selectedMethod => {
+          const selectedMethodLower = selectedMethod.toLowerCase()
+          
+          // Check if this selected method exists in the website's methods
+          return websiteMethodsList.some(websiteMethod => {
+            // Exact match
+            if (websiteMethod === selectedMethodLower) {
+              return true
+            }
+            
+            // Handle specific mappings for common variations
+            const methodMappings: Record<string, string[]> = {
+              'paypal': ['paypal cash', 'paypal'],
+              'gift cards': ['gift cards', 'giftcards'],
+              'amazon gift card': ['amazon gift card', 'amazon gift cards'],
+              'visa prepaid card': ['visa prepaid card', 'visa prepaid'],
+              'mastercard prepaid card': ['mastercard prepaid card', 'mastercard prepaid'],
+              'bank transfer': ['bank transfer', 'direct deposit', 'wire transfer'],
+              'check': ['check', 'cheque'],
+              'cryptocurrency': ['crypto', 'cryptocurrency', 'bitcoin', 'ethereum', 'litecoin']
+            }
+            
+            // Check if the selected method has any mappings
+            const mappings = methodMappings[selectedMethodLower]
+            if (mappings) {
+              return mappings.some(mapping => websiteMethod.includes(mapping))
+            }
+            
+            // For other methods, check if the website method contains the selected method
+            // but only if it's a substantial match (avoid partial word matches)
+            if (selectedMethodLower.length > 3) {
+              return websiteMethod.includes(selectedMethodLower)
+            }
+            
+            return false
+          })
+        })
+      })
+    }
+
+    // Apply investment required filter
+    if (filterCriteria.investmentRequired) {
+      filtered = filtered.filter(website => {
+        // Use the 'investment' field from the database which contains 'Yes' or 'No'
+        const websiteInvestmentRequired = website.investment || 'No'
+        return websiteInvestmentRequired === 'Yes'
+      })
+    }
+
+    return filtered
   }
 
   const clearFilters = () => {
-    const sortedWebsites = applySorting(websites, sortBy)
-    setFilteredWebsites(sortedWebsites)
-    setActiveFilters(null)
+    setFilters({
+      expertRating: '',
+      earningPotential: '',
+      waysToEarn: [],
+      payoutMethods: [],
+      investmentRequired: false
+    })
   }
 
-  const openFilterPopup = () => {
-    setIsFilterPopupOpen(true)
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
   }
 
-  const closeFilterPopup = () => {
-    setIsFilterPopupOpen(false)
-  }
-
-  const handleSortChange = (newSortBy: SortOption) => {
-    setSortBy(newSortBy)
-  }
 
   if (isLoading) {
     return (
@@ -154,93 +274,86 @@ export default function ReviewsContainer() {
   }
 
   return (
-    <>
-      {/* Filter Header */}
-      <div className="mb-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                {activeFilters ? 'Filtered Results' : 'All Reviews'}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {activeFilters 
-                  ? `Showing ${filteredWebsites.length} filtered results` 
-                  : `Showing ${websites.length} website reviews`
-                }
-              </p>
-              {activeFilters && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {activeFilters.expertRating && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      Rating: {activeFilters.expertRating}+ out of 5
-                    </span>
-                  )}
-                  {activeFilters.earningPotential && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Earning: ${activeFilters.earningPotential}+ per hour
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              {/* Sort Dropdown */}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => handleSortChange(e.target.value as SortOption)}
-                  className="w-full sm:w-auto appearance-none bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="default">Sort by</option>
-                  <option value="earning-high-to-low">Earning Potential (High to Low)</option>
-                  <option value="withdrawal-low-to-high">Minimum Withdrawal (Low to High)</option>
-                  <option value="rating-high-to-low">Ratings (High to Low)</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+    <div className="flex gap-6">
+      {/* Filter Sidebar */}
+      <FilterSidebar
+        filters={filters}
+        onFiltersChange={setFilters}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        isOpen={isSidebarOpen}
+        onToggle={toggleSidebar}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 min-w-0">
+        {/* Mobile Filter Toggle */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={toggleSidebar}
+            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
+            </svg>
+            Filters
+          </button>
+        </div>
+
+        {/* Results Header */}
+        <div className="mb-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                  {hasActiveFilters ? 'Filtered Reviews' : 'All Reviews'}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {hasActiveFilters 
+                    ? `Showing ${filteredWebsites.length} website reviews` 
+                    : `Showing ${websites.length} website reviews`
+                  }
+                </p>
               </div>
-              
-              {activeFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="w-full sm:w-auto px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Clear Filters
-                </button>
-              )}
-              <button
-                onClick={openFilterPopup}
-                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
-                </svg>
-                <span className="hidden sm:inline">Filter Reviews</span>
-                <span className="sm:hidden">Filter</span>
-              </button>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {/* Sort Dropdown */}
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    className="w-full sm:w-auto appearance-none bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="default">Sort by</option>
+                    <option value="earning-high-to-low">Earning Potential (High to Low)</option>
+                    <option value="withdrawal-low-to-high">Minimum Withdrawal (Low to High)</option>
+                    <option value="rating-high-to-low">Ratings (High to Low)</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="w-full sm:w-auto px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Reviews Grid */}
+        <ReviewsGrid 
+          websites={filteredWebsites} 
+          showAllResults={hasActiveFilters} 
+        />
       </div>
-
-      {/* Reviews Grid */}
-      <ReviewsGrid 
-        websites={filteredWebsites} 
-        showAllResults={!!activeFilters} 
-      />
-
-      {/* Filter Popup */}
-      <FilterPopup
-        isOpen={isFilterPopupOpen}
-        onClose={closeFilterPopup}
-        onApplyFilters={applyFilters}
-        onClearFilters={clearFilters}
-        hasActiveFilters={!!activeFilters}
-      />
-    </>
+    </div>
   )
 }

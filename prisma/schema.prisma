@@ -30,6 +30,7 @@ model Websites {
   isitLegit                 String?
   waystoEarn                String?
   about                     String?
+  investment                String?
   authorName                String?
   authorImageUrl            String?
   authorLinkedIn            String?
