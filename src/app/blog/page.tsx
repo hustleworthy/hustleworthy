@@ -35,8 +35,8 @@ type Blog = {
 };
 
 export const metadata: Metadata = {
-  title: 'Blog - Hustle Worthy',
-  description: 'Blog - Hustle Worthy',
+  title: 'Blog | Hustle Worthy',
+  description: 'Blog | Hustle Worthy',
 }
 
 export default async function BlogPage() {

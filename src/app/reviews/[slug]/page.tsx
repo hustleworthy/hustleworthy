@@ -244,7 +244,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   <a 
                     href={website.url || '#'} 
                     target="_blank" 
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 w-full transition-colors rounded-full text-center block"
                   >
                     Visit {website.websiteName || 'Website'}
@@ -524,7 +524,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const expertRating = (website?.expertRating || '').split(' ')[0] || 'Our'
   const earningMonthly = website?.earningPotentialinaMonth || 'an extra $0'
 
-  const title = `Is ${websiteName} worth it? Read Expert & User Reviews`
+  const title = `Is ${websiteName} worth it? Read Expert & User Reviews | Hustle Worthy`
   const description = `Our review answers if ${websiteName} is legit. Read User reviews, cashout threshold, proof of payment, and how to earn up to ${earningMonthly} a month.`
 
   return {

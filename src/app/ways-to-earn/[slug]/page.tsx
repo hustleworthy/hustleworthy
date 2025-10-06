@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const categoryName = CATEGORY_DISPLAY_NAMES[slug]
   const websiteCount = await getWebsiteCountForCategory(categoryName)
-  const title = `${websiteCount} Best Sites to Earn Money for ${categoryName.toLowerCase()}`
+  const title = `${websiteCount} Best Sites to Earn Money for ${categoryName.toLowerCase()} | Hustle Worthy`
   const description = `Find the best websites that pay you for ${categoryName.toLowerCase()}. Expert reviews, earning potential, payout methods, and user feedback.`
 
   return {

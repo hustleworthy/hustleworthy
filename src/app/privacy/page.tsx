@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy - Hustleworthy',
-  description: 'Learn how Hustleworthy protects your privacy and handles your personal information.',
+  title: 'Privacy Policy | Hustle Worthy',
+  description: 'Learn how Hustle Worthy protects your privacy and handles your personal information.',
 }
 
 export default function PrivacyPolicy() {

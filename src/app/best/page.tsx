@@ -29,7 +29,7 @@ function parseRating(rating: string): number {
 }
 
 export const metadata: Metadata = {
-  title: 'Best Money Making Websites ( 100+ Sites Tested )',
+  title: 'Best Money Making Websites ( 100+ Sites Tested ) | Hustle Worthy',
   description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that are actually legit. See our top-rated GPT sites, reviews & payment proofs.',
 }
 
@@ -142,7 +142,7 @@ export default async function BestPage() {
                         <a 
                           href={website.url || '#'} 
                           target="_blank" 
-                          rel="noopener noreferrer"
+                          rel="nofollow noopener noreferrer"
                           className="inline-block text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 text-center"
                         >
                           <WebsiteImage 

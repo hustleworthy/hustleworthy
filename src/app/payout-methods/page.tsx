@@ -3,10 +3,10 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Payout Methods - Find Sites by Payment Options | GPTCritic',
+  title: 'Payout Methods - Find Sites by Payment Options | Hustle Worthy',
   description: 'Browse money-making websites by payout methods. Find sites that pay through PayPal, bank transfer, gift cards, cryptocurrency, and more payment options.',
   openGraph: {
-    title: 'Payout Methods - Find Sites by Payment Options',
+    title: 'Payout Methods - Find Sites by Payment Options | Hustle Worthy',
     description: 'Browse money-making websites by payout methods. Find sites that pay through PayPal, bank transfer, gift cards, cryptocurrency, and more.',
     type: 'website'
   }

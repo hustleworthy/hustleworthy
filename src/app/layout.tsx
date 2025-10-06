@@ -9,7 +9,7 @@ import Google from 'next-auth/providers/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Hustle Worthy - Find Legit Money Making Websites',
+  title: 'Find Legit Money Making Websites | Hustle Worthy',
   description: 'Discover and review money-making websites with detailed ratings, payment methods, and user experiences.',
   icons: {
     icon: [

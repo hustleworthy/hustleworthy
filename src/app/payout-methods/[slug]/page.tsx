@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const methodName = PAYOUT_METHOD_DISPLAY_NAMES[slug]
   const websiteCount = await getWebsiteCountForPayoutMethod(methodName)
-  const title = `${websiteCount} Best Sites to Earn Money with ${methodName}`
+  const title = `${websiteCount} Best Sites to Earn Money with ${methodName} | Hustle Worthy`
   const description = `Find the best websites that pay through ${methodName}. Expert reviews, earning potential, payout speeds, and user feedback on legitimate money-making platforms.`
 
   return {

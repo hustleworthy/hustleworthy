@@ -3,7 +3,7 @@ import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
 
 export const metadata: Metadata = {
-  title: 'List Of Money Making Sites - Hustle Worthy',
+  title: 'List Of Money Making Sites | Hustle Worthy',
   description: 'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.',
 }
 
