@@ -5,6 +5,17 @@ import { client } from "@/lib/microcms"
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.com'
   
+  // Helper function to create safe URL slugs
+  const createSafeSlug = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[&<>"']/g, '') // Remove XML problematic characters
+      .replace(/[^\w\-]/g, '') // Keep only alphanumeric, underscore, and dash
+      .replace(/--+/g, '-') // Replace multiple dashes with single dash
+      .replace(/^-|-$/g, '') // Remove leading/trailing dashes
+  }
+  
   try {
     // Fetch all websites
     const websites = await getAllWebsites()
@@ -21,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       
       blogEntries = blogData.contents.map((post) => ({
-        url: `${baseUrl}/blog/${post.id}`,
+        url: `${baseUrl}/blog/${createSafeSlug(post.id || 'post')}`,
         lastModified: new Date(post.publishedAt || post.updatedAt || new Date()),
         changeFrequency: 'weekly' as const,
         priority: 0.6,
@@ -142,7 +153,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Generate sitemap entries for each website review
     const reviewEntries = websites.map((website) => ({
-      url: `${baseUrl}/reviews/${website.websiteName?.toLowerCase().replace(/\s+/g, '-')}`,
+      url: `${baseUrl}/reviews/${createSafeSlug(website.websiteName || 'website')}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
