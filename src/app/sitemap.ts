@@ -30,6 +30,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       console.error('Error fetching blog posts for sitemap:', blogError)
     }
 
+    // Ways to earn categories
+    const WAYS_TO_EARN_CATEGORIES = [
+      'watching-videos',
+      'taking-surveys', 
+      'typing',
+      'testing',
+      'reading',
+      'doing-data-entry',
+      'installing-apps',
+      'referrals',
+      'sharing-internet',
+      'doing-tasks',
+      'writing',
+      'watching-ads',
+      'writing-reviews',
+      'answering-questions',
+      'listening-to-music',
+      'chatting',
+      'shopping-online',
+      'playing-games'
+    ]
+
+    // Payout methods categories
+    const PAYOUT_METHODS_CATEGORIES = [
+      'paypal',
+      'bank-transfer',
+      'check',
+      'payoneer',
+      'skrill',
+      'wise',
+      'revolut',
+      'venmo',
+      'zelle',
+      'papara',
+      'qiwi',
+      'yoomoney',
+      'gift-cards',
+      'amazon-gift-card',
+      'visa-prepaid-card',
+      'mastercard-prepaid-card',
+      'cryptocurrency',
+      'bitcoin',
+      'ethereum',
+      'litecoin'
+    ]
+
     // Static pages
     const staticPages = [
       {
@@ -55,6 +101,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: 'daily' as const,
         priority: 0.7,
+      },
+      {
+        url: `${baseUrl}/ways-to-earn`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/payout-methods`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
       },
       {
         url: `${baseUrl}/privacy`,
@@ -90,8 +148,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
-    // Combine all entries: static pages, review entries, and blog entries
-    return [...staticPages, ...reviewEntries, ...blogEntries]
+    // Generate sitemap entries for ways-to-earn category pages
+    const waysToEarnEntries = WAYS_TO_EARN_CATEGORIES.map((category) => ({
+      url: `${baseUrl}/ways-to-earn/${category}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
+
+    // Generate sitemap entries for payout-methods category pages
+    const payoutMethodsEntries = PAYOUT_METHODS_CATEGORIES.map((method) => ({
+      url: `${baseUrl}/payout-methods/${method}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
+
+    // Combine all entries: static pages, review entries, ways-to-earn entries, payout-methods entries, and blog entries
+    return [...staticPages, ...reviewEntries, ...waysToEarnEntries, ...payoutMethodsEntries, ...blogEntries]
   } catch (error) {
     console.error('Error generating sitemap:', error)
     // Return only static pages if there's an error
@@ -119,6 +193,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: 'daily' as const,
         priority: 0.7,
+      },
+      {
+        url: `${baseUrl}/ways-to-earn`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/payout-methods`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
       },
       {
         url: `${baseUrl}/privacy`,

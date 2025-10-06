@@ -136,7 +136,7 @@ export default function FilterSidebar({
             <select
               value={filters.expertRating}
               onChange={(e) => updateFilters({ expertRating: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Any Rating</option>
               <option value="5.0">5.0 out of 5</option>
