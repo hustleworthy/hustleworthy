@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
 
 export interface Website {
-  id: string
   sNo: number
   websiteName?: string | null
   url?: string | null
@@ -22,6 +21,8 @@ export interface Website {
   waystoEarn?: string | null
   about?: string | null
   investment?: string | null
+  isVerified?: boolean
+  verifiedOwner?: string | null
   reviews: Review[]
 }
 
@@ -53,7 +54,6 @@ export interface Reply {
 
 export const websites: Website[] = [
   {
-    id: '0',
     sNo: 0,
     websiteName: 'Swagbucks',
     url: 'https://www.swagbucks.com',
@@ -73,10 +73,10 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, Shopping Rewards, Videos, Games, Search',
     about: 'Swagbucks is one of the most trusted and established online rewards platforms, offering multiple ways to earn points that can be redeemed for cash or gift cards.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   },
   {
-    id: '1',
     sNo: 1,
     websiteName: 'PollPay',
     url: 'https://pollpay.com',
@@ -96,10 +96,10 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, App Trials, Games, Micro-tasks',
     about: 'PollPay offers multiple ways to earn money online through surveys, app testing, and various micro-tasks. The platform is owned by Prodege and provides reliable payouts.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   },
   {
-    id: '2',
     sNo: 2,
     websiteName: 'CashApp Surveys',
     url: 'https://cashappsurveys.com',
@@ -119,10 +119,10 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, Market Research, Product Testing',
     about: 'CashApp Surveys connects users with market research opportunities and provides quick payouts through popular payment apps.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   },
   {
-    id: '3',
     sNo: 3,
     websiteName: 'InboxDollars',
     url: 'https://www.inboxdollars.com',
@@ -142,10 +142,10 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys, Videos, Emails, Shopping',
     about: 'InboxDollars is a long-standing rewards platform that pays users for various online activities.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   },
   {
-    id: '4',
     sNo: 4,
     websiteName: 'MyPoints',
     url: 'https://www.mypoints.com',
@@ -164,10 +164,10 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Shopping, Surveys, Videos, Games',
     about: 'MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   },
   {
-    id: '5',
     sNo: 5,
     websiteName: 'Survey Junkie',
     url: 'https://www.surveyjunkie.com',
@@ -187,7 +187,8 @@ export const websites: Website[] = [
     isitLegit: 'true',
     waystoEarn: 'Surveys Only',
     about: 'Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.',
-    reviews: []
+    reviews: [],
+    verifiedOwner: null
   }
 ]
 
@@ -219,7 +220,6 @@ function parseRating(rating: string): number {
 // Database utility functions
 function transformWebsiteData(data: any): Website {
   return {
-    id: data.sNo?.toString() || data.id?.toString() || '', // Use sNo as id since that's what we're referencing
     sNo: data.sNo,
     websiteName: data.websiteName,
     url: data.url,
@@ -240,7 +240,9 @@ function transformWebsiteData(data: any): Website {
     waystoEarn: data.waystoEarn,
     about: data.about,
     investment: data.investment,
-    reviews: data.reviews || []
+    isVerified: data.isVerified || false,
+    reviews: data.reviews || [],
+    verifiedOwner: data.verifiedOwner || null
   }
 }
 

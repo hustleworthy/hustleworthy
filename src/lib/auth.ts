@@ -12,7 +12,7 @@ export const authOptions: AuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials) {
+      async authorize(credentials: Record<"email" | "password", string> | undefined) {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
@@ -38,6 +38,7 @@ export const authOptions: AuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          role: user.role as number,
         }
       }
     })
@@ -56,6 +57,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id
         token.email = user.email
         token.name = user.name
+        token.role = user.role
       }
       return token
     },
@@ -66,6 +68,7 @@ export const authOptions: AuthOptions = {
           id: token.id as string,
           email: token.email as string,
           name: token.name as string,
+          role: token.role as number,
         }
       }
       return session

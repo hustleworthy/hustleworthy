@@ -8,6 +8,8 @@ import ReplyForm from '@/components/review/ReplyForm'
 import Footer from '@/components/Footer'
 import WebsiteImage from '@/components/WebsiteImage'
 import { getDisplayName } from '@/lib/displayUtils'
+import ClaimProfileButton from '@/components/ClaimProfileButton'
+import EditWebsiteButton from '@/components/EditWebsiteButton'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
@@ -126,7 +128,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 {/* Logo Section */}
                 <div className="flex-shrink-0">
                   <div className="w-40 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
-                                          <div className="text-center">
+                      <div className="text-center">
                         <div className="text-gray-400 text-xs">
                           <WebsiteImage 
                             websiteName={website.websiteName || ''}
@@ -142,14 +144,28 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 
                 {/* Content Section */}
                 <div className="flex-1">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">{website.websiteName || 'Unknown Website'}</h1>
+                  <div className="flex justify-between items-start mb-2">
+                    <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
+                      {website.websiteName || 'Unknown Website'}
+                      {website.isVerified && (
+                        <span className="inline-flex items-center w-[24px] h-[24px] align-center justify-center text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                          <CheckCircle className="h-4 w-4" />
+                        </span>
+                      )}
+                    </h1>
+                    {!website.isVerified && (
+                    <ClaimProfileButton websiteName={website.websiteName || ''} domain={website.url || ''}/>
+                    )}
+                    
+                    <EditWebsiteButton website={website}/>
+                  </div>
                   <h2 className="text-xl text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h2>
                   
                   <div className="flex flex-wrap items-center gap-4 mb-4">
                    <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
                      Rating Methodology
                      {/* Tooltip - Hidden on mobile devices */}
-                                           <span
+                    <span
                         className="hidden md:block absolute bottom-full left-0 mb-2 
                                    px-4 py-3 text-xs text-gray-700 bg-gray-100 rounded 
                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
@@ -159,8 +175,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                      <span className="absolute top-full left-6 w-2 h-2 bg-gray-100 rotate-45 -mt-1"></span>
                     </span>
                   </a>
-
-                                         <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
+                  <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
                        Advertising disclosure
                        {/* Tooltip - Hidden on mobile devices */}
                        <span
@@ -487,7 +502,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               {/* Logo Section */}
               <div className="flex-shrink-0">
                 <div className="w-40 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
-                                        <div className="text-center">
+                    <div className="text-center">
                       <div className="text-gray-400 text-xs">
                         <WebsiteImage 
                           websiteName={website.websiteName || ''}
@@ -503,8 +518,20 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               
               {/* Content Section */}
               <div className="flex-1">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">{website.websiteName || 'Unknown Website'}</h1>
-                <h2 className="text-xl text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h2>
+                <div className="flex justify-between items-center mb-2">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  {website.websiteName || 'Unknown Website'}
+                  {website.isVerified && (
+                    <span className="inline-flex items-center w-[24px] h-[24px] align-center justify-center text-xs font-medium text-green-700 bg-green-100 rounded-full ml-2">
+                      <CheckCircle className="h-4 w-4" />
+                    </span>
+                  )}
+                </h1>
+                  {!website.isVerified && (
+                    <ClaimProfileButton websiteName={website.websiteName || ''} domain={website.url || ''}/>
+                  )}
+                </div>
+                <h3 className="text-xl text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h3>
                 
                 <div className="flex flex-wrap items-center gap-4 mb-4">
                  <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">

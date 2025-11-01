@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Websites {
-  sNo                       Int       @id
+  sNo                       Int                   @id
   websiteName               String?
   url                       String?
   signUpBonus               String?
@@ -35,17 +35,24 @@ model Websites {
   authorImageUrl            String?
   authorLinkedIn            String?
   authorProfile             String?
+  isVerified                Boolean               @default(false)
+  user                      User?                 @relation(fields: [verifiedOwner], references: [id])
+  verifiedOwner             String?
   reviews                   Review[]
+  verificationRequests      VerificationRequest[]
   @@map("websites")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String?
-  reviews   Review[]
-  replies   Reply[]
+  id                   String                @id @default(cuid())
+  name                 String
+  email                String                @unique
+  password             String?
+  role                 Int                   @default(0)
+  reviews              Review[]
+  replies              Reply[]
+  verifiedWebsites     Websites[]
+  verificationRequests VerificationRequest[]
 }
 
 model Review {
@@ -75,4 +82,13 @@ model NewsletterSubscription {
   email     String   @unique
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
+}
+
+model VerificationRequest {
+  id         String     @id @default(cuid())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  website    Websites   @relation(fields: [websiteId], references: [sNo])
+  websiteId  Int   
+  createdAt  DateTime   @default(now())
 }
