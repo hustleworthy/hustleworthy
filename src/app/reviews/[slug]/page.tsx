@@ -381,6 +381,27 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               </div>
             </div>
 
+            
+            {/* user submitted video review section */}
+            { website.websiteName === 'PrizeRebel' && (
+            <div className="bg-white rounded-lg shadow-sm p-6">
+             <h2 className="text-2xl font-bold text-gray-900 mb-6">User Submitted Videos</h2>
+             <div className="relative overflow-hidden align-middle">
+              <video 
+               controls
+               preload="metadata"
+               className="w-1/3"
+              >
+               <source 
+                src="https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Fuser-submitted-videos%2FKashkick%20Original%20-%202.mp4?alt=media"
+                type="video/mp4" 
+               />
+               Your browser does not support the video tag.
+               </video>
+              </div>
+             </div>
+            )}
+
             {/* User Reviews */}
             <div id="user-reviews" className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
