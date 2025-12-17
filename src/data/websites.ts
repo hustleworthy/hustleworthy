@@ -84,7 +84,7 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate rewards platform',
     realisticEarnings: 'Realistic Earnings: $500 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: Swagbucks is a legitimate rewards platform that pays users for various online activities.'
+    howItWorks: 'How It Works: Swagbucks is a very legitimate rewards platform that pays users for various online activities.'
   },
   {
     sNo: 1,
