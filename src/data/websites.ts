@@ -24,6 +24,11 @@ export interface Website {
   isVerified?: boolean
   verifiedOwner?: string | null
   reviews: Review[]
+  overallVerdict?: string | null
+  bestFor?: string | null
+  realisticEarnings?: string | null
+  mainDrawbacks?: string | null
+  howItWorks?: string | null
 }
 
 export interface Review {
@@ -74,7 +79,12 @@ export const websites: Website[] = [
     waystoEarn: 'Surveys, Shopping Rewards, Videos, Games, Search',
     about: 'Swagbucks is one of the most trusted and established online rewards platforms, offering multiple ways to earn points that can be redeemed for cash or gift cards.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable rewards platform with a wide range of earning opportunities',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate rewards platform',
+    realisticEarnings: 'Realistic Earnings: $500 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: Swagbucks is a legitimate rewards platform that pays users for various online activities.'
   },
   {
     sNo: 1,
@@ -97,7 +107,12 @@ export const websites: Website[] = [
     waystoEarn: 'Surveys, App Trials, Games, Micro-tasks',
     about: 'PollPay offers multiple ways to earn money online through surveys, app testing, and various micro-tasks. The platform is owned by Prodege and provides reliable payouts.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable platform for surveys, app trials, and micro-tasks',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, app trials, and micro-tasks',
+    realisticEarnings: 'Realistic Earnings: $300 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: PollPay is a legitimate platform that pays users for surveys, app trials, games and other "micro-tasks." Its major pros are wide availability and multiple payout options (PayPal, gift cards). Major cons include a relatively high $25 USD payout threshold, occasional low-paying "game" tasks (often $0.01/minute at higher levels), and support issues prior to the Prodege acquisition. Earnings are modest; better as a supplemental side income than a primary source.'
   },
   {
     sNo: 2,
@@ -120,7 +135,12 @@ export const websites: Website[] = [
     waystoEarn: 'Surveys, Market Research, Product Testing',
     about: 'CashApp Surveys connects users with market research opportunities and provides quick payouts through popular payment apps.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable platform for surveys, market research, and product testing',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, market research, and product testing',
+    realisticEarnings: 'Realistic Earnings: $240 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: CashApp Surveys offers a streamlined experience for users looking to earn through market research participation. The platform\'s lower payout threshold and faster processing times make it attractive for beginners.'
   },
   {
     sNo: 3,
@@ -143,7 +163,12 @@ export const websites: Website[] = [
     waystoEarn: 'Surveys, Videos, Emails, Shopping',
     about: 'InboxDollars is a long-standing rewards platform that pays users for various online activities.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable platform for surveys, videos, emails, and shopping',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, videos, emails, and shopping',
+    realisticEarnings: 'Realistic Earnings: $400 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: InboxDollars is a well-established platform that has been paying users for over 20 years. It offers a good variety of earning opportunities including surveys, watching videos, and reading emails. The platform is reliable but limited to US users.'
   },
   {
     sNo: 4,
@@ -165,7 +190,12 @@ export const websites: Website[] = [
     waystoEarn: 'Shopping, Surveys, Videos, Games',
     about: 'MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable platform for shopping, surveys, videos, and games',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for shopping, surveys, videos, and games',
+    realisticEarnings: 'Realistic Earnings: $300 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.'
   },
   {
     sNo: 5,
@@ -188,7 +218,12 @@ export const websites: Website[] = [
     waystoEarn: 'Surveys Only',
     about: 'Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.',
     reviews: [],
-    verifiedOwner: null
+    verifiedOwner: null,
+    overallVerdict: 'Overall Verdict: Legitimate and reliable platform for surveys',
+    bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys',
+    realisticEarnings: 'Realistic Earnings: $350 per month',
+    mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
+    howItWorks: 'How It Works: Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.'
   }
 ]
 
@@ -242,7 +277,12 @@ function transformWebsiteData(data: any): Website {
     investment: data.investment,
     isVerified: data.isVerified || false,
     reviews: data.reviews || [],
-    verifiedOwner: data.verifiedOwner || null
+    verifiedOwner: data.verifiedOwner || null,
+    overallVerdict: data.overallVerdict || null,
+    bestFor: data.bestFor || null,
+    realisticEarnings: data.realisticEarnings || null,
+    mainDrawbacks: data.mainDrawbacks || null,
+    howItWorks: data.howItWorks || null
   }
 }
 

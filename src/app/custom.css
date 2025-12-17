@@ -24,3 +24,10 @@
   border: 1px solid #999;
   padding: 10px;
 }
+div#how-it-works ol {
+  list-style: decimal;
+  margin-left: 30px;
+}
+div#how-it-works ol li {
+  margin-top: 10px;
+}

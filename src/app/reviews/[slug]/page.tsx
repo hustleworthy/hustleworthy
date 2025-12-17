@@ -292,6 +292,35 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
              </div>
             )}
 
+            {/* Key Findings */}
+          
+            {/* Key Findings */}
+            <div id="key-findings" className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Key Findings</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full border border-gray-200">
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Overall Verdict</td>
+                      <td className="px-4 py-3 text-gray-700">{website.overallVerdict || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Best For</td>
+                      <td className="px-4 py-3 text-gray-700">{website.bestFor || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Realistic Earnings</td>
+                      <td className="px-4 py-3 text-gray-700">{website.realisticEarnings || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Main Drawbacks</td>
+                      <td className="px-4 py-3 text-gray-700">{website.mainDrawbacks || 'N/A'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {/* Expert Review */}
            <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
@@ -353,6 +382,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* how it works */}
+            <div id="how-it-works" className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">How It Works</h2>
+              <p className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: website.howItWorks || 'How it works information not available.' }}></p>
             </div>
 
             {/* Tips to Earn More */}
@@ -679,6 +714,33 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
            </div>
           )}
 
+          {/* Key Findings */}
+          <div id="key-findings" className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Key Findings</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full border border-gray-200">
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Overall Verdict</td>
+                      <td className="px-4 py-3 text-gray-700">{website.overallVerdict || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Best For</td>
+                      <td className="px-4 py-3 text-gray-700">{website.bestFor || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Realistic Earnings</td>
+                      <td className="px-4 py-3 text-gray-700">{website.realisticEarnings || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 bg-gray-50 font-medium text-gray-700">Main Drawbacks</td>
+                      <td className="px-4 py-3 text-gray-700">{website.mainDrawbacks || 'N/A'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           {/* Expert Review */}
          <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
@@ -760,7 +822,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   <a href="#tips-to-earn" className="text-gray-600">Tips to Earn</a>
                 </li>
                 <li className="flex justify-between">
-                  <a href="#payout-details" className="text-gray-600">Payout Details</a>
+                  <a href="#key-findings" className="text-gray-600">Key Findings</a>
                 </li>
                 <li className="flex justify-between">
                   <a href="#user-reviews" className="text-gray-600">User Reviews</a>
