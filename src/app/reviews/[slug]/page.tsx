@@ -515,7 +515,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 </span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">BigCashWeb</h3>
-              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/Bigcashweb">Check Detailed Review</a></p>
+              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/bigcashweb">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 
@@ -805,7 +805,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 </span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">BigCashWeb</h3>
-              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/Bigcashweb">Check Detailed Review</a></p>
+              <p className="text-sm text-gray-600 mb-4"><a href="/reviews/bigcashweb">Check Detailed Review</a></p>
               <div className="text-right text-xs text-gray-500">📊</div>
             </div>
 
@@ -970,7 +970,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const expertRating = (website?.expertRating || '').split(' ')[0] || 'Our'
   const earningMonthly = website?.earningPotentialinaMonth || 'an extra $0'
 
-  const title = `Is ${websiteName} worth it? Read Expert & User Reviews | Hustle Worthy`
+  const title = `${websiteName} Review - Legit or Scam? Earnings Explained`
   const description = `Our review answers if ${websiteName} is legit. Read User reviews, cashout threshold, proof of payment, and how to earn up to ${earningMonthly} a month.`
 
   return {
