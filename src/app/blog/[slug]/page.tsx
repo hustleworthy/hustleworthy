@@ -4,6 +4,10 @@ import Image from 'next/image';
 import { slugify, findPostBySlug } from '@/lib/slugify';
 import Footer from '@/components/Footer';
 
+// Force dynamic rendering to ensure we always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface BlogPageProps {
   params: Promise<{ slug: string }>
 }
@@ -45,12 +49,43 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
   
   try {
     // Fetch all blog posts to find the one matching the slug
-    const data = await client.get<{ contents: Blog[] }>({ endpoint: "blog" });
+    // microCMS has a default limit of 10 and max limit of 100
+    // We need to fetch all posts, so we'll use a limit that covers all posts
+    const data = await client.get<{ contents: Blog[]; totalCount: number }>({ 
+      endpoint: "blog",
+      queries: {
+        limit: 100, // microCMS max limit is typically 100
+        orders: '-publishedAt',
+      }
+    });
+    
+    // Debug: Log slug and available post slugs (remove in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Looking for slug:', slug);
+      console.log('Total posts available:', data.totalCount);
+      console.log('Posts fetched:', data.contents.length);
+      const postSlugs = data.contents.map(p => ({
+        title: p.title,
+        slug: slugify(p.title),
+        match: slugify(p.title) === slug
+      }));
+      console.log('Available posts:', JSON.stringify(postSlugs, null, 2));
+      const matches = postSlugs.filter(p => p.match);
+      console.log('Exact matches:', matches);
+      if (matches.length === 0) {
+        console.log('No match found. Checking if slug exists in titles...');
+        const similar = postSlugs.filter(p => p.slug.includes(slug) || slug.includes(p.slug));
+        console.log('Similar slugs:', similar);
+      }
+    }
     
     // Find the post that matches the slug (converted from title)
     const post = findPostBySlug(data.contents, slug);
 
     if (!post) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Post not found for slug:', slug);
+      }
       notFound();
     }
 
@@ -263,7 +298,14 @@ export async function generateMetadata({ params }: BlogPageProps) {
   
   try {
     // Fetch all blog posts to find the one matching the slug
-    const data = await client.get<{ contents: Blog[] }>({ endpoint: "blog" });
+    // microCMS has a default limit of 10 and max limit of 100
+    const data = await client.get<{ contents: Blog[]; totalCount: number }>({ 
+      endpoint: "blog",
+      queries: {
+        limit: 100, // microCMS max limit is typically 100
+        orders: '-publishedAt',
+      }
+    });
     const post = findPostBySlug(data.contents, slug);
 
     if (!post) {
