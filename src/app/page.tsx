@@ -36,6 +36,9 @@ type Blog = {
   publishedAt?: string;
 };
 
+// Revalidate every 60 seconds to ensure new blog posts appear on homepage
+export const revalidate = 60;
+
 export default async function Home() {
   const featuredWebsites = await getFeaturedWebsites(3)
   

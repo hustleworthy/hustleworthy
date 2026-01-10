@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   description: 'Blog | Hustle Worthy',
 }
 
+// Revalidate every 60 seconds to ensure new posts appear quickly
+export const revalidate = 60;
+
 export default async function BlogPage() {
   const INITIAL_LIMIT = 6;
   
