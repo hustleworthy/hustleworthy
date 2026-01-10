@@ -5,6 +5,23 @@
 }
 .blog-post h2 {
   margin: 25px 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.blog-post h3 {
+  margin: 25px 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.blog-post h4 {
+  margin: 25px 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.blog-post h5 {
+  margin: 16px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
 }
 .blog-post ul {
   list-style: disc;
