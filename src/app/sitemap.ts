@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllWebsites } from '@/data/websites'
 import { client } from "@/lib/microcms"
+import { slugify } from '@/lib/slugify'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.com'
@@ -23,20 +24,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch all blog posts
     let blogEntries: any[] = []
     try {
+      // microCMS max limit per request is typically 100
       const blogData = await client.get<{ contents: any[] }>({
         endpoint: "blog",
         queries: {
-          limit: 1000, // Fetch all blog posts
+          limit: 100,
           orders: '-publishedAt',
         },
       })
-      
-      blogEntries = blogData.contents.map((post) => ({
-        url: `${baseUrl}/blog/${createSafeSlug(post.id || 'post')}`,
-        lastModified: new Date(post.publishedAt || post.updatedAt || new Date()),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      }))
+
+      // Use slugify(title) to match blog [slug] routes (same as blog page)
+      blogEntries = (blogData.contents ?? []).map((post) => {
+        const slug = post.title ? slugify(post.title) : createSafeSlug(post.id || 'post')
+        return {
+          url: `${baseUrl}/blog/${slug}`,
+          lastModified: new Date(post.publishedAt || post.updatedAt || new Date()),
+          changeFrequency: 'weekly' as const,
+          priority: 0.6,
+        }
+      })
     } catch (blogError) {
       console.error('Error fetching blog posts for sitemap:', blogError)
     }
