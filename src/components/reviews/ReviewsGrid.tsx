@@ -10,7 +10,7 @@ interface ReviewsGridProps {
 }
 
 export default function ReviewsGrid({ websites, showAllResults = false }: ReviewsGridProps) {
-  const [displayCount, setDisplayCount] = useState(10)
+  const [displayCount, setDisplayCount] = useState(15)
   
   // If filters are active, show all results. Otherwise, use pagination
   const displayedWebsites = showAllResults ? websites : websites.slice(0, displayCount)
