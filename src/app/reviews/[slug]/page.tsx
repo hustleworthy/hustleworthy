@@ -45,7 +45,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     },
     name: `${website.websiteName} User Review`,
     reviewBody: r.content || '',
-    datePublished: r.createdAt instanceof Date ? r.createdAt.toISOString().split('T')[0] : ''
+    datePublished: r.createdAt instanceof Date ? r.createdAt.toISOString() : ''
   }))
 
   const productSchema = {
@@ -77,8 +77,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         },
         name: `Expert Review of ${website.websiteName}`,
         reviewBody: website.about || 'Expert review',
-        datePublished: new Date().toISOString().split('T')[0],
-        dateModified: new Date().toISOString().split('T')[0],
+        datePublished: new Date().toISOString(),
+        dateModified: new Date().toISOString(),
         publisher: {
           '@type': 'Organization',
           name: 'Hustleworthy'

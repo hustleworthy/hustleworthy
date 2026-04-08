@@ -4,9 +4,29 @@ import './globals.css'
 import './custom.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
-import Google from 'next-auth/providers/google'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://www.hustleworthy.com/#organization',
+  name: 'Hustleworthy',
+  url: 'https://www.hustleworthy.com/',
+  email: 'info@hustleworthy.com',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://www.hustleworthy.com/images/logo.png',
+  },
+  description:
+    'Hustleworthy is a directory and review website that helps users discover make-money platforms, side hustle websites, reward apps, GPT sites, and online earning opportunities.',
+  sameAs: [
+    'https://www.facebook.com/official.hustleworthy/',
+    'https://x.com/hustleworthy',
+    'https://www.youtube.com/@HustleWorthy',
+    'https://www.linkedin.com/company/hustle-worthy/',
+  ],
+} as const
 
 export const metadata: Metadata = {
   title: 'Find Legit Money Making Websites | Hustle Worthy',
@@ -43,15 +63,24 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#03a9f4" />
         <meta name="msapplication-TileImage" content="/android-chrome-192x192.png" />
         {/* Google tag (gtag.js) */}
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2JRGYFELTP"></script>
-<script dangerouslySetInnerHTML={{
-  __html: `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-2JRGYFELTP');
-  `
-}} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-2JRGYFELTP"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-2JRGYFELTP');
+            `,
+          }}
+        />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
       </head>
       <body className={inter.className}>
         <Providers>

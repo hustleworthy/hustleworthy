@@ -140,9 +140,9 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               <div className="text-center items-center justify-center flex flex-col border-r border-gray-200 pr-10">
-                <div className="text-5xl font-bold text-gray-900 mb-2">{website.expertRating?.split(" ")[0] || 'N/A'}</div>
-                <StarRating rating={parseFloat(website.expertRating || '0')} className="justify-center mb-3" />
-                <p className="text-sm text-blue-500">Based on expert ratings</p>
+                <div className="text-5xl font-bold text-gray-900 mb-2">{ averageUserRating.toFixed(1) || 'N/A'}</div>
+                <StarRating rating={averageUserRating} className="justify-center mb-3" />
+                <p className="text-sm text-blue-500">Based on user ratings</p>
               </div>
 
               <div className="space-y-2 border-r border-gray-200 pr-10">
@@ -227,7 +227,13 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </div>
 
           <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
+            <div className='flex items-center justify-between'>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
+              <div className='flex items-center gap-2'>
+                <StarRating rating={parseFloat(website.expertRating || '0')} className="justify-center" />
+                <span className='text-gray-700'>{parseFloat(website.expertRating || '0')}/5</span>
+              </div>
+            </div>
             
             <div className="flex items-center mb-2 p-4">
               <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
@@ -425,7 +431,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
               </li>
               <li className="flex justify-between">
                 <a href="#user-reviews" className="text-gray-600">User Reviews</a>
-                <span>{averageUserRating.toFixed(1)}</span>
+                <span className='text-gray-700'>{averageUserRating.toFixed(1)}</span>
               </li>
             </ul>
             <a href="#review-form" className="btn-primary block w-full mt-8 py-2.5 text-center text-sm cursor-pointer hover:bg-blue-700">Write a review</a>
@@ -533,9 +539,9 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div className="text-center items-center justify-center flex flex-col border-r border-gray-200 pr-10">
-            <div className="text-5xl font-bold text-gray-900 mb-2">{website.expertRating?.split(" ")[0] || 'N/A'}</div>
-            <StarRating rating={parseFloat(website.expertRating || '0')} className="justify-center mb-3" />
-            <p className="text-sm text-blue-500">Based on expert ratings</p>
+            <div className="text-5xl font-bold text-gray-900 mb-2">{averageUserRating.toFixed(1) || 'N/A'}</div>
+            <StarRating rating={averageUserRating} className="justify-center mb-3" />
+            <p className="text-sm text-blue-500">Based on user ratings</p>
           </div>
 
           <div className="space-y-2 border-r border-gray-200 pr-10">
@@ -620,7 +626,13 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
         </div>
 
       <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Expert Review</h2>
+        <div className='flex items-center justify-between'>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Expert Review</h2>
+          <div className='flex items-center gap-2'>
+            <StarRating rating={parseFloat(website.expertRating || '0')} className="justify-center" />
+            <span className='text-gray-700'>{parseFloat(website.expertRating || '0')}/5</span>
+          </div>
+        </div>
         
         <div className="flex items-center mb-2 p-4">
           <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
@@ -631,8 +643,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
             />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Folasade Oluwagbenga</h3>
-            <p className="text-gray-600">Money Making Expert</p>
+            <h3 className="text-md font-bold text-gray-900">Folasade Oluwagbenga</h3>
+            <p className="text-sm text-gray-600">Money Making Expert</p>
           </div>
         </div>
         
