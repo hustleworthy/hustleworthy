@@ -10,13 +10,13 @@ const inter = Inter({ subsets: ['latin'] })
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  '@id': 'https://www.hustleworthy.com/#organization',
+  '@id': 'https://hustleworthy.com/#organization',
   name: 'Hustleworthy',
-  url: 'https://www.hustleworthy.com/',
+  url: 'https://hustleworthy.com/',
   email: 'info@hustleworthy.com',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://www.hustleworthy.com/images/logo.png',
+    url: 'https://hustleworthy.com/images/logo.png',
   },
   description:
     'Hustleworthy is a directory and review website that helps users discover make-money platforms, side hustle websites, reward apps, GPT sites, and online earning opportunities.',
