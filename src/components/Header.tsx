@@ -21,7 +21,7 @@ export default function Header() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link href="/" className="text-xl font-bold text-white">
-                <Image src="/images/logo.svg" alt="Hustleworthy" width={180} height={56} priority />
+                <Image src="/images/logo.png" alt="Hustleworthy" width={130} height={120} priority />
               </Link>
             </div>
 
