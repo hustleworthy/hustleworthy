@@ -5,45 +5,61 @@ import { Website } from '@/data/websites'
 import ReviewsGrid from './ReviewsGrid'
 import FilterSidebar, { FilterCriteria, SortOption } from './FilterSidebar'
 
-export default function ReviewsContainer() {
+interface ReviewsContainerProps {
+  currentPage?: number
+  pageSize?: number
+  filters?: FilterCriteria
+}
+
+export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filters = {
+  expertRating: '',
+  earningPotential: '',
+  waysToEarn: [],
+  payoutMethods: [],
+  investmentRequired: false
+} }: ReviewsContainerProps) {
   const [websites, setWebsites] = useState<Website[]>([])
-  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [filters, setFilters] = useState<FilterCriteria>({
-    expertRating: '',
-    earningPotential: '',
-    waysToEarn: [],
-    payoutMethods: [],
-    investmentRequired: false
-  })
+  const [filtersState, setFiltersState] = useState<FilterCriteria>(filters)
+
   const [sortBy, setSortBy] = useState<SortOption>('default')
+
+  const [totalWebsitesCount, setTotalWebsitesCount] = useState(0)
 
   useEffect(() => {
     const fetchWebsites = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        const response = await fetch('/api/websites')
-        if (!response.ok) {
-          throw new Error('Failed to fetch websites')
-        }
-        
-        const data = await response.json()
-        setWebsites(data)
-        setFilteredWebsites(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        console.error('Error fetching websites:', err)
-      } finally {
-        setIsLoading(false)
-      }
+      console.log('hit api call');
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        expertRating: filtersState.expertRating,
+        earningPotential: filtersState.earningPotential,
+        waysToEarn: filtersState.waysToEarn.join(','),
+        payoutMethods: filtersState.payoutMethods.join(','),
+        investmentRequired: filtersState.investmentRequired ? 'true' : 'false',
+      });
+      const url = `/api/websites?${params.toString()}`;
+      console.log('url', url);
+      const response = await fetch(url)
+      const data = await response.json()
+      console.log('data', data.websites)
+      console.log('data', data.total)
+      setWebsites(data.websites)
+      setTotalWebsitesCount(data.total)
+      setIsLoading(false)
     }
 
     fetchWebsites()
-  }, [])
+  }, [currentPage, filtersState])
+
+  // console.log('websites', websites);
+  // console.log('totalWebsitesCount', totalWebsitesCount);
+
+  useEffect(() => {
+    const sortedWebsites = applySorting(websites, sortBy)
+    setWebsites(sortedWebsites)
+  }, [sortBy])
 
   // Apply sorting to the filtered websites
   const applySorting = (websitesToSort: Website[], sortOption: SortOption) => {
@@ -79,164 +95,8 @@ export default function ReviewsContainer() {
   // Check if filters are active
   const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.payoutMethods.length > 0 || filters.investmentRequired)
 
-  // Update filtering and sorting when filters or sortBy changes
-  useEffect(() => {
-    let result = [...websites]
-    
-    // Apply filters if any are active
-    if (hasActiveFilters) {
-      result = applyFilters(result, filters)
-    }
-    
-    // Apply sorting
-    result = applySorting(result, sortBy)
-    
-    setFilteredWebsites(result)
-  }, [websites, filters, sortBy, hasActiveFilters])
-
-  const applyFilters = (websitesToFilter: Website[], filterCriteria: FilterCriteria) => {
-    let filtered = [...websitesToFilter]
-
-    // Apply expert rating filter
-    if (filterCriteria.expertRating) {
-      const minRating = parseFloat(filterCriteria.expertRating)
-      filtered = filtered.filter(website => {
-        const rating = parseFloat(website.expertRating?.split(' ')[0] || '0')
-        return rating >= minRating
-      })
-    }
-
-    // Apply hourly earning potential filter
-    if (filterCriteria.earningPotential) {
-      const minEarning = parseFloat(filterCriteria.earningPotential)
-      filtered = filtered.filter(website => {
-        const earning = parseFloat(website.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-        return earning >= minEarning
-      })
-    }
-
-    // Apply ways to earn filter
-    if (filterCriteria.waysToEarn && filterCriteria.waysToEarn.length > 0) {
-      filtered = filtered.filter(website => {
-        const websiteWaysToEarn = website.waystoEarn || ''
-        // Split the ways to earn string by comma and clean up whitespace
-        const websiteWaysList = websiteWaysToEarn
-          .split(',')
-          .map(way => way.trim().toLowerCase())
-        
-        // Check if ALL selected ways are present (AND logic)
-        return filterCriteria.waysToEarn.every(selectedWay => {
-          const selectedWayLower = selectedWay.toLowerCase()
-          
-          // Check if this selected way exists in the website's ways
-          return websiteWaysList.some(websiteWay => {
-            // Exact match
-            if (websiteWay === selectedWayLower) {
-              return true
-            }
-            
-            // Handle specific mappings for common variations
-            const wayMappings: Record<string, string[]> = {
-              'watching videos': ['watching videos', 'videos', 'video watching'],
-              'playing games': ['playing games', 'games', 'gaming'],
-              'taking surveys': ['taking surveys', 'surveys', 'survey'],
-              'doing data entry': ['doing data entry', 'data entry'],
-              'installing apps': ['installing apps', 'app install', 'app trials'],
-              'doing tasks': ['doing tasks', 'tasks', 'micro-tasks'],
-              'watching ads': ['watching ads', 'ads', 'ad viewing'],
-              'writing reviews': ['writing reviews', 'reviews'],
-              'answering questions': ['answering questions', 'questions'],
-              'listening to music': ['listening to music', 'music'],
-              'shopping online': ['shopping online', 'shopping', 'online shopping']
-            }
-            
-            // Check if the selected way has any mappings
-            const mappings = wayMappings[selectedWayLower]
-            if (mappings) {
-              return mappings.some(mapping => websiteWay.includes(mapping))
-            }
-            
-            // For other ways, check if the website way contains the selected way
-            if (selectedWayLower.length > 3) {
-              return websiteWay.includes(selectedWayLower)
-            }
-            
-            return false
-          })
-        })
-      })
-    }
-
-    // Apply payout methods filter
-    if (filterCriteria.payoutMethods && filterCriteria.payoutMethods.length > 0) {
-      filtered = filtered.filter(website => {
-        const websitePayoutMethods = website.payoutMethods || ''
-        // Split the payout methods string by comma and clean up whitespace
-        const websiteMethodsList = websitePayoutMethods
-          .split(',')
-          .map(method => method.trim().toLowerCase())
-        
-        // Check if ALL selected methods are present (AND logic)
-        return filterCriteria.payoutMethods.every(selectedMethod => {
-          const selectedMethodLower = selectedMethod.toLowerCase()
-          
-          // Check if this selected method exists in the website's methods
-          return websiteMethodsList.some(websiteMethod => {
-            // Exact match
-            if (websiteMethod === selectedMethodLower) {
-              return true
-            }
-            
-            // Handle specific mappings for common variations
-            const methodMappings: Record<string, string[]> = {
-              'paypal': ['paypal cash', 'paypal'],
-              'gift cards': ['gift cards', 'giftcards'],
-              'amazon gift card': ['amazon gift card', 'amazon gift cards'],
-              'visa prepaid card': ['visa prepaid card', 'visa prepaid'],
-              'mastercard prepaid card': ['mastercard prepaid card', 'mastercard prepaid'],
-              'bank transfer': ['bank transfer', 'direct deposit', 'wire transfer'],
-              'check': ['check', 'cheque'],
-              'cryptocurrency': ['crypto', 'cryptocurrency', 'bitcoin', 'ethereum', 'litecoin']
-            }
-            
-            // Check if the selected method has any mappings
-            const mappings = methodMappings[selectedMethodLower]
-            if (mappings) {
-              return mappings.some(mapping => websiteMethod.includes(mapping))
-            }
-            
-            // For other methods, check if the website method contains the selected method
-            // but only if it's a substantial match (avoid partial word matches)
-            if (selectedMethodLower.length > 3) {
-              return websiteMethod.includes(selectedMethodLower)
-            }
-            
-            return false
-          })
-        })
-      })
-    }
-
-    // Apply investment required filter
-    if (filterCriteria.investmentRequired) {
-      filtered = filtered.filter(website => {
-        // Use the 'investment' field from the database which contains 'Yes' or 'No'
-        const websiteInvestmentRequired = website.investment || 'No'
-        return websiteInvestmentRequired === 'Yes'
-      })
-    }
-
-    return filtered
-  }
-
-  const clearFilters = () => {
-    setFilters({
-      expertRating: '',
-      earningPotential: '',
-      waysToEarn: [],
-      payoutMethods: [],
-      investmentRequired: false
-    })
+  const setFilters = (filters: FilterCriteria) => {
+    setFiltersState(filters)
   }
 
   const toggleSidebar = () => {
@@ -277,9 +137,8 @@ export default function ReviewsContainer() {
     <div className="flex gap-6">
       {/* Filter Sidebar */}
       <FilterSidebar
-        filters={filters}
+        filters={filtersState}
         onFiltersChange={setFilters}
-        onClearFilters={clearFilters}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
@@ -310,8 +169,8 @@ export default function ReviewsContainer() {
                 </h2>
                 <p className="text-sm text-gray-600">
                   {hasActiveFilters 
-                    ? `Showing ${filteredWebsites.length} website reviews` 
-                    : `Showing ${websites.length} website reviews`
+                    ? `Total ${totalWebsitesCount} website reviews` 
+                    : `Total ${totalWebsitesCount} website reviews`
                   }
                 </p>
               </div>
@@ -335,14 +194,6 @@ export default function ReviewsContainer() {
                   </div>
                 </div>
                 
-                {hasActiveFilters && (
-                  <button
-                    onClick={clearFilters}
-                    className="w-full sm:w-auto px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Clear Filters
-                  </button>
-                )}
               </div>
             </div>
           </div>
@@ -350,8 +201,11 @@ export default function ReviewsContainer() {
 
         {/* Reviews Grid */}
         <ReviewsGrid 
-          websites={filteredWebsites} 
-          showAllResults={hasActiveFilters} 
+          websites={websites} 
+          currentPage={currentPage}
+          filters={filtersState}
+          pageSize={pageSize}
+          totalWebsitesCount={totalWebsitesCount}
         />
       </div>
     </div>

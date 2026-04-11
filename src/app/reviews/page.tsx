@@ -1,13 +1,28 @@
 import { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
+import { FilterCriteria } from '@/components/reviews/FilterSidebar'
 
 export const metadata: Metadata = {
   title: 'List Of Money Making Sites | Hustle Worthy',
   description: 'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.',
 }
 
-export default function ReviewsPage() {
+export default async function ReviewsPage({ searchParams }: { searchParams: Promise<{
+  expertRating?: string
+  earningPotential?: string
+  waysToEarn?: string | string[]
+  payoutMethods?: string | string[]
+  investmentRequired?: string
+}> }) {
+  const query = await searchParams
+  const filtersValue: FilterCriteria = {
+    expertRating: query.expertRating || '',
+    earningPotential: query.earningPotential || '',
+    waysToEarn: Array.isArray(query.waysToEarn) ? query.waysToEarn : query.waysToEarn ? [query.waysToEarn] : [],
+    payoutMethods: Array.isArray(query.payoutMethods) ? query.payoutMethods : query.payoutMethods ? [query.payoutMethods] : [],
+    investmentRequired: query.investmentRequired === 'true',
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -25,7 +40,7 @@ export default function ReviewsPage() {
 
       {/* Reviews Container */}
       <div className="container mx-auto px-6 py-12">
-        <ReviewsContainer />
+        <ReviewsContainer currentPage={1} filters={filtersValue} />
       </div>
 
       <Footer />

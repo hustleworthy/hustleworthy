@@ -2,29 +2,60 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Website } from '@/data/websites'
+import { FilterCriteria } from './FilterSidebar'
 
 interface ReviewsGridProps {
   websites: Website[]
-  showAllResults?: boolean
+  currentPage?: number
+  filters?: FilterCriteria
+  pageSize?: number
+  totalWebsitesCount?: number
 }
 
-export default function ReviewsGrid({ websites, showAllResults = false }: ReviewsGridProps) {
-  const [displayCount, setDisplayCount] = useState(15)
-  
-  // If filters are active, show all results. Otherwise, use pagination
-  const displayedWebsites = showAllResults ? websites : websites.slice(0, displayCount)
-  const hasMore = showAllResults ? false : displayCount < websites.length
+export default function ReviewsGrid({ 
+  websites, 
+  currentPage = 1, 
+  pageSize = 20,
+  totalWebsitesCount = 0,
+  filters
+}: ReviewsGridProps) {
+  const totalPages = Math.max(1, Math.ceil(totalWebsitesCount / pageSize))
+  const safePage = Math.min(Math.max(1, currentPage), totalPages)
 
-  const loadMore = () => {
-    setDisplayCount(prev => Math.min(prev + 10, websites.length))
+ // console.log('websites', websites);
+
+  // If filters are active, show all results. Otherwise, use URL-driven pagination.
+  const startIndex = (safePage - 1) * pageSize
+  //const displayedWebsites = showAllResults ? websites : websites.slice(startIndex, startIndex + pageSize)
+  // check if filters are set so that can pass to href
+  const filtersParams = new URLSearchParams()
+  if (filters?.expertRating) {
+    filtersParams.set('expertRating', filters.expertRating)
   }
+  if (filters?.earningPotential) {
+    filtersParams.set('earningPotential', filters.earningPotential)
+  }
+  if (filters?.waysToEarn) {
+    filters.waysToEarn.forEach((way) => filtersParams.append('waysToEarn', way))
+  }
+  if (filters?.payoutMethods) {
+    filters.payoutMethods.forEach((method) => filtersParams.append('payoutMethods', method))
+  }
+  if (filters?.investmentRequired) {
+    filtersParams.set('investmentRequired', 'true')
+  }
+
+  console.log('filtersParams', filtersParams.toString());
+  console.log('filters', filters);
+  const makePageHref = (page: number) => (page <= 1 ? `/reviews?${filtersParams.toString()}` : `/reviews/page/${page}?${filtersParams.toString()}`)
 
   return (
     <>
       {/* Reviews Grid */}
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto px-4 sm:px-6">
-        {displayedWebsites.map((website) => (
+        {websites.map((website) => (
           <div key={website.sNo} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
             <div className="p-4 sm:p-6">
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
@@ -103,32 +134,44 @@ export default function ReviewsGrid({ websites, showAllResults = false }: Review
         ))}
       </div>
 
-      {/* Load More Section - Only show when no filters are active */}
-      {hasMore && (
-        <div className="text-center mt-8 sm:mt-12 px-4">
-          <button 
-            onClick={loadMore}
-            className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg transition-colors duration-200 inline-flex items-center gap-2 text-sm sm:text-base"
-          >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Load More Reviews
-          </button>
-        </div>
+      {/* Pagination - Only show when no filters are active */}
+      {totalWebsitesCount > 1 && (
+        <nav aria-label="Reviews pagination" className="mt-8 sm:mt-12 px-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+          <Link
+  href={makePageHref(Math.max(1, currentPage - 1))}
+  aria-disabled={currentPage <= 1 || currentPage > totalPages}
+  className={`px-4 py-2 rounded-lg border text-sm font-semibold transition-colors ${
+    currentPage <= 1
+      ? 'pointer-events-none opacity-50 border-gray-200 text-gray-500 bg-white'
+      : 'border-gray-300 text-gray-800 bg-white hover:bg-gray-50'
+  }`}
+>
+  Previous
+</Link>
+
+<div className="text-sm text-gray-600">
+  Page <span className="font-semibold text-gray-900">{currentPage}</span> of{' '}
+  <span className="font-semibold text-gray-900">{totalPages}</span>
+</div>
+
+<Link
+  href={makePageHref(Math.min(totalPages, currentPage + 1))}
+  aria-disabled={currentPage >= totalPages}
+  className={`px-4 py-2 rounded-lg border text-sm font-semibold transition-colors ${
+    currentPage >= totalPages
+      ? 'pointer-events-none opacity-50 border-gray-200 text-gray-500 bg-white'
+      : 'border-gray-300 text-gray-800 bg-white hover:bg-gray-50'
+  }`}
+>
+  Next
+</Link>
+          </div>
+        </nav>
       )}
 
-      {/* Show total count when all are loaded or filters are active */}
-      {(!hasMore || showAllResults) && websites.length > 0 && (
-        <div className="text-center mt-6 sm:mt-8 px-4">
-          <p className="text-gray-600 text-sm sm:text-base">
-            {showAllResults 
-              ? `Showing ${websites.length} filtered results` 
-              : `Showing all ${websites.length} website reviews`
-            }
-          </p>
-        </div>
-      )}
+      <p className="text-center text-gray-600 text-sm mt-4">Showing {websites.length} of {totalWebsitesCount} websites</p>
+
     </>
   )
 }

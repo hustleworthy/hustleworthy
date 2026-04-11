@@ -31,68 +31,48 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     ? (userRatingSum + expertRatingValue) / totalRatings
     : 0
 
-  const reviewsForSchema = website.reviews.slice(0, 20).map(r => ({
-    '@type': 'Review',
-    author: {
-      '@type': 'Person',
-      name: r.user?.name || 'Anonymous'
-    },
-    reviewRating: {
-      '@type': 'Rating',
-      ratingValue: r.rating || 0,
-      bestRating: '5',
-      worstRating: '1'
-    },
-    name: `${website.websiteName} User Review`,
-    reviewBody: r.content || '',
-    datePublished: r.createdAt instanceof Date ? r.createdAt.toISOString() : ''
-  }))
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hustleworthy.com'
+  const reviewPageUrl = `${baseUrl.replace(/\/$/, '')}/reviews/${slug}`
+  const officialUrl = website.url?.trim() || reviewPageUrl
 
-  const productSchema = {
+  const reviewDates = website.reviews.map(r => new Date(r.createdAt).getTime()).filter(Number.isFinite)
+  const dateCreatedIso =
+    reviewDates.length > 0 ? new Date(Math.min(...reviewDates)).toISOString() : undefined
+  const dateModifiedIso =
+    reviewDates.length > 0 ? new Date(Math.max(...reviewDates)).toISOString() : new Date().toISOString()
+
+  const softwareApplicationSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'SoftwareApplication',
     name: website.websiteName || 'Website',
-    description: website.about || website.noteEarningPotential || '',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: aggregateRatingValue.toFixed(1),
-      bestRating: '5',
-      worstRating: '1',
-      ratingCount: totalRatings.toString(),
-      reviewCount: totalRatings.toString()
-    },
-    review: [
-      {
-        '@type': 'Review',
-        author: {
-          '@type': 'Person',
-          name: 'Folasade Oluwagbenga',
-          jobTitle: 'Money Making Expert'
-        },
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: expertRatingValue || aggregateRatingValue,
-          bestRating: '5',
-          worstRating: '1'
-        },
-        name: `Expert Review of ${website.websiteName}`,
-        reviewBody: website.about || 'Expert review',
-        datePublished: new Date().toISOString(),
-        dateModified: new Date().toISOString(),
-        publisher: {
-          '@type': 'Organization',
-          name: 'Hustleworthy'
+    url: officialUrl,
+    applicationCategory: website.type || 'WebApplication',
+    operatingSystem: 'Web',
+    softwareVersion: '1.0',
+    ...(dateCreatedIso ? { dateCreated: dateCreatedIso } : {}),
+    dateModified: dateModifiedIso,
+    description:
+      website.about ||
+      website.noteEarningPotential ||
+      `${website.websiteName || 'This platform'} — earn-money platform reviewed on Hustleworthy.`,
+  ...(totalRatings > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: aggregateRatingValue.toFixed(1),
+            reviewCount: totalRatings.toString(),
+            bestRating: '5',
+            worstRating: '1',
+          },
         }
-      },
-      ...reviewsForSchema
-    ]
+      : {}),
   }
 
   return (
     <div className="bg-gray-50 min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema) }}
       />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-20 py-8">
         <ReviewContent website={website} averageUserRating={averageUserRating} />

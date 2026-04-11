@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface FilterSidebarProps {
   filters: FilterCriteria
   onFiltersChange: (filters: FilterCriteria) => void
-  onClearFilters: () => void
   hasActiveFilters: boolean
   isOpen: boolean
   onToggle: () => void
@@ -24,11 +24,11 @@ export type SortOption = 'default' | 'earning-high-to-low' | 'withdrawal-low-to-
 export default function FilterSidebar({ 
   filters,
   onFiltersChange,
-  onClearFilters,
   hasActiveFilters,
   isOpen,
   onToggle
 }: FilterSidebarProps) {
+  const router = useRouter()
   const [isWaysDropdownOpen, setIsWaysDropdownOpen] = useState(false)
   const [isPayoutDropdownOpen, setIsPayoutDropdownOpen] = useState(false)
   const waysDropdownRef = useRef<HTMLDivElement>(null)
@@ -94,7 +94,32 @@ export default function FilterSidebar({
   }, [])
 
   const updateFilters = (updates: Partial<FilterCriteria>) => {
-    onFiltersChange({ ...filters, ...updates })
+    const nextFilters = { ...filters, ...updates }
+    onFiltersChange(nextFilters);
+  
+    const params = new URLSearchParams()
+  
+    if (nextFilters.expertRating) {
+      params.set('expertRating', nextFilters.expertRating)
+    }
+  
+    if (nextFilters.earningPotential) {
+      params.set('earningPotential', nextFilters.earningPotential)
+    }
+  
+    if (nextFilters.waysToEarn.length > 0) {
+      nextFilters.waysToEarn.forEach((value) => params.append('waysToEarn', value))
+    }
+  
+    if (nextFilters.payoutMethods.length > 0) {
+      nextFilters.payoutMethods.forEach((value) => params.append('payoutMethods', value))
+    }
+  
+    if (nextFilters.investmentRequired) {
+      params.set('investmentRequired', 'true')
+    }
+  
+    router.push(`/reviews?${params.toString()}`)
   }
 
   return (
@@ -315,7 +340,7 @@ export default function FilterSidebar({
           {hasActiveFilters && (
             <div className="pt-4 border-t border-gray-200">
               <button
-                onClick={onClearFilters}
+                onClick={() => { router.push(`/reviews`); updateFilters({ expertRating: '', earningPotential: '', waysToEarn: [], payoutMethods: [], investmentRequired: false }) }}
                 className="w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Clear All Filters
