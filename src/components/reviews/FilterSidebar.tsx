@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 
 interface FilterSidebarProps {
   filters: FilterCriteria
-  onFiltersChange: (filters: FilterCriteria) => void
+  //onFiltersChange: (filters: FilterCriteria) => void
   hasActiveFilters: boolean
   isOpen: boolean
   onToggle: () => void
@@ -23,7 +23,7 @@ export type SortOption = 'default' | 'earning-high-to-low' | 'withdrawal-low-to-
 
 export default function FilterSidebar({ 
   filters,
-  onFiltersChange,
+ // onFiltersChange,
   hasActiveFilters,
   isOpen,
   onToggle
@@ -95,7 +95,7 @@ export default function FilterSidebar({
 
   const updateFilters = (updates: Partial<FilterCriteria>) => {
     const nextFilters = { ...filters, ...updates }
-    onFiltersChange(nextFilters);
+   // onFiltersChange(nextFilters);
   
     const params = new URLSearchParams()
   

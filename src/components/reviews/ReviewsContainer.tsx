@@ -22,7 +22,7 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [filtersState, setFiltersState] = useState<FilterCriteria>(filters)
+  //const [filtersState, setFiltersState] = useState<FilterCriteria>(filters)
 
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
@@ -30,28 +30,28 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
 
   useEffect(() => {
     const fetchWebsites = async () => {
-      console.log('hit api call');
+      //console.log('hit api call');
       const params = new URLSearchParams({
         page: String(currentPage),
-        expertRating: filtersState.expertRating,
-        earningPotential: filtersState.earningPotential,
-        waysToEarn: filtersState.waysToEarn.join(','),
-        payoutMethods: filtersState.payoutMethods.join(','),
-        investmentRequired: filtersState.investmentRequired ? 'true' : 'false',
+        expertRating: filters.expertRating,
+        earningPotential: filters.earningPotential,
+        waysToEarn: filters.waysToEarn.join(','),
+        payoutMethods: filters.payoutMethods.join(','),
+        investmentRequired: filters.investmentRequired ? 'true' : 'false',
       });
       const url = `/api/websites?${params.toString()}`;
-      console.log('url', url);
+     // console.log('url', url);
       const response = await fetch(url)
       const data = await response.json()
-      console.log('data', data.websites)
-      console.log('data', data.total)
+     // console.log('data', data.websites)
+     // console.log('data', data.total)
       setWebsites(data.websites)
       setTotalWebsitesCount(data.total)
       setIsLoading(false)
     }
 
     fetchWebsites()
-  }, [currentPage, filtersState])
+  }, [currentPage, filters])
 
   // console.log('websites', websites);
   // console.log('totalWebsitesCount', totalWebsitesCount);
@@ -96,7 +96,7 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
   const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.payoutMethods.length > 0 || filters.investmentRequired)
 
   const setFilters = (filters: FilterCriteria) => {
-    setFiltersState(filters)
+    //setFiltersState(filters)
   }
 
   const toggleSidebar = () => {
@@ -137,8 +137,8 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
     <div className="flex gap-6">
       {/* Filter Sidebar */}
       <FilterSidebar
-        filters={filtersState}
-        onFiltersChange={setFilters}
+        filters={filters}
+        //onFiltersChange={setFilters}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
@@ -203,7 +203,7 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
         <ReviewsGrid 
           websites={websites} 
           currentPage={currentPage}
-          filters={filtersState}
+          filters={filters}
           pageSize={pageSize}
           totalWebsitesCount={totalWebsitesCount}
         />

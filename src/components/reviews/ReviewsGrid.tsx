@@ -22,13 +22,7 @@ export default function ReviewsGrid({
   filters
 }: ReviewsGridProps) {
   const totalPages = Math.max(1, Math.ceil(totalWebsitesCount / pageSize))
-  const safePage = Math.min(Math.max(1, currentPage), totalPages)
 
- // console.log('websites', websites);
-
-  // If filters are active, show all results. Otherwise, use URL-driven pagination.
-  const startIndex = (safePage - 1) * pageSize
-  //const displayedWebsites = showAllResults ? websites : websites.slice(startIndex, startIndex + pageSize)
   // check if filters are set so that can pass to href
   const filtersParams = new URLSearchParams()
   if (filters?.expertRating) {
@@ -47,8 +41,8 @@ export default function ReviewsGrid({
     filtersParams.set('investmentRequired', 'true')
   }
 
-  console.log('filtersParams', filtersParams.toString());
-  console.log('filters', filters);
+  //console.log('filtersParams', filtersParams.toString());
+  //console.log('filters', filters);
   const makePageHref = (page: number) => (page <= 1 ? `/reviews?${filtersParams.toString()}` : `/reviews/page/${page}?${filtersParams.toString()}`)
 
   return (

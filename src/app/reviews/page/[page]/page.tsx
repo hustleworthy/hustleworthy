@@ -57,7 +57,7 @@ export default async function ReviewsPaginationPage({
     investmentRequired: query.investmentRequired === 'true',
   }
 
-  console.log('filtersValue', filtersValue);
+  //console.log('filtersValue', filtersValue);
 
   return (
     <div className="min-h-screen bg-gray-50">
