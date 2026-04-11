@@ -323,14 +323,13 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
   return (
     <div className="flex gap-6">
       {/* Filter Sidebar */}
-      <FilterSidebar
+      {/* <FilterSidebar
         filters={filters}
         onFiltersChange={setFilters}
-        onClearFilters={clearFilters}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
-      />
+      /> */}
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
@@ -415,7 +414,6 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
         {filteredWebsites.length > 0 && (
           <ReviewsGrid 
             websites={filteredWebsites} 
-            showAllResults={true} 
           />
         )}
       </div>

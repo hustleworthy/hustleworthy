@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Website } from '@/data/websites'
 import ReviewsGrid from './ReviewsGrid'
-import FilterSidebar, { FilterCriteria, SortOption } from './FilterSidebar'
+import { FilterCriteria, SortOption } from './FilterSidebar'
 
 interface PayoutMethodsContainerProps {
   payoutMethod: string
@@ -325,14 +325,14 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
   return (
     <div className="flex gap-6">
       {/* Filter Sidebar */}
-      <FilterSidebar
+      {/* <FilterSidebar
         filters={filters}
         onFiltersChange={setFilters}
         onClearFilters={clearFilters}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
-      />
+      /> */}
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
@@ -416,8 +416,7 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
         {/* Websites Grid */}
         {filteredWebsites.length > 0 && (
           <ReviewsGrid 
-            websites={filteredWebsites} 
-            showAllResults={true} 
+            websites={filteredWebsites}  
           />
         )}
       </div>

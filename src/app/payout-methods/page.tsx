@@ -15,121 +15,121 @@ export const metadata: Metadata = {
 // Define the payout methods categories
 const PAYOUT_METHODS_CATEGORIES = [
   {
-    slug: 'paypal',
+    slug: 'PayPal',
     name: 'PayPal',
     description: 'Sites that pay directly to your PayPal account',
     icon: '💳'
   },
   {
-    slug: 'bank-transfer',
+    slug: 'Bank Transfer',
     name: 'Bank Transfer',
     description: 'Direct bank transfers and wire payments',
     icon: '🏦'
   },
   {
-    slug: 'check',
+    slug: 'Check',
     name: 'Check',
     description: 'Physical or digital check payments',
     icon: '📄'
   },
   {
-    slug: 'payoneer',
+    slug: 'Payoneer',
     name: 'Payoneer',
     description: 'Payoneer card and account payments',
     icon: '💳'
   },
   {
-    slug: 'skrill',
+    slug: 'Skrill',
     name: 'Skrill',
     description: 'Skrill digital wallet payments',
     icon: '💳'
   },
   {
-    slug: 'wise',
+    slug: 'Wise',
     name: 'Wise',
     description: 'Wise (formerly TransferWise) payments',
     icon: '💳'
   },
   {
-    slug: 'revolut',
+    slug: 'Revolut',
     name: 'Revolut',
     description: 'Revolut digital banking payments',
     icon: '💳'
   },
   {
-    slug: 'venmo',
+    slug: 'Venmo',
     name: 'Venmo',
     description: 'Venmo mobile payments',
     icon: '📱'
   },
   {
-    slug: 'zelle',
+    slug: 'Zelle',
     name: 'Zelle',
     description: 'Zelle instant bank transfers',
     icon: '⚡'
   },
   {
-    slug: 'papara',
+    slug: 'Papara',
     name: 'Papara',
     description: 'Papara digital wallet payments',
     icon: '💳'
   },
   {
-    slug: 'qiwi',
+    slug: 'QIWI',
     name: 'QIWI',
     description: 'QIWI wallet payments',
     icon: '💳'
   },
   {
-    slug: 'yoomoney',
+    slug: 'YooMoney',
     name: 'YooMoney',
     description: 'YooMoney (formerly Yandex.Money) payments',
     icon: '💳'
   },
   {
-    slug: 'gift-cards',
+    slug: 'Gift Cards',
     name: 'Gift Cards',
     description: 'Various gift card rewards',
     icon: '🎁'
   },
   {
-    slug: 'amazon-gift-card',
+    slug: 'Amazon Gift Card',
     name: 'Amazon Gift Card',
     description: 'Amazon gift card rewards',
     icon: '🛒'
   },
   {
-    slug: 'visa-prepaid-card',
+    slug: 'Visa Prepaid Card',
     name: 'Visa Prepaid Card',
     description: 'Visa prepaid card rewards',
     icon: '💳'
   },
   {
-    slug: 'mastercard-prepaid-card',
+    slug: 'MasterCard Prepaid Card',
     name: 'MasterCard Prepaid Card',
     description: 'MasterCard prepaid card rewards',
     icon: '💳'
   },
   {
-    slug: 'cryptocurrency',
+    slug: 'Cryptocurrency',
     name: 'Cryptocurrency',
     description: 'Various cryptocurrency payments',
     icon: '₿'
   },
   {
-    slug: 'bitcoin',
+    slug: 'Bitcoin',
     name: 'Bitcoin',
     description: 'Bitcoin cryptocurrency payments',
     icon: '₿'
   },
   {
-    slug: 'ethereum',
+    slug: 'Ethereum',
     name: 'Ethereum',
     description: 'Ethereum cryptocurrency payments',
     icon: '⟠'
   },
   {
-    slug: 'litecoin',
+    slug: 'Litecoin',
     name: 'Litecoin',
     description: 'Litecoin cryptocurrency payments',
     icon: 'Ł'
@@ -155,7 +155,7 @@ export default function PayoutMethodsPage() {
             {PAYOUT_METHODS_CATEGORIES.map((method) => (
               <Link
                 key={method.slug}
-                href={`/payout-methods/${method.slug}`}
+                href={`/reviews?payoutMethods=${method.slug}`}
                 className="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-green-300 transition-all duration-200 hover:-translate-y-1"
               >
                 <div className="text-center">
