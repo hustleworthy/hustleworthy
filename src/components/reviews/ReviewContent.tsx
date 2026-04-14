@@ -1,7 +1,6 @@
 'use client'
 
 import { Star, CheckCircle } from 'lucide-react'
-import Image from 'next/image'
 import ReviewForm from '@/components/review/ReviewForm'
 import ReplyForm from '@/components/review/ReplyForm'
 import WebsiteImage from '@/components/WebsiteImage'
@@ -52,8 +51,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                         <WebsiteImage 
                           websiteName={website.websiteName || ''}
                           alt={`${website.websiteName} logo`} 
-                          width={100} 
-                          height={100} 
+                          width="100px" 
+                          height="100px" 
                           style={{width: '100%'}} 
                         />
                       </div>
@@ -351,11 +350,11 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                   <div key={review.id} className="border p-4 rounded-md">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center space-x-3">
-                        <Image 
+                        <img 
                           src="/images/profile-picture.png" 
                           alt="User avatar" 
-                          width={32} 
-                          height={32} 
+                          width="32" 
+                          height="32" 
                           className="rounded-full object-cover"
                         />
                         <div>
@@ -454,8 +453,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                     <WebsiteImage 
                       websiteName={website.websiteName || ''}
                       alt={`${website.websiteName} logo`} 
-                      width={100} 
-                      height={100} 
+                      width="100px" 
+                      height="100px" 
                       style={{width: '100%'}} 
                     />
                   </div>
@@ -794,11 +793,11 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
               <div key={review.id} className="border p-4 rounded-md">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-3">
-                    <Image 
+                    <img 
                       src="/images/profile-picture.png" 
                       alt="User avatar" 
-                      width={32} 
-                      height={32} 
+                      width="32" 
+                      height="32" 
                       className="rounded-full object-cover"
                     />
                     <div>

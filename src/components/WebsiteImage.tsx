@@ -1,12 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 
 interface WebsiteImageProps {
   websiteName: string
   alt: string
-  width: number
-  height: number
+  width?: string
+  height?: string
   style?: React.CSSProperties
   className?: string
 }
@@ -14,8 +13,8 @@ interface WebsiteImageProps {
 export default function WebsiteImage({ 
   websiteName, 
   alt, 
-  width, 
-  height, 
+  width = "100px", 
+  height = "100px", 
   style,
   className 
 }: WebsiteImageProps) {
@@ -30,12 +29,10 @@ export default function WebsiteImage({
   }
 
   return (
-    <Image 
+    <img 
       alt={alt} 
-      width={width} 
-      height={height} 
       style={style}
-      className={className}
+      className={className + " w-[100px] h-auto object-cover"}
       src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2F${websiteName}.png?alt=media`}
       onError={handleError}
     />

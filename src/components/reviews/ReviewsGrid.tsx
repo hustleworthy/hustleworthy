@@ -58,10 +58,10 @@ export default function ReviewsGrid({
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg flex items-center justify-center border mx-auto">
                     <div className="text-center">
                       <div className="text-gray-400 text-xs">
-                        <Image 
+                        <img 
                           alt={`${website.websiteName} logo`} 
-                          width={60} 
-                          height={60} 
+                          width="60" 
+                          height="60" 
                           style={{width: '100%'}} 
                           src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2F${website.websiteName}.png?alt=media`}
                           onError={(e) => {

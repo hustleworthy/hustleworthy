@@ -3,8 +3,6 @@
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation';
 import { useState } from 'react';
-import Featuredon from '../../public/images/featuredon.png';
-import Image from 'next/image';
 
 export default function ClaimProfileButton({ websiteName, domain }: { websiteName: string, domain: string }) {
   const { data: session } = useSession();
@@ -355,11 +353,11 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
               {/* Embed Code Section */}
               <div className="bg-white border-2 border-dashed border-blue-300 rounded-lg p-6 text-center">
                 <div className="mb-4">
-                  <Image 
-                    src={Featuredon} 
+                  <img 
+                    src="/images/featuredon.png" 
                     alt="Featured On" 
-                    width={250} 
-                    height={250} 
+                    width="250" 
+                    height="250" 
                     className="mx-auto rounded-lg shadow-md mb-4" 
                   />
                  <button 

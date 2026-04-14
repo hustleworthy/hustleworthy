@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { slugify } from '@/lib/slugify';
 
 type Tag = {
@@ -87,11 +86,11 @@ export default function BlogListing({ initialPosts, totalCount, initialLimit }: 
             {/* Thumbnail */}
             {post.thumbnail && (
               <div className="relative overflow-hidden h-48">
-                <Image
+                <img
                   src={post.thumbnail.url}
                   alt={post.title}
-                  width={post.thumbnail.width || 400}
-                  height={post.thumbnail.height || 200}
+                  width="400"
+                  height="200"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -115,11 +114,11 @@ export default function BlogListing({ initialPosts, totalCount, initialLimit }: 
                 {/* Author */}
                 <div className="flex items-center space-x-3">
                   {post.writer?.image ? (
-                    <Image
+                    <img
                       src={post.writer.image.url}
                       alt={post.writer.name}
-                      width={32}
-                      height={32}
+                      width="32"
+                      height="32"
                       className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                     />
                   ) : (

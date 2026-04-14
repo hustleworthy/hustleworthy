@@ -1,6 +1,5 @@
 import { client } from "@/lib/microcms";
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { slugify, findPostBySlug } from '@/lib/slugify';
 import Footer from '@/components/Footer';
 
@@ -158,12 +157,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                 {/* Author */}
                 <div className="flex items-center space-x-3">
                   {post.writer?.image ? (
-                    <Image
+                    <img
                       src={post.writer.image.url}
                       alt={post.writer.name}
-                      width={40}
-                      height={40}
                       className="rounded-full object-cover border-2 border-white/20"
+                      width="40"
+                      height="40"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-semibold border border-white/30">
@@ -201,13 +200,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
             {/* Featured Image */}
             {post.thumbnail && (
               <div className="relative mb-12 rounded-2xl overflow-hidden shadow-2xl">
-                <Image
+                <img
                   src={post.thumbnail.url}
                   alt={post.title}
-                  width={post.thumbnail.width || 1200}
-                  height={post.thumbnail.height || 600}
+                  width="1200"
+                  height="600"
                   className="w-full h-auto object-cover"
-                  priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
@@ -241,11 +239,11 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
               <h3 className="text-2xl font-bold text-gray-900 mb-6">About the Author</h3>
               <div className="flex items-start space-x-6">
                 {post.writer?.image ? (
-                  <Image
+                  <img
                     src={post.writer.image.url}
                     alt={post.writer.name}
-                    width={80}
-                    height={80}
+                    width="80"
+                    height="80"
                     className="rounded-full object-cover border-4 border-gray-200"
                   />
                 ) : (
