@@ -30,7 +30,7 @@ export default function TermsOfService() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Agreement to Terms</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Welcome to Hustleworthy ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website and services, which provide honest reviews of money-making websites and earning opportunities online.
+               Welcome to Hustleworthy ("we," "our," or "us"). These Terms of Service ("Terms") outline the rules and conditions for using our website and services, where we share honest reviews of online earning platforms and money-making opportunities.
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
                 By accessing or using our website, you agree to be bound by these Terms. If you disagree with any part of these Terms, then you may not access our services.
