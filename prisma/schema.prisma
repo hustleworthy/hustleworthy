@@ -45,6 +45,8 @@ model Websites {
   mainDrawbacks             String?
   howItWorks                String?
   reviews                   Review[]
+  hasKeyFinding             Boolean                @default(false)
+  KeyFinding                String?         
   verificationRequests      VerificationRequest[]
   @@map("websites")
 }

@@ -266,9 +266,14 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                 ))}
               </div>
               )}
+              {website.hasKeyFinding && (
+                <div className="flex flex-wrap gap-2 mt-4 mb-4" dangerouslySetInnerHTML={{ __html: website.KeyFinding || 'N/A' }}></div>
+              )}
           </div>
 
-          <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
+          {!website.hasKeyFinding && (
+            <>
+                      <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Earning Potential</h2>
             <p className="text-gray-700 mb-6">
               {website.noteEarningPotential || 'Earning potential information not available.'}
@@ -320,6 +325,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
               </table>
             </div>
           </div>
+            </>
+          )}
 
           { website.websiteName === 'PrizeRebel' && (
           <div className="bg-white rounded-lg shadow-sm p-6">
@@ -665,6 +672,9 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
             ))}
           </div>
           )}
+            {website.hasKeyFinding && (
+                <div className="flex flex-wrap gap-2 mt-4 mb-4" dangerouslySetInnerHTML={{ __html: website.KeyFinding || 'N/A' }}></div>
+              )}
       </div>
 
       <div className="space-y-6">
@@ -716,7 +726,9 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
         </div>
       </div>
 
-      <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
+      {!website.hasKeyFinding && (
+        <>
+              <div id="earning-potential" className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Earning Potential</h2>
         <p className="text-gray-700 mb-6">
           {website.noteEarningPotential || 'Earning potential information not available.'}
@@ -763,6 +775,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </table>
         </div>
       </div>
+        </>
+      )}
 
       { website.websiteName === 'PrizeRebel' && (
         <div className="bg-white rounded-lg shadow-sm p-6">

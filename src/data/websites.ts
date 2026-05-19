@@ -29,6 +29,8 @@ export interface Website {
   realisticEarnings?: string | null
   mainDrawbacks?: string | null
   howItWorks?: string | null
+  hasKeyFinding?: boolean
+  KeyFinding?: string | null
 }
 
 export interface Review {
@@ -84,7 +86,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate rewards platform',
     realisticEarnings: 'Realistic Earnings: $500 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: Swagbucks is a very legitimate rewards platform that pays users for various online activities.'
+    howItWorks: 'How It Works: Swagbucks is a very legitimate rewards platform that pays users for various online activities.',
+    hasKeyFinding: true,
+    KeyFinding: 'Swagbucks is a very legitimate rewards platform that pays users for various online activities.'
   },
   {
     sNo: 1,
@@ -112,7 +116,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, app trials, and micro-tasks',
     realisticEarnings: 'Realistic Earnings: $300 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: PollPay is a legitimate platform that pays users for surveys, app trials, games and other "micro-tasks." Its major pros are wide availability and multiple payout options (PayPal, gift cards). Major cons include a relatively high $25 USD payout threshold, occasional low-paying "game" tasks (often $0.01/minute at higher levels), and support issues prior to the Prodege acquisition. Earnings are modest; better as a supplemental side income than a primary source.'
+    howItWorks: 'How It Works: PollPay is a legitimate platform that pays users for surveys, app trials, games and other "micro-tasks." Its major pros are wide availability and multiple payout options (PayPal, gift cards). Major cons include a relatively high $25 USD payout threshold, occasional low-paying "game" tasks (often $0.01/minute at higher levels), and support issues prior to the Prodege acquisition. Earnings are modest; better as a supplemental side income than a primary source.',
+    hasKeyFinding: true,
+    KeyFinding: 'PollPay is a legitimate platform that pays users for surveys, app trials, games and other "micro-tasks." Its major pros are wide availability and multiple payout options (PayPal, gift cards). Major cons include a relatively high $25 USD payout threshold, occasional low-paying "game" tasks (often $0.01/minute at higher levels), and support issues prior to the Prodege acquisition. Earnings are modest; better as a supplemental side income than a primary source.'
   },
   {
     sNo: 2,
@@ -140,7 +146,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, market research, and product testing',
     realisticEarnings: 'Realistic Earnings: $240 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: CashApp Surveys offers a streamlined experience for users looking to earn through market research participation. The platform\'s lower payout threshold and faster processing times make it attractive for beginners.'
+    howItWorks: 'How It Works: CashApp Surveys offers a streamlined experience for users looking to earn through market research participation. The platform\'s lower payout threshold and faster processing times make it attractive for beginners.',
+    hasKeyFinding: true,
+    KeyFinding: 'CashApp Surveys offers a streamlined experience for users looking to earn through market research participation. The platform\'s lower payout threshold and faster processing times make it attractive for beginners.'
   },
   {
     sNo: 3,
@@ -168,7 +176,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys, videos, emails, and shopping',
     realisticEarnings: 'Realistic Earnings: $400 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: InboxDollars is a well-established platform that has been paying users for over 20 years. It offers a good variety of earning opportunities including surveys, watching videos, and reading emails. The platform is reliable but limited to US users.'
+    howItWorks: 'How It Works: InboxDollars is a well-established platform that has been paying users for over 20 years. It offers a good variety of earning opportunities including surveys, watching videos, and reading emails. The platform is reliable but limited to US users.',
+    hasKeyFinding: true,
+    KeyFinding: 'InboxDollars is a well-established platform that has been paying users for over 20 years. It offers a good variety of earning opportunities including surveys, watching videos, and reading emails. The platform is reliable but limited to US users.'
   },
   {
     sNo: 4,
@@ -195,7 +205,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for shopping, surveys, videos, and games',
     realisticEarnings: 'Realistic Earnings: $300 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.'
+    howItWorks: 'How It Works: MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.',
+    hasKeyFinding: true,
+    KeyFinding: 'MyPoints is a shopping-focused rewards platform that offers cashback and points for online purchases.'
   },
   {
     sNo: 5,
@@ -223,7 +235,9 @@ export const websites: Website[] = [
     bestFor: 'Best For: Users who are looking for a reliable and legitimate platform for surveys',
     realisticEarnings: 'Realistic Earnings: $350 per month',
     mainDrawbacks: 'Main Drawbacks: Some surveys can be time-consuming',
-    howItWorks: 'How It Works: Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.'
+    howItWorks: 'How It Works: Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.',
+    hasKeyFinding: true,
+    KeyFinding: 'Survey Junkie is a dedicated survey platform that offers consistent earning opportunities for users.'
   }
 ]
 
@@ -282,7 +296,9 @@ function transformWebsiteData(data: any): Website {
     bestFor: data.bestFor || null,
     realisticEarnings: data.realisticEarnings || null,
     mainDrawbacks: data.mainDrawbacks || null,
-    howItWorks: data.howItWorks || null
+    howItWorks: data.howItWorks || null,
+    hasKeyFinding: data.hasKeyFinding || false,
+    KeyFinding: data.KeyFinding || null
   }
 }
 
