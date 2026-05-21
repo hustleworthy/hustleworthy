@@ -101,7 +101,7 @@ export default function Footer() {
               <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
               <ul className="space-y-3">
                 <li><Link href="/reviews" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">All Reviews</Link></li>
-                <li><Link href="/best" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Top Picks 2025</Link></li>
+                <li><Link href="/best" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Top Picks 2026</Link></li>
                 <li><Link href="/blog" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Blog</Link></li>
                 <li><Link href="/ways-to-earn" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Ways to Earn</Link></li>
                 <li><Link href="/payout-methods" className="text-gray-400 hover:text-[#03a9f4] transition-colors duration-300">Payout Methods</Link></li>
@@ -151,7 +151,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2025 Hustleworthy. All rights reserved. 
+              © 2026 Hustleworthy. All rights reserved. 
               <span className="mx-2">|</span>
               <Link href="/privacy" className="hover:text-[#03a9f4] transition-colors duration-300">Privacy Policy</Link>
               <span className="mx-2">|</span>
