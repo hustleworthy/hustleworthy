@@ -1,27 +1,34 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Website } from '@/data/websites'
-import ReviewsGrid from './ReviewsGrid'
+import PayoutMethodsGrid from './PayoutMethodsGrid'
+import PayoutMethodsFilterSidebar from './PayoutMethodsFilterSidebar'
 import { FilterCriteria, SortOption } from './FilterSidebar'
+
+export const PAYOUT_METHODS_PAGE_SIZE = 10
 
 interface PayoutMethodsContainerProps {
   payoutMethod: string
+  methodSlug: string
+  currentPage?: number
+  filters: FilterCriteria
 }
 
-export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsContainerProps) {
+export default function PayoutMethodsContainer({
+  payoutMethod,
+  methodSlug,
+  currentPage = 1,
+  filters,
+}: PayoutMethodsContainerProps) {
+  const router = useRouter()
+  const basePath = `/payout-methods/${methodSlug}`
   const [websites, setWebsites] = useState<Website[]>([])
   const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [filters, setFilters] = useState<FilterCriteria>({
-    expertRating: '',
-    earningPotential: '',
-    waysToEarn: [],
-    payoutMethods: [],
-    investmentRequired: false
-  })
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
@@ -37,7 +44,7 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
         
         const data = await response.json()
         setWebsites(data)
-        // Apply payout method filter immediately
+        // Apply category filter immediately
         const filtered = applyPayoutMethodFilter(data, payoutMethod)
         setFilteredWebsites(filtered)
       } catch (err) {
@@ -82,65 +89,57 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
     }
   }
 
-  // Filter websites by payout method
   const applyPayoutMethodFilter = (websitesToFilter: Website[], targetPayoutMethod: string) => {
-    return websitesToFilter.filter(website => {
-      const websitePayoutMethods = website.payoutMethods || ''
-      // Split the payout methods string by comma and clean up whitespace
-      const websiteMethodsList = websitePayoutMethods
+    return websitesToFilter.filter((website) => {
+      const websiteMethodsList = (website.payoutMethods || '')
         .split(',')
-        .map(method => method.trim().toLowerCase())
-      
+        .map((method) => method.trim().toLowerCase())
+
       const targetMethodLower = targetPayoutMethod.toLowerCase()
-      
-      // Check if this payout method exists in the website's methods
-      return websiteMethodsList.some(websiteMethod => {
-        // Exact match
+
+      return websiteMethodsList.some((websiteMethod) => {
         if (websiteMethod === targetMethodLower) {
           return true
         }
-        
-        // Handle specific mappings for common variations
+
         const methodMappings: Record<string, string[]> = {
-          'paypal': ['paypal', 'paypal cash'],
+          paypal: ['paypal', 'paypal cash'],
           'bank transfer': ['bank transfer', 'bank', 'wire transfer', 'direct deposit', 'ach'],
-          'check': ['check', 'cheque', 'paper check'],
-          'payoneer': ['payoneer', 'payoneer card'],
-          'skrill': ['skrill', 'skrill wallet'],
-          'wise': ['wise', 'transferwise', 'wise transfer'],
-          'revolut': ['revolut', 'revolut card'],
-          'venmo': ['venmo'],
-          'zelle': ['zelle'],
-          'papara': ['papara'],
-          'qiwi': ['qiwi', 'qiwi wallet'],
-          'yoomoney': ['yoomoney', 'yandex.money', 'yandex money'],
+          check: ['check', 'cheque', 'paper check'],
+          payoneer: ['payoneer', 'payoneer card'],
+          skrill: ['skrill', 'skrill wallet'],
+          wise: ['wise', 'transferwise', 'wise transfer'],
+          revolut: ['revolut', 'revolut card'],
+          venmo: ['venmo'],
+          zelle: ['zelle'],
+          papara: ['papara'],
+          qiwi: ['qiwi', 'qiwi wallet'],
+          yoomoney: ['yoomoney', 'yandex.money', 'yandex money'],
           'gift cards': ['gift cards', 'gift card', 'vouchers', 'rewards'],
           'amazon gift card': ['amazon gift card', 'amazon', 'amazon voucher'],
           'visa prepaid card': ['visa prepaid', 'visa card', 'prepaid visa'],
           'mastercard prepaid card': ['mastercard prepaid', 'mastercard', 'prepaid mastercard'],
-          'cryptocurrency': ['cryptocurrency', 'crypto', 'digital currency'],
-          'bitcoin': ['bitcoin', 'btc'],
-          'ethereum': ['ethereum', 'eth'],
-          'litecoin': ['litecoin', 'ltc']
+          cryptocurrency: ['cryptocurrency', 'crypto', 'digital currency'],
+          bitcoin: ['bitcoin', 'btc'],
+          ethereum: ['ethereum', 'eth'],
+          litecoin: ['litecoin', 'ltc'],
         }
-        
-        // Check if the target method has any mappings
+
         const mappings = methodMappings[targetMethodLower]
         if (mappings) {
-          return mappings.some(mapping => websiteMethod.includes(mapping))
+          return mappings.some((mapping) => websiteMethod.includes(mapping))
         }
-        
-        // For other methods, check if the website method contains the target method
+
         if (targetMethodLower.length > 3) {
           return websiteMethod.includes(targetMethodLower)
         }
-        
+
         return false
       })
     })
   }
 
-  // Apply additional filters (from FilterSidebar) on top of payout method filtering
+  // Apply additional filters on top of payout method filtering
   const applyFilters = (websitesToFilter: Website[], filterCriteria: FilterCriteria) => {
     let filtered = [...websitesToFilter]
 
@@ -162,7 +161,6 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
       })
     }
 
-    // Apply ways to earn filter
     if (filterCriteria.waysToEarn && filterCriteria.waysToEarn.length > 0) {
       filtered = filtered.filter(website => {
         const websiteWaysToEarn = website.waystoEarn || ''
@@ -207,48 +205,6 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
       })
     }
 
-    // Apply additional payout methods filter (on top of main payout method filter)
-    if (filterCriteria.payoutMethods && filterCriteria.payoutMethods.length > 0) {
-      filtered = filtered.filter(website => {
-        const websitePayoutMethods = website.payoutMethods || ''
-        const websiteMethodsList = websitePayoutMethods
-          .split(',')
-          .map(method => method.trim().toLowerCase())
-        
-        return filterCriteria.payoutMethods.every(selectedMethod => {
-          const selectedMethodLower = selectedMethod.toLowerCase()
-          
-          return websiteMethodsList.some(websiteMethod => {
-            if (websiteMethod === selectedMethodLower) {
-              return true
-            }
-            
-            const methodMappings: Record<string, string[]> = {
-              'paypal': ['paypal cash', 'paypal'],
-              'gift cards': ['gift cards', 'giftcards'],
-              'amazon gift card': ['amazon gift card', 'amazon gift cards'],
-              'visa prepaid card': ['visa prepaid card', 'visa prepaid'],
-              'mastercard prepaid card': ['mastercard prepaid card', 'mastercard prepaid'],
-              'bank transfer': ['bank transfer', 'direct deposit', 'wire transfer'],
-              'check': ['check', 'cheque'],
-              'cryptocurrency': ['crypto', 'cryptocurrency', 'bitcoin', 'ethereum', 'litecoin']
-            }
-            
-            const mappings = methodMappings[selectedMethodLower]
-            if (mappings) {
-              return mappings.some(mapping => websiteMethod.includes(mapping))
-            }
-            
-            if (selectedMethodLower.length > 3) {
-              return websiteMethod.includes(selectedMethodLower)
-            }
-            
-            return false
-          })
-        })
-      })
-    }
-
     // Apply investment required filter
     if (filterCriteria.investmentRequired) {
       filtered = filtered.filter(website => {
@@ -261,11 +217,9 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
   }
 
   // Check if filters are active
-  const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.payoutMethods.length > 0 || filters.investmentRequired)
+  const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.investmentRequired)
 
-  // Update filtering and sorting when filters, sortBy, or payoutMethod changes
   useEffect(() => {
-    // First apply payout method filter
     let result = applyPayoutMethodFilter(websites, payoutMethod)
     
     // Then apply additional filters if any are active
@@ -279,14 +233,13 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
     setFilteredWebsites(result)
   }, [websites, payoutMethod, filters, sortBy, hasActiveFilters])
 
+  const paginatedWebsites = filteredWebsites.slice(
+    (currentPage - 1) * PAYOUT_METHODS_PAGE_SIZE,
+    currentPage * PAYOUT_METHODS_PAGE_SIZE
+  )
+
   const clearFilters = () => {
-    setFilters({
-      expertRating: '',
-      earningPotential: '',
-      waysToEarn: [],
-      payoutMethods: [],
-      investmentRequired: false
-    })
+    router.push(basePath)
   }
 
   const toggleSidebar = () => {
@@ -324,15 +277,13 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
 
   return (
     <div className="flex gap-6">
-      {/* Filter Sidebar */}
-      {/* <FilterSidebar
+      <PayoutMethodsFilterSidebar
         filters={filters}
-        onFiltersChange={setFilters}
-        onClearFilters={clearFilters}
+        basePath={basePath}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
-      /> */}
+      />
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
@@ -358,10 +309,9 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
                   {hasActiveFilters ? `Filtered ${payoutMethod} Sites` : `${payoutMethod} Sites`}
                 </h2>
                 <p className="text-sm text-gray-600">
-                  {hasActiveFilters 
-                    ? `Showing ${filteredWebsites.length} websites that pay via ${payoutMethod.toLowerCase()}` 
-                    : `Showing ${filteredWebsites.length} websites that pay via ${payoutMethod.toLowerCase()}`
-                  }
+                  {hasActiveFilters
+                    ? `Showing ${paginatedWebsites.length} of ${filteredWebsites.length} filtered websites that pay via ${payoutMethod.toLowerCase()}`
+                    : `Showing ${paginatedWebsites.length} of ${filteredWebsites.length} websites that pay via ${payoutMethod.toLowerCase()}`}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -415,8 +365,13 @@ export default function PayoutMethodsContainer({ payoutMethod }: PayoutMethodsCo
 
         {/* Websites Grid */}
         {filteredWebsites.length > 0 && (
-          <ReviewsGrid 
-            websites={filteredWebsites}  
+          <PayoutMethodsGrid
+            websites={paginatedWebsites}
+            currentPage={currentPage}
+            pageSize={PAYOUT_METHODS_PAGE_SIZE}
+            totalWebsitesCount={filteredWebsites.length}
+            filters={filters}
+            paginationBasePath={basePath}
           />
         )}
       </div>

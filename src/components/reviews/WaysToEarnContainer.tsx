@@ -1,27 +1,34 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Website } from '@/data/websites'
-import ReviewsGrid from './ReviewsGrid'
-import FilterSidebar, { FilterCriteria, SortOption } from './FilterSidebar'
+import WaysToEarnGrid from './WaysToEarnGrid'
+import WaysToEarnFilterSidebar from './WaysToEarnFilterSidebar'
+import { FilterCriteria, SortOption } from './FilterSidebar'
+
+export const WAYS_TO_EARN_PAGE_SIZE = 10
 
 interface WaysToEarnContainerProps {
   category: string
+  categorySlug: string
+  currentPage?: number
+  filters: FilterCriteria
 }
 
-export default function WaysToEarnContainer({ category }: WaysToEarnContainerProps) {
+export default function WaysToEarnContainer({
+  category,
+  categorySlug,
+  currentPage = 1,
+  filters,
+}: WaysToEarnContainerProps) {
+  const router = useRouter()
+  const basePath = `/ways-to-earn/${categorySlug}`
   const [websites, setWebsites] = useState<Website[]>([])
   const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [filters, setFilters] = useState<FilterCriteria>({
-    expertRating: '',
-    earningPotential: '',
-    waysToEarn: [],
-    payoutMethods: [],
-    investmentRequired: false
-  })
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
@@ -259,7 +266,7 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
   }
 
   // Check if filters are active
-  const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.payoutMethods.length > 0 || filters.investmentRequired)
+  const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.payoutMethods.length > 0 || filters.investmentRequired)
 
   // Update filtering and sorting when filters, sortBy, or category changes
   useEffect(() => {
@@ -277,14 +284,13 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
     setFilteredWebsites(result)
   }, [websites, category, filters, sortBy, hasActiveFilters])
 
+  const paginatedWebsites = filteredWebsites.slice(
+    (currentPage - 1) * WAYS_TO_EARN_PAGE_SIZE,
+    currentPage * WAYS_TO_EARN_PAGE_SIZE
+  )
+
   const clearFilters = () => {
-    setFilters({
-      expertRating: '',
-      earningPotential: '',
-      waysToEarn: [],
-      payoutMethods: [],
-      investmentRequired: false
-    })
+    router.push(basePath)
   }
 
   const toggleSidebar = () => {
@@ -322,14 +328,13 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
 
   return (
     <div className="flex gap-6">
-      {/* Filter Sidebar */}
-      {/* <FilterSidebar
+      <WaysToEarnFilterSidebar
         filters={filters}
-        onFiltersChange={setFilters}
+        basePath={basePath}
         hasActiveFilters={hasActiveFilters}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
-      /> */}
+      />
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
@@ -355,10 +360,9 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
                   {hasActiveFilters ? `Filtered ${category} Sites` : `${category} Sites`}
                 </h2>
                 <p className="text-sm text-gray-600">
-                  {hasActiveFilters 
-                    ? `Showing ${filteredWebsites.length} websites for ${category.toLowerCase()}` 
-                    : `Showing ${filteredWebsites.length} websites for ${category.toLowerCase()}`
-                  }
+                  {hasActiveFilters
+                    ? `Showing ${paginatedWebsites.length} of ${filteredWebsites.length} filtered websites for ${category.toLowerCase()}`
+                    : `Showing ${paginatedWebsites.length} of ${filteredWebsites.length} websites for ${category.toLowerCase()}`}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -412,8 +416,13 @@ export default function WaysToEarnContainer({ category }: WaysToEarnContainerPro
 
         {/* Websites Grid */}
         {filteredWebsites.length > 0 && (
-          <ReviewsGrid 
-            websites={filteredWebsites} 
+          <WaysToEarnGrid
+            websites={paginatedWebsites}
+            currentPage={currentPage}
+            pageSize={WAYS_TO_EARN_PAGE_SIZE}
+            totalWebsitesCount={filteredWebsites.length}
+            filters={filters}
+            paginationBasePath={basePath}
           />
         )}
       </div>
