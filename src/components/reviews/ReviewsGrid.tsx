@@ -1,10 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Website } from '@/data/websites'
 import { FilterCriteria } from './FilterSidebar'
+import WebsiteImage from '@/components/WebsiteImage'
 
 interface ReviewsGridProps {
   websites: Website[]
@@ -43,43 +42,42 @@ export default function ReviewsGrid({
 
   //console.log('filtersParams', filtersParams.toString());
   //console.log('filters', filters);
-  const makePageHref = (page: number) => (page <= 1 ? `/reviews?${filtersParams.toString()}` : `/reviews/page/${page}?${filtersParams.toString()}`)
+  const queryString = filtersParams.toString()
+  const makePageHref = (page: number) => {
+    if (page <= 1) {
+      return queryString ? `/reviews?${queryString}` : '/reviews'
+    }
+
+    return queryString ? `/reviews/page/${page}?${queryString}` : `/reviews/page/${page}`
+  }
 
   return (
     <>
       {/* Reviews Grid */}
-      <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto px-4 sm:px-6">
         {websites.map((website) => (
           <div key={website.sNo} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <div className="p-4 sm:p-5">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
                 {/* Left Side - Website Name and Logo */}
                 <div className="w-full lg:w-1/5 flex-shrink-0">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg flex items-center justify-center border mx-auto">
-                    <div className="text-center">
-                      <div className="text-gray-400 text-xs">
-                        <img 
-                          alt={`${website.websiteName} logo`} 
-                          width="60" 
-                          height="60" 
-                          style={{width: '100%'}} 
-                          src={`https://firebasestorage.googleapis.com/v0/b/virtualnod-storage.firebasestorage.app/o/hustleworthy%2Flogo-images%2F${website.websiteName}.png?alt=media`}
-                          onError={(e) => {
-                            // Fallback to text if image fails to load
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            const parent = target.parentElement;
-                            if (parent) {
-                              parent.innerHTML = `<div class="text-gray-500 font-bold text-lg">${(website.websiteName || 'W').charAt(0)}</div>`;
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <WebsiteImage
+                      websiteName={website.websiteName || ''}
+                      alt={`${website.websiteName} logo`}
+                      width={72}
+                      height={72}
+                      className="max-h-full max-w-full object-contain"
+                    />
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-gray-900 mt-2 sm:mt-3 text-center">
-                    <a href={`/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`} target="_blank">{website.websiteName || 'Unknown Website'}</a>
+                    <Link href={`/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`}>
+                      {website.websiteName || 'Unknown Website'}
+                    </Link>
                   </h3>
+                  <div className="mt-1 text-center text-xs font-semibold text-blue-700">
+                    Rating {website.expertRating || 'N/A'}
+                  </div>
                 </div>
 
                 {/* Right Side - Basic Details */}
@@ -113,13 +111,12 @@ export default function ReviewsGrid({
 
                   {/* Go to Full Review Button */}
                   <div className="flex justify-center sm:justify-end pt-2">
-                    <a 
-                      rel="nofollow noopener"
+                    <Link
                       href={`/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg transition-colors duration-200 text-sm w-full sm:w-auto text-center"
                     >
                       Go to Full Review
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

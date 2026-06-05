@@ -3,12 +3,15 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { createPageMetadata } from '@/lib/seo'
 
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Admin Panel | Hustle Worthy',
   description: 'Admin panel for Hustle Worthy',
-}
+  path: '/admin',
+  noIndex: true,
+})
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);

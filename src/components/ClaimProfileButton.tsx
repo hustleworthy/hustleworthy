@@ -205,7 +205,7 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileError, setTurnstileError] = useState('');
   const [turnstileResetCounter, setTurnstileResetCounter] = useState(0);
-  const embedCode = ` <a href="https://hustleworthy.com/reviews/${encodeURIComponent(websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}" target="_blank" rel="nofollow"><img width="300" src="https://hustleworthy.com/images/featuredon.png"></a>`;
+  const embedCode = ` <a href="https://hustleworthy.com/reviews/${encodeURIComponent(websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}" target="_blank" rel="nofollow noopener noreferrer"><img width="300" src="https://hustleworthy.com/images/featuredon.png"></a>`;
 
   useEffect(() => {
     if (!isOpen) {

@@ -1,16 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { Search, User, LogOut, Menu, X } from 'lucide-react'
+import { User, LogOut, Menu, X } from 'lucide-react'
 import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Header() {
   const { data: session, status } = useSession()
   const pathname = usePathname()
-  const isReviewsPage = pathname?.startsWith('/reviews/')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileMenuOpen])
 
   return (
     <>
@@ -29,10 +40,10 @@ export default function Header() {
                   <Link href="/" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                     Home
                   </Link>
-                  <Link href="/reviews" rel="nofollow noopener" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
+                  <Link href="/reviews" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                     Reviews
                   </Link>
-                  <Link href="/best" rel="nofollow noopener" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
+                  <Link href="/best" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
                     Top Picks
                   </Link>
                   <Link href="/blog" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium">
@@ -43,10 +54,10 @@ export default function Header() {
             {/* Monthly Pick Badge & Auth */}
             <div className="flex items-center space-x-4">
               
-              <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-white to-gray-100 text-black px-4 py-2 rounded-full shadow-lg border border-white/20">
-                <span className="text-sm font-medium">⭐ Monthly Pick:</span>
+              <div className="hidden lg:flex items-center space-x-2 bg-gradient-to-r from-white to-gray-100 text-black px-4 py-2 rounded-full shadow-lg border border-white/20">
+                <span className="text-sm font-medium">Monthly Pick:</span>
                 <span className="text-sm font-bold text-white px-3 py-1 rounded-full text-xs shadow-md" style={{background: '#03a9f4'}}>
-                  <a href="/reviews/bigcashweb" target="_blank">BigCashWeb</a>
+                  <Link href="/reviews/bigcashweb">BigCashWeb</Link>
                 </span>
               </div>
 
@@ -60,7 +71,7 @@ export default function Header() {
               </button>
 
               {/* Auth Section */}
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 {status === 'loading' ? (
                   <div className="animate-pulse bg-white/20 rounded-full px-4 py-2 w-20 h-8"></div>
                 ) : session ? (
@@ -95,16 +106,16 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50">
+        <div className="md:hidden fixed inset-x-0 top-20 bottom-0 z-50">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50"
+            className="fixed inset-x-0 top-20 bottom-0 bg-black bg-opacity-50"
             onClick={() => setMobileMenuOpen(false)}
           ></div>
           
           {/* Mobile Menu */}
-          <div className="fixed top-20 left-0 right-0 bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
-            <div className="px-6 py-8 space-y-6">
+          <div className="fixed top-20 left-0 right-0 bottom-0 overflow-y-auto bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
+            <div className="px-6 py-6 space-y-5">
               {/* Mobile Navigation */}
               <nav className="space-y-4">
                 <Link 
@@ -138,12 +149,14 @@ export default function Header() {
               </nav>
 
               {/* Mobile Monthly Pick */}
-              <div className="pt-4">
+              <div>
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">⭐ Monthly Pick:</span>
+                    <span className="text-sm font-medium">Monthly Pick:</span>
                     <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
-                      <a href="/reviews/Bigcashweb" target="_blank">BigCashWeb</a>
+                      <Link href="/reviews/bigcashweb" onClick={() => setMobileMenuOpen(false)}>
+                        BigCashWeb
+                      </Link>
                     </span>
                   </div>
                 </div>
@@ -186,4 +199,4 @@ export default function Header() {
       )}
     </>
   )
-} 
+}

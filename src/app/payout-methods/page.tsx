@@ -2,24 +2,32 @@ import type { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { PAYOUT_METHODS_CATEGORIES } from '@/data/payoutMethodsCategories'
+import JsonLd from '@/components/JsonLd'
+import { createPageMetadata, itemListSchema } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Payout Methods - Find Sites by Payment Options | Hustle Worthy',
   description: 'Browse money-making websites by payout methods. Find sites that pay through PayPal, bank transfer, gift cards, cryptocurrency, and more payment options.',
-  openGraph: {
-    title: 'Payout Methods - Find Sites by Payment Options | Hustle Worthy',
-    description: 'Browse money-making websites by payout methods. Find sites that pay through PayPal, bank transfer, gift cards, cryptocurrency, and more.',
-    type: 'website'
-  }
-}
+  path: '/payout-methods',
+})
 
 export default function PayoutMethodsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={itemListSchema(
+          'Payout methods for money-making sites',
+          PAYOUT_METHODS_CATEGORIES.map((method) => ({
+            name: method.name,
+            path: `/payout-methods/${method.slug}`,
+            description: method.description,
+          }))
+        )}
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Best Sites to Earn Money with Different Payment Methods
           </h1>
         </div>

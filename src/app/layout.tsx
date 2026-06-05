@@ -1,36 +1,28 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import './custom.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
+import JsonLd from '@/components/JsonLd'
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  SITE_URL,
+  createPageMetadata,
+  organizationSchema,
+  websiteSchema,
+} from '@/lib/seo'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': 'https://hustleworthy.com/#organization',
-  name: 'Hustleworthy',
-  url: 'https://hustleworthy.com/',
-  email: 'info@hustleworthy.com',
-  logo: {
-    '@type': 'ImageObject',
-    url: 'https://hustleworthy.com/images/logo.png',
-  },
-  description:
-    'Hustleworthy is a directory and review website that helps users discover make-money platforms, side hustle websites, reward apps, GPT sites, and online earning opportunities.',
-  sameAs: [
-    'https://www.facebook.com/official.hustleworthy/',
-    'https://x.com/hustleworthy',
-    'https://www.youtube.com/@HustleWorthy',
-    'https://www.linkedin.com/company/hustle-worthy/',
-  ],
-} as const
-
 export const metadata: Metadata = {
-  title: 'Find Legit Money Making Websites | Hustle Worthy',
-  description: 'Discover and review money-making websites with detailed ratings, payment methods, and user experiences.',
+  metadataBase: new URL(SITE_URL),
+  ...createPageMetadata({
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    path: '/',
+  }),
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
@@ -46,6 +38,12 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#03a9f4',
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -54,13 +52,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#03a9f4" />
         <meta name="msapplication-TileColor" content="#03a9f4" />
         <meta name="msapplication-TileImage" content="/android-chrome-192x192.png" />
         {/* Google tag (gtag.js) */}
@@ -76,12 +72,7 @@ export default function RootLayout({
           }}
         />
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
       </head>
       <body className={inter.className}>
         <Providers>
@@ -93,4 +84,4 @@ export default function RootLayout({
       </body>
     </html>
   )
-} 
+}

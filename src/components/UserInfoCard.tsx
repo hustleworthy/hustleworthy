@@ -90,7 +90,7 @@ export default function UserInfoCard({ verificationRequest }: UserInfoCardProps)
                 <a 
                   href={website.url} 
                   target="_blank" 
-                  rel="noopener noreferrer"
+                  rel="nofollow noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 underline"
                 >
                   {website.url}

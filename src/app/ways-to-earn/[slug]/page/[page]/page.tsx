@@ -9,6 +9,7 @@ import {
   getWaysToEarnCategoryMetaTitle,
 } from '@/data/waysToEarnCategories'
 import { parseWaysToEarnSearchParams } from '@/lib/waysToEarnFilters'
+import { createPageMetadata } from '@/lib/seo'
 
 interface WaysToEarnPaginationPageProps {
   params: Promise<{ slug: string; page: string }>
@@ -62,8 +63,8 @@ export default async function WaysToEarnPaginationPage({
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             {getWaysToEarnCategoryHeading(category.name)}
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">{category.description}</p>
@@ -101,18 +102,9 @@ export async function generateMetadata({
   )
   const description = getWaysToEarnCategoryMetaDescription(category.name)
 
-  return {
+  return createPageMetadata({
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-    },
-  }
+    path: `/ways-to-earn/${slug}`,
+  })
 }

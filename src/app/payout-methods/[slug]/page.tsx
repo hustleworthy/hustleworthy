@@ -4,6 +4,8 @@ import Footer from '@/components/Footer'
 import PayoutMethodsContainer from '@/components/reviews/PayoutMethodsContainer'
 import { getPayoutMethodBySlug } from '@/data/payoutMethodsCategories'
 import { parsePayoutMethodsSearchParams } from '@/lib/payoutMethodsFilters'
+import JsonLd from '@/components/JsonLd'
+import { breadcrumbSchema, createPageMetadata } from '@/lib/seo'
 
 interface PayoutMethodCategoryPageProps {
   params: Promise<{ slug: string }>
@@ -31,9 +33,16 @@ export default async function PayoutMethodCategoryPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Payout Methods', path: '/payout-methods' },
+          { name: method.name, path: `/payout-methods/${slug}` },
+        ])}
+      />
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">{method.name}</h1>
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">{method.name}</h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">{method.description}</p>
         </div>
       </div>
@@ -65,18 +74,9 @@ export async function generateMetadata({
   const title = `${method.name} Payout Sites - Earn Money Online | Hustle Worthy`
   const description = `Browse money-making websites that pay through ${method.name}. ${method.description}`
 
-  return {
+  return createPageMetadata({
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-    },
-  }
+    path: `/payout-methods/${slug}`,
+  })
 }

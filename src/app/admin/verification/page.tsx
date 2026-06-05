@@ -5,12 +5,15 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import UserInfoCard from '@/components/UserInfoCard'
+import { createPageMetadata } from '@/lib/seo'
 
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Verification | Hustle Worthy',
   description: 'Verification for Hustle Worthy',
-}
+  path: '/admin/verification',
+  noIndex: true,
+})
 
 export default async function VerificationPage({ 
   searchParams 

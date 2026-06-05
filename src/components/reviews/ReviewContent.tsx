@@ -410,18 +410,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
             </div>
           </div>
 
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-            <div className="mb-4">
-              <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">
-                Top Monthly Pick
-              </span>
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2">BigCashWeb</h3>
-            <p className="text-sm text-gray-600 mb-4"><a href="/reviews/bigcashweb">Check Detailed Review</a></p>
-            <div className="text-right text-xs text-gray-500">📊</div>
-          </div>
-
-          <div id="expert-review" className="bg-white rounded-lg shadow-sm p-6">
+          <div id="review-navigation" className="bg-white rounded-lg shadow-sm p-6">
             <ul className="space-y-2 text-sm">
               <li className="flex justify-between">
                 <a href="#expert-review" className="text-gray-600">Expert Review</a>
@@ -451,17 +440,17 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
   return (
     <div className="space-y-8">
       {/* Mobile layout content - same structure as desktop but different styling */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="flex flex-col items-center text-center gap-4">
           <div className="flex-shrink-0">
-            <div className="w-40 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
+            <div className="w-28 h-28 p-2 bg-gray-100 rounded-lg flex items-center justify-center border">
                 <div className="text-center">
                   <div className="text-gray-400 text-xs">
                     <WebsiteImage 
                       websiteName={website.websiteName || ''}
                       alt={`${website.websiteName} logo`} 
-                      width="100px" 
-                      height="100px" 
+                      width={96}
+                      height={96}
                       style={{width: '100%'}} 
                     />
                   </div>
@@ -470,20 +459,22 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </div>
           
           <div className="flex-1">
-            <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {website.websiteName || 'Unknown Website'}
-              {website.isVerified && (
-                <span className="inline-flex items-center w-[24px] h-[24px] align-center justify-center text-xs font-medium text-green-700 bg-green-100 rounded-full ml-2">
-                  <CheckCircle className="h-4 w-4" />
-                </span>
-              )}
-            </h1>
-              {!website.isVerified && (
-                <ClaimProfileButton websiteName={website.websiteName || ''} domain={website.url || ''}/>
-              )}
+            <div className="mb-2">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+                {website.websiteName || 'Unknown Website'}
+                {website.isVerified && (
+                  <span className="inline-flex items-center w-[24px] h-[24px] align-center justify-center text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                    <CheckCircle className="h-4 w-4" />
+                  </span>
+                )}
+              </h1>
             </div>
-            <h3 className="text-xl text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h3>
+            <h3 className="text-base text-gray-600 mb-4">Expert and User Insights by {website.websiteName || 'Website'} Customers</h3>
+            {!website.isVerified && (
+              <div className="flex justify-center mb-4">
+                <ClaimProfileButton websiteName={website.websiteName || ''} domain={website.url || ''}/>
+              </div>
+            )}
             
             <div className="flex flex-wrap items-center gap-4 mb-4">
              <a href="#" className="relative group text-blue-500 hover:text-blue-600 text-sm">
@@ -512,7 +503,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </a>
             </div>
             
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center justify-center gap-3 mb-6">
               <button className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
                 <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
@@ -543,14 +534,14 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="text-center items-center justify-center flex flex-col border-r border-gray-200 pr-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+          <div className="text-center items-center justify-center flex flex-col md:border-r border-gray-200 md:pr-10">
             <div className="text-5xl font-bold text-gray-900 mb-2">{averageUserRating.toFixed(1) || 'N/A'}</div>
             <StarRating rating={averageUserRating} className="justify-center mb-3" />
             <p className="text-sm text-blue-500">Based on user ratings</p>
           </div>
 
-          <div className="space-y-2 border-r border-gray-200 pr-10">
+          <div className="space-y-2 md:border-r border-gray-200 md:pr-10">
             <div className="mb-4">
               <span className="text-gray-500 font-semibold text-lg">Stats</span>
             </div>
@@ -690,17 +681,6 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
               {website.isitLegit === 'true' ? 'Yes' : website.isitLegit === 'false' ? 'No' : 'Yes'}
             </div>
           </div>
-        </div>
-
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-          <div className="mb-4">
-            <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">
-              Top Monthly Pick
-            </span>
-          </div>
-          <h3 className="font-bold text-gray-900 mb-2">BigCashWeb</h3>
-          <p className="text-sm text-gray-600 mb-4"><a href="/reviews/bigcashweb">Check Detailed Review</a></p>
-          <div className="text-right text-xs text-gray-500">📊</div>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-6">

@@ -3,12 +3,14 @@ import { notFound, redirect } from 'next/navigation'
 import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
 import type { FilterCriteria } from '@/components/reviews/FilterSidebar'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'List Of Money Making Sites | Hustle Worthy',
   description:
     'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.',
-}
+  path: '/reviews',
+})
 
 interface ReviewsPaginationPageProps {
   params: Promise<{ page: string }>
@@ -62,8 +64,8 @@ export default async function ReviewsPaginationPage({
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Money Making Site Reviews</h1>
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">Money Making Site Reviews</h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">
             Expert analysis and user feedback on the best money-making websites. Find legitimate
             platforms that actually pay.

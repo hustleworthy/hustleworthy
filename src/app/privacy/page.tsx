@@ -1,9 +1,11 @@
 import Link from 'next/link'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: 'Privacy Policy | Hustle Worthy',
   description: 'Learn how Hustle Worthy protects your privacy and handles your personal information.',
-}
+  path: '/privacy',
+})
 
 export default function PrivacyPolicy() {
   return (

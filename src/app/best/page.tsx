@@ -1,7 +1,10 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { getFeaturedWebsites } from '@/data/websites'
 import Footer from '@/components/Footer'
 import WebsiteImage from '@/components/WebsiteImage'
+import JsonLd from '@/components/JsonLd'
+import { createPageMetadata, itemListSchema } from '@/lib/seo'
 
 // Helper function to parse rating from "4.5 out of 5" format
 function parseRating(rating: string): number {
@@ -28,10 +31,15 @@ function parseRating(rating: string): number {
   return isNaN(num) ? 0 : num
 }
 
-export const metadata: Metadata = {
-  title: 'Best Money Making Websites ( 100+ Sites Tested ) | Hustle Worthy',
-  description: 'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that are actually legit. See our top-rated GPT sites, reviews & payment proofs.',
-}
+const title = 'Best Money Making Websites ( 100+ Sites Tested ) | Hustle Worthy'
+const description =
+  'Tired of scams? Our experts tested dozens of platforms to find the best online money making websites that are actually legit. See our top-rated GPT sites, reviews & payment proofs.'
+
+export const metadata: Metadata = createPageMetadata({
+  title,
+  description,
+  path: '/best',
+})
 
 export default async function BestPage() {
   // Fetch 5 websites: Swagbucks at top + 4 others by expert rating
@@ -39,12 +47,22 @@ export default async function BestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <JsonLd
+        data={itemListSchema(
+          'Best online money making websites',
+          websites.map((website) => ({
+            name: website.websiteName || 'Website review',
+            path: `/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`,
+            description: website.about || website.noteEarningPotential || undefined,
+          }))
+        )}
+      />
       {/* Hero Section */}
       <div className="hero-banner relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20"></div>
         <div className="wave-animation absolute inset-0 opacity-30"></div>
-        <div className="relative z-10 container mx-auto px-6 py-20 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+        <div className="relative z-10 container mx-auto px-6 py-12 sm:py-16 lg:py-20 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 drop-shadow-lg">
             Best Online Money Making Websites
           </h1>
           <p className="text-xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
@@ -99,7 +117,7 @@ export default async function BestPage() {
             {/* Description text */}
             <div className="text-center max-w-4xl mx-auto">
               <p className="text-xl text-gray-600 leading-relaxed mb-6">
-                Our experts at GPT Critic exhaustively tested and reviewed every major money-making platform, analyzing earning potential, payout reliability, task availability, ease of use, and much more.
+                Our experts at Hustleworthy exhaustively tested and reviewed every major money-making platform, analyzing earning potential, payout reliability, task availability, ease of use, and much more.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Below are our expert's picks for the best Get-Paid-To (GPT) sites of the year, based on their personal experience with each one.
@@ -155,14 +173,12 @@ export default async function BestPage() {
                       </h3>
                       </div>
                       <div className="text-center">
-                        <a 
-                          rel="nofollow noopener"
-                          href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`} 
-                          target="_blank" 
+                        <Link
+                          href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
                           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold w-full py-3 transition-colors rounded-full text-center inline-block"
                         >
                           View detailed review
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -242,7 +258,7 @@ export default async function BestPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center mb-2">
-                        <h5 className="font-semibold text-gray-900 mr-2">GPT Critic Expert</h5>
+                        <h5 className="font-semibold text-gray-900 mr-2">Hustleworthy Expert</h5>
                         <span className="text-gray-500 text-sm">(Verified Reviewer)</span>
                       </div>
                       <blockquote className="text-gray-700 leading-relaxed relative">
@@ -255,13 +271,12 @@ export default async function BestPage() {
                         </svg>
                       </blockquote>
                       <div className="mt-4">
-                        <a 
-                          rel="nofollow noopener"
+                        <Link
                           href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
                           className="text-[#03a9f4] hover:text-blue-600 font-medium underline"
                         >
                           Go to full review
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

@@ -1,7 +1,12 @@
 import { client } from "@/lib/microcms";
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { slugify, findPostBySlug } from '@/lib/slugify';
 import Footer from '@/components/Footer';
+import JsonLd from '@/components/JsonLd';
+import { articleSchema, breadcrumbSchema, createPageMetadata } from '@/lib/seo';
+import { getMicroCmsImageUrl } from '@/lib/media';
 
 // Force dynamic rendering to ensure we always fetch fresh data
 export const dynamic = 'force-dynamic';
@@ -108,18 +113,36 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 blog-post">
+        <JsonLd
+          data={[
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Blog', path: '/blog' },
+              { name: post.title, path: `/blog/${slug}` },
+            ]),
+            articleSchema({
+              title: post.title,
+              description: post.description,
+              path: `/blog/${slug}`,
+              image: post.thumbnail ? getMicroCmsImageUrl(post.thumbnail.url, 1200) : undefined,
+              author: post.writer?.name,
+              publishedAt: post.publishedAt,
+              updatedAt: post.updatedAt,
+            }),
+          ]}
+        />
         {/* Hero Section */}
         <div className="hero-banner relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20"></div>
           <div className="wave-animation absolute inset-0 opacity-30"></div>
-          <div className="relative z-10 container mx-auto px-6 py-20">
+          <div className="relative z-10 container mx-auto px-6 py-12 sm:py-16 lg:py-20">
             {/* Breadcrumb */}
             <nav className="mb-8">
               <ol className="flex items-center space-x-2 text-blue-100">
                 <li>
-                  <a href="/" className="hover:text-white transition-colors">
+                  <Link href="/" className="hover:text-white transition-colors">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,9 +150,9 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                   </svg>
                 </li>
                 <li>
-                  <a href="/blog" className="hover:text-white transition-colors">
+                  <Link href="/blog" className="hover:text-white transition-colors">
                     Blog
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,7 +167,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
 
             {/* Article Header */}
             <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 sm:mb-6 drop-shadow-lg leading-tight">
                 {post.title}
               </h1>
               
@@ -157,12 +180,13 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                 {/* Author */}
                 <div className="flex items-center space-x-3">
                   {post.writer?.image ? (
-                    <img
-                      src={post.writer.image.url}
+                    <Image
+                      src={getMicroCmsImageUrl(post.writer.image.url, 120)}
                       alt={post.writer.name}
                       className="rounded-full object-cover border-2 border-white/20"
-                      width="40"
-                      height="40"
+                      width={40}
+                      height={40}
+                      sizes="40px"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-semibold border border-white/30">
@@ -200,11 +224,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
             {/* Featured Image */}
             {post.thumbnail && (
               <div className="relative mb-12 rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src={post.thumbnail.url}
+                <Image
+                  src={getMicroCmsImageUrl(post.thumbnail.url, 1200)}
                   alt={post.title}
-                  width="1200"
-                  height="600"
+                  width={1200}
+                  height={600}
+                  sizes="(min-width: 1024px) 896px, 100vw"
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -239,11 +264,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
               <h3 className="text-2xl font-bold text-gray-900 mb-6">About the Author</h3>
               <div className="flex items-start space-x-6">
                 {post.writer?.image ? (
-                  <img
-                    src={post.writer.image.url}
+                  <Image
+                    src={getMicroCmsImageUrl(post.writer.image.url, 160)}
                     alt={post.writer.name}
-                    width="80"
-                    height="80"
+                    width={80}
+                    height={80}
+                    sizes="80px"
                     className="rounded-full object-cover border-4 border-gray-200"
                   />
                 ) : (
@@ -267,7 +293,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
 
             {/* Navigation */}
             <div className="mt-12 text-center">
-              <a 
+              <Link
                 href="/blog"
                 className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
@@ -275,7 +301,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
                 </svg>
                 Back to Blog
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -313,25 +339,13 @@ export async function generateMetadata({ params }: BlogPageProps) {
       };
     }
 
-    return {
+    return createPageMetadata({
       title: `${post.title} | Hustleworthy Blog`,
       description: post.description,
-      openGraph: {
-        title: post.title,
-        description: post.description,
-        images: post.thumbnail ? [post.thumbnail.url] : [],
-        type: 'article',
-        publishedTime: post.publishedAt,
-        modifiedTime: post.updatedAt,
-        authors: [post.writer?.name || 'Hustleworthy Team'],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: post.title,
-        description: post.description,
-        images: post.thumbnail ? [post.thumbnail.url] : [],
-      },
-    };
+      path: `/blog/${slug}`,
+      type: 'article',
+      image: post.thumbnail ? getMicroCmsImageUrl(post.thumbnail.url, 1200) : undefined,
+    });
   } catch (error) {
     return {
       title: 'Blog Post Not Found',

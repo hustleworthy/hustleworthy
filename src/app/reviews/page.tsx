@@ -2,11 +2,19 @@ import { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
 import { FilterCriteria } from '@/components/reviews/FilterSidebar'
+import JsonLd from '@/components/JsonLd'
+import { getAllWebsites } from '@/data/websites'
+import { createPageMetadata, itemListSchema } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'List Of Money Making Sites | Hustle Worthy',
-  description: 'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.',
-}
+const title = 'List Of Money Making Sites | Hustle Worthy'
+const description =
+  'Browse our comprehensive collection of website reviews. Get expert analysis, user feedback, and detailed insights on earning potential, payout methods, and legitimacy.'
+
+export const metadata: Metadata = createPageMetadata({
+  title,
+  description,
+  path: '/reviews',
+})
 
 export default async function ReviewsPage({ searchParams }: { searchParams: Promise<{
   expertRating?: string
@@ -16,6 +24,7 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
   investmentRequired?: string
 }> }) {
   const query = await searchParams
+  const websites = await getAllWebsites()
   const filtersValue: FilterCriteria = {
     expertRating: query.expertRating || '',
     earningPotential: query.earningPotential || '',
@@ -25,10 +34,20 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
   }
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={itemListSchema(
+          'Money making site reviews',
+          websites.slice(0, 20).map((website) => ({
+            name: website.websiteName || 'Website review',
+            path: `/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`,
+            description: website.about || website.noteEarningPotential || undefined,
+          }))
+        )}
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Money Making Site Reviews
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">

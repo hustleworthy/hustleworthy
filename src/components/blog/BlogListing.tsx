@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { getMicroCmsImageUrl } from '@/lib/media';
 import { slugify } from '@/lib/slugify';
 
 type Tag = {
@@ -86,11 +88,12 @@ export default function BlogListing({ initialPosts, totalCount, initialLimit }: 
             {/* Thumbnail */}
             {post.thumbnail && (
               <div className="relative overflow-hidden h-48">
-                <img
-                  src={post.thumbnail.url}
+                <Image
+                  src={getMicroCmsImageUrl(post.thumbnail.url, 640)}
                   alt={post.title}
-                  width="400"
-                  height="200"
+                  width={640}
+                  height={320}
+                  sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -100,7 +103,7 @@ export default function BlogListing({ initialPosts, totalCount, initialLimit }: 
             {/* Content */}
             <div className="p-6">
               <Link href={`/blog/${slugify(post.title)}`}>
-                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200 cursor-pointer">
+                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-3 md:line-clamp-2 group-hover:text-blue-600 transition-colors duration-200 cursor-pointer">
                   {post.title}
                 </h2>
               </Link>
@@ -114,11 +117,12 @@ export default function BlogListing({ initialPosts, totalCount, initialLimit }: 
                 {/* Author */}
                 <div className="flex items-center space-x-3">
                   {post.writer?.image ? (
-                    <img
-                      src={post.writer.image.url}
+                    <Image
+                      src={getMicroCmsImageUrl(post.writer.image.url, 96)}
                       alt={post.writer.name}
-                      width="32"
-                      height="32"
+                      width={32}
+                      height={32}
+                      sizes="32px"
                       className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                     />
                   ) : (

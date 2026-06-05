@@ -1,9 +1,11 @@
 import Link from 'next/link'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: 'Terms of Service | Hustle Worthy',
   description: 'Read the terms and conditions for using Hustleworthy, your trusted source for money-making website reviews.',
-}
+  path: '/terms',
+})
 
 export default function TermsOfService() {
   return (

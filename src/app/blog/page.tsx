@@ -1,7 +1,10 @@
-import { client } from "@/lib/microcms";
+import { client, isMicroCmsConfigured } from "@/lib/microcms";
 import BlogListing from '@/components/blog/BlogListing';
 import Footer from '@/components/Footer';
 import { Metadata } from 'next';
+import JsonLd from '@/components/JsonLd';
+import { slugify } from '@/lib/slugify';
+import { createPageMetadata, itemListSchema } from '@/lib/seo';
 
 type Tag = {
   id: string;
@@ -34,10 +37,15 @@ type Blog = {
   publishedAt?: string;
 };
 
-export const metadata: Metadata = {
-  title: 'Blog | Hustle Worthy',
-  description: 'Blog | Hustle Worthy',
-}
+const title = 'Money Making Guides and Side Hustle Tips | Hustleworthy'
+const description =
+  'Read practical money-making guides, side hustle tips, payout explainers, and platform walkthroughs from Hustleworthy.'
+
+export const metadata: Metadata = createPageMetadata({
+  title,
+  description,
+  path: '/blog',
+})
 
 // Revalidate every 60 seconds to ensure new posts appear quickly
 export const revalidate = 60;
@@ -46,22 +54,42 @@ export default async function BlogPage() {
   const INITIAL_LIMIT = 6;
   
   // Fetch initial blog posts with pagination
-  const data = await client.get<{ contents: Blog[]; totalCount: number }>({ 
-    endpoint: "blog",
-    queries: {
-      limit: INITIAL_LIMIT,
-      orders: '-publishedAt', // Order by published date, newest first
+  let data: { contents: Blog[]; totalCount: number }
+  if (!isMicroCmsConfigured) {
+    data = { contents: [], totalCount: 0 };
+  } else {
+    try {
+    data = await client.get<{ contents: Blog[]; totalCount: number }>({
+      endpoint: "blog",
+      queries: {
+        limit: INITIAL_LIMIT,
+        orders: '-publishedAt', // Order by published date, newest first
+      }
+    });
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      data = { contents: [], totalCount: 0 };
     }
-  });
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <JsonLd
+        data={itemListSchema(
+          'Hustleworthy money-making guides',
+          data.contents.map((post) => ({
+            name: post.title,
+            path: `/blog/${slugify(post.title)}`,
+            description: post.description,
+          }))
+        )}
+      />
       {/* Hero Section */}
       <div className="hero-banner relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20"></div>
         <div className="wave-animation absolute inset-0 opacity-30"></div>
-        <div className="relative z-10 container mx-auto px-6 py-20 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+        <div className="relative z-10 container mx-auto px-6 py-12 sm:py-16 lg:py-20 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 drop-shadow-lg">
             Our Blog
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">

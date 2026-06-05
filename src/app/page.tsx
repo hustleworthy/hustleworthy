@@ -1,9 +1,17 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Star, TrendingUp, Shield, Users } from 'lucide-react'
 import { getFeaturedWebsites } from '@/data/websites'
-import { client } from '@/lib/microcms'
+import { client, isMicroCmsConfigured } from '@/lib/microcms'
 import { slugify } from '@/lib/slugify'
+import { getMicroCmsImageUrl } from '@/lib/media'
 import Footer from '@/components/Footer'
+import JsonLd from '@/components/JsonLd'
+import { createPageMetadata, itemListSchema } from '@/lib/seo'
+
+export const metadata = createPageMetadata({
+  path: '/',
+})
 
 type Tag = {
   id: string;
@@ -45,6 +53,10 @@ export default async function Home() {
   // Fetch latest blog posts for the news section
   let blogData: { contents: Blog[]; totalCount: number };
   try {
+    if (!isMicroCmsConfigured) {
+      throw new Error('microCMS is not configured')
+    }
+
     blogData = await client.get<{ contents: Blog[]; totalCount: number }>({ 
       endpoint: "blog",
       queries: {
@@ -53,15 +65,27 @@ export default async function Home() {
       }
     });
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+    if (isMicroCmsConfigured) {
+      console.error('Error fetching blog posts:', error);
+    }
     // Fallback to empty array if API call fails
     blogData = { contents: [], totalCount: 0 };
   }
 
   return (
     <div className="min-h-screen">
+      <JsonLd
+        data={itemListSchema(
+          'Featured money-making websites',
+          featuredWebsites.map((website) => ({
+            name: website.websiteName || 'Website review',
+            path: `/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`,
+            description: website.about || website.noteEarningPotential || undefined,
+          }))
+        )}
+      />
       {/* Hero Banner Section */}
-      <section className="relative text-white py-4 overflow-hidden hero-banner">
+      <section className="relative text-white py-6 sm:py-8 lg:py-4 overflow-hidden hero-banner">
         {/* Dynamic animated background */}
         <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, #040b2e 0%, #28032e 30%, #0277bd 60%, #0b721e 100%)'}}>
           {/* Floating geometric shapes */}
@@ -112,48 +136,48 @@ export default async function Home() {
         </div>
         <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-center">
             {/* Left Content */}
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">
                 The Authority on Money Making Websites
               </h1>
-              <p className="text-lg mb-4 opacity-95">
+              <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-95">
               Get reliable advice, detailed reviews, tips and much more from Money Making Experts.
               </p>
               
               {/* Expert Profiles */}
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-3 sm:mb-4">
                 <div className="flex -space-x-2">
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white overflow-hidden">
                     <img 
                       src="/images/avatar-1.jpg" 
                       alt="Jessica Davis - Senior Tech Blogger" 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white overflow-hidden">
                     <img 
                       src="/images/avatar-2.jpg" 
                       alt="Samuel Martinez - Web Hosting Specialist" 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white overflow-hidden">
                     <img 
                       src="/images/avatar-3.jpg" 
                       alt="Amanda Lopez - Digital Marketing Expert" 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white overflow-hidden">
                     <img 
                       src="/images/avatar-4.jpg" 
                       alt="Michael Rodriguez - Online Business Consultant" 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white overflow-hidden">
                     <img 
                       src="/images/avatar-5.jpg" 
                       alt="Kimberly Park - SEO Specialist" 
@@ -162,18 +186,17 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-              <br/>
               {/* CTA Button */}
               <Link 
                 href="/best" 
-                className="inline-flex items-center text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 border border-yellow-600/40 shadow-2xl hover:scale-105 backdrop-blur-sm hover:shadow-yellow-500/30 cta-button"
+                className="inline-flex items-center text-black font-bold py-3 sm:py-4 px-5 sm:px-8 rounded-xl transition-all duration-300 border border-yellow-600/40 shadow-2xl hover:scale-105 backdrop-blur-sm hover:shadow-yellow-500/30 cta-button text-sm sm:text-base"
               >
-                ✓ 2026's Best Money Making Services »
+                2026's Best Money Making Sites
               </Link>
             </div>
             
             {/* Right Content - Money Illustration */}
-            <div className="relative flex items-center justify-center">
+            <div className="relative hidden sm:flex items-center justify-center">
               {/* Central treasure chest illustration */}
               <svg className="w-full h-auto max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg 2xl:max-w-xl drop-shadow-2xl" viewBox="0 0 220 220">
                 {/* Treasure chest base */}
@@ -512,9 +535,12 @@ export default async function Home() {
                 <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                   <div className="relative h-48 bg-gradient-to-r from-blue-500 to-blue-700">
                     {blog.thumbnail ? (
-                      <img 
-                        src={blog.thumbnail.url} 
+                      <Image
+                        src={getMicroCmsImageUrl(blog.thumbnail.url, 640)}
                         alt={blog.title}
+                        width={640}
+                        height={320}
+                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -679,4 +705,4 @@ export default async function Home() {
       <Footer />
     </div>
   )
-} 
+}

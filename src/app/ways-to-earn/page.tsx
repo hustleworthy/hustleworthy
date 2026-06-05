@@ -2,19 +2,32 @@ import { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { WAYS_TO_EARN_CATEGORIES } from '@/data/waysToEarnCategories'
+import JsonLd from '@/components/JsonLd'
+import { createPageMetadata, itemListSchema } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Ways to Earn Money Online - Browse by Category | Hustle Worthy',
   description: 'Explore different ways to earn money online. Browse websites by category including surveys, games, videos, tasks, and more. Find legitimate earning opportunities.',
-}
+  path: '/ways-to-earn',
+})
 
 export default function WaysToEarnIndexPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={itemListSchema(
+          'Ways to earn money online',
+          WAYS_TO_EARN_CATEGORIES.map((category) => ({
+            name: category.name,
+            path: `/ways-to-earn/${category.slug}`,
+            description: category.description,
+          }))
+        )}
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="container mx-auto px-6 py-10 sm:py-14 lg:py-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Ways to Earn Money Online
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">
