@@ -3,7 +3,9 @@ import { notFound, redirect } from 'next/navigation'
 import Footer from '@/components/Footer'
 import ReviewsContainer from '@/components/reviews/ReviewsContainer'
 import type { FilterCriteria } from '@/components/reviews/FilterSidebar'
+import { getAllWebsites } from '@/data/websites'
 import { createPageMetadata } from '@/lib/seo'
+import { REVIEWS_PAGE_SIZE, filterWebsites, paginateWebsites } from '@/lib/websiteFilters'
 
 export const metadata: Metadata = createPageMetadata({
   title: 'List Of Money Making Sites | Hustle Worthy',
@@ -58,6 +60,15 @@ export default async function ReviewsPaginationPage({
         : [],
     investmentRequired: query.investmentRequired === 'true',
   }
+  const websites = await getAllWebsites()
+  const filteredWebsites = filterWebsites(websites, filtersValue)
+  const totalPages = Math.max(1, Math.ceil(filteredWebsites.length / REVIEWS_PAGE_SIZE))
+
+  if (filteredWebsites.length > 0 && pageNumber > totalPages) {
+    notFound()
+  }
+
+  const initialWebsites = paginateWebsites(filteredWebsites, pageNumber, REVIEWS_PAGE_SIZE)
 
   //console.log('filtersValue', filtersValue);
 
@@ -76,7 +87,10 @@ export default async function ReviewsPaginationPage({
       <div className="container mx-auto px-6 py-12">
         <ReviewsContainer
           currentPage={pageNumber}
+          pageSize={REVIEWS_PAGE_SIZE}
           filters={filtersValue}
+          initialWebsites={initialWebsites}
+          initialTotalWebsitesCount={filteredWebsites.length}
         />
       </div>
 

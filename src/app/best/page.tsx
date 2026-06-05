@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import WebsiteImage from '@/components/WebsiteImage'
 import JsonLd from '@/components/JsonLd'
 import { createPageMetadata, itemListSchema } from '@/lib/seo'
+import { createReviewPath } from '@/lib/websiteFilters'
 
 // Helper function to parse rating from "4.5 out of 5" format
 function parseRating(rating: string): number {
@@ -52,7 +53,7 @@ export default async function BestPage() {
           'Best online money making websites',
           websites.map((website) => ({
             name: website.websiteName || 'Website review',
-            path: `/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`,
+            path: createReviewPath(website),
             description: website.about || website.noteEarningPotential || undefined,
           }))
         )}
@@ -174,7 +175,7 @@ export default async function BestPage() {
                       </div>
                       <div className="text-center">
                         <Link
-                          href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
+                          href={createReviewPath(website)}
                           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold w-full py-3 transition-colors rounded-full text-center inline-block"
                         >
                           View detailed review
@@ -272,7 +273,7 @@ export default async function BestPage() {
                       </blockquote>
                       <div className="mt-4">
                         <Link
-                          href={`/reviews/${(website.websiteName || 'website').toLowerCase().replace(/\s+/g, '-')}`}
+                          href={createReviewPath(website)}
                           className="text-[#03a9f4] hover:text-blue-600 font-medium underline"
                         >
                           Go to full review

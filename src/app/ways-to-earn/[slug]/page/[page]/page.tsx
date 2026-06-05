@@ -8,8 +8,10 @@ import {
   getWaysToEarnCategoryMetaDescription,
   getWaysToEarnCategoryMetaTitle,
 } from '@/data/waysToEarnCategories'
+import { getAllWebsites } from '@/data/websites'
 import { parseWaysToEarnSearchParams } from '@/lib/waysToEarnFilters'
 import { createPageMetadata } from '@/lib/seo'
+import { CATEGORY_PAGE_SIZE, filterWebsites } from '@/lib/websiteFilters'
 
 interface WaysToEarnPaginationPageProps {
   params: Promise<{ slug: string; page: string }>
@@ -59,6 +61,13 @@ export default async function WaysToEarnPaginationPage({
   }
 
   const filters = parseWaysToEarnSearchParams(query)
+  const websites = await getAllWebsites()
+  const filteredWebsites = filterWebsites(websites, filters, { wayToEarnCategory: category.name })
+  const totalPages = Math.max(1, Math.ceil(filteredWebsites.length / CATEGORY_PAGE_SIZE))
+
+  if (filteredWebsites.length > 0 && pageNumber > totalPages) {
+    notFound()
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -77,6 +86,8 @@ export default async function WaysToEarnPaginationPage({
           categorySlug={slug}
           currentPage={pageNumber}
           filters={filters}
+          initialWebsites={websites}
+          initialFilteredWebsites={filteredWebsites}
         />
       </div>
 

@@ -6,14 +6,17 @@ import { Website } from '@/data/websites'
 import WaysToEarnGrid from './WaysToEarnGrid'
 import WaysToEarnFilterSidebar from './WaysToEarnFilterSidebar'
 import { FilterCriteria, SortOption } from './FilterSidebar'
+import { CATEGORY_PAGE_SIZE, filterWebsites, paginateWebsites, sortWebsites } from '@/lib/websiteFilters'
 
-export const WAYS_TO_EARN_PAGE_SIZE = 10
+export const WAYS_TO_EARN_PAGE_SIZE = CATEGORY_PAGE_SIZE
 
 interface WaysToEarnContainerProps {
   category: string
   categorySlug: string
   currentPage?: number
   filters: FilterCriteria
+  initialWebsites?: Website[]
+  initialFilteredWebsites?: Website[]
 }
 
 export default function WaysToEarnContainer({
@@ -21,17 +24,27 @@ export default function WaysToEarnContainer({
   categorySlug,
   currentPage = 1,
   filters,
+  initialWebsites,
+  initialFilteredWebsites,
 }: WaysToEarnContainerProps) {
   const router = useRouter()
   const basePath = `/ways-to-earn/${categorySlug}`
-  const [websites, setWebsites] = useState<Website[]>([])
-  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [websites, setWebsites] = useState<Website[]>(initialWebsites || [])
+  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>(initialFilteredWebsites || [])
+  const [isLoading, setIsLoading] = useState(!initialFilteredWebsites)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
+    if (initialWebsites && initialFilteredWebsites) {
+      setWebsites(initialWebsites)
+      setFilteredWebsites(initialFilteredWebsites)
+      setIsLoading(false)
+      setError(null)
+      return
+    }
+
     const fetchWebsites = async () => {
       try {
         setIsLoading(true)
@@ -45,7 +58,7 @@ export default function WaysToEarnContainer({
         const data = await response.json()
         setWebsites(data)
         // Apply category filter immediately
-        const filtered = applyWaysToEarnFilter(data, category)
+        const filtered = filterWebsites(data, filters, { wayToEarnCategory: category })
         setFilteredWebsites(filtered)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
@@ -56,37 +69,11 @@ export default function WaysToEarnContainer({
     }
 
     fetchWebsites()
-  }, [category])
+  }, [category, filters, initialWebsites, initialFilteredWebsites])
 
   // Apply sorting to the filtered websites
   const applySorting = (websitesToSort: Website[], sortOption: SortOption) => {
-    const sorted = [...websitesToSort]
-    
-    switch (sortOption) {
-      case 'earning-high-to-low':
-        return sorted.sort((a, b) => {
-          const earningA = parseFloat(a.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          const earningB = parseFloat(b.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          return earningB - earningA
-        })
-      
-      case 'withdrawal-low-to-high':
-        return sorted.sort((a, b) => {
-          const withdrawalA = parseFloat(a.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          const withdrawalB = parseFloat(b.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          return withdrawalA - withdrawalB
-        })
-      
-      case 'rating-high-to-low':
-        return sorted.sort((a, b) => {
-          const ratingA = parseFloat(a.expertRating?.split(' ')[0] || '0')
-          const ratingB = parseFloat(b.expertRating?.split(' ')[0] || '0')
-          return ratingB - ratingA
-        })
-      
-      default:
-        return sorted
-    }
+    return sortWebsites(websitesToSort, sortOption)
   }
 
   // Filter websites by ways to earn category
@@ -270,24 +257,15 @@ export default function WaysToEarnContainer({
 
   // Update filtering and sorting when filters, sortBy, or category changes
   useEffect(() => {
-    // First apply category filter
-    let result = applyWaysToEarnFilter(websites, category)
-    
-    // Then apply additional filters if any are active
-    if (hasActiveFilters) {
-      result = applyFilters(result, filters)
-    }
-    
-    // Finally apply sorting
-    result = applySorting(result, sortBy)
-    
-    setFilteredWebsites(result)
-  }, [websites, category, filters, sortBy, hasActiveFilters])
+    const result = sortWebsites(
+      filterWebsites(websites, filters, { wayToEarnCategory: category }),
+      sortBy
+    )
 
-  const paginatedWebsites = filteredWebsites.slice(
-    (currentPage - 1) * WAYS_TO_EARN_PAGE_SIZE,
-    currentPage * WAYS_TO_EARN_PAGE_SIZE
-  )
+    setFilteredWebsites(result)
+  }, [websites, category, filters, sortBy])
+
+  const paginatedWebsites = paginateWebsites(filteredWebsites, currentPage, WAYS_TO_EARN_PAGE_SIZE)
 
   const clearFilters = () => {
     router.push(basePath)

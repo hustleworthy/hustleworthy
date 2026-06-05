@@ -8,9 +8,11 @@ import {
   getWaysToEarnCategoryMetaDescription,
   getWaysToEarnCategoryMetaTitle,
 } from '@/data/waysToEarnCategories'
+import { getAllWebsites } from '@/data/websites'
 import { parseWaysToEarnSearchParams } from '@/lib/waysToEarnFilters'
 import JsonLd from '@/components/JsonLd'
 import { breadcrumbSchema, createPageMetadata } from '@/lib/seo'
+import { filterWebsites } from '@/lib/websiteFilters'
 
 interface WaysToEarnCategoryPageProps {
   params: Promise<{ slug: string }>
@@ -35,6 +37,8 @@ export default async function WaysToEarnCategoryPage({
   }
 
   const filters = parseWaysToEarnSearchParams(query)
+  const websites = await getAllWebsites()
+  const filteredWebsites = filterWebsites(websites, filters, { wayToEarnCategory: category.name })
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -60,6 +64,8 @@ export default async function WaysToEarnCategoryPage({
           categorySlug={slug}
           currentPage={1}
           filters={filters}
+          initialWebsites={websites}
+          initialFilteredWebsites={filteredWebsites}
         />
       </div>
 

@@ -8,6 +8,7 @@ import { getMicroCmsImageUrl } from '@/lib/media'
 import Footer from '@/components/Footer'
 import JsonLd from '@/components/JsonLd'
 import { createPageMetadata, itemListSchema } from '@/lib/seo'
+import { createReviewPath } from '@/lib/websiteFilters'
 
 export const metadata = createPageMetadata({
   path: '/',
@@ -79,7 +80,7 @@ export default async function Home() {
           'Featured money-making websites',
           featuredWebsites.map((website) => ({
             name: website.websiteName || 'Website review',
-            path: `/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`,
+            path: createReviewPath(website),
             description: website.about || website.noteEarningPotential || undefined,
           }))
         )}

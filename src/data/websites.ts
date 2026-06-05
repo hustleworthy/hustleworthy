@@ -402,6 +402,28 @@ export async function getAllWebsites(): Promise<Website[]> {
   }
 }
 
+export async function getAllWebsitesForSitemap(): Promise<Website[]> {
+  try {
+    const websitesData = await prisma.websites.findMany({
+      include: {
+        reviews: {
+          select: {
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: {
+        sNo: 'asc',
+      },
+    })
+
+    return websitesData.map(transformWebsiteData)
+  } catch (error) {
+    console.error('Database connection error, falling back to mock data:', error)
+    return websites
+  }
+}
+
 // Function to get count of websites for a specific category
 export async function getWebsiteCountForCategory(category: string): Promise<number> {
   try {
@@ -595,4 +617,4 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
     
     return allWebsites
   }
-} 
+}

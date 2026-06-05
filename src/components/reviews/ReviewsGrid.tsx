@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Website } from '@/data/websites'
 import { FilterCriteria } from './FilterSidebar'
 import WebsiteImage from '@/components/WebsiteImage'
+import { createReviewPath } from '@/lib/websiteFilters'
 
 interface ReviewsGridProps {
   websites: Website[]
@@ -71,7 +72,7 @@ export default function ReviewsGrid({
                     />
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-gray-900 mt-2 sm:mt-3 text-center">
-                    <Link href={`/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`}>
+                    <Link href={createReviewPath(website)}>
                       {website.websiteName || 'Unknown Website'}
                     </Link>
                   </h3>
@@ -112,7 +113,7 @@ export default function ReviewsGrid({
                   {/* Go to Full Review Button */}
                   <div className="flex justify-center sm:justify-end pt-2">
                     <Link
-                      href={`/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`}
+                      href={createReviewPath(website)}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg transition-colors duration-200 text-sm w-full sm:w-auto text-center"
                     >
                       Go to Full Review

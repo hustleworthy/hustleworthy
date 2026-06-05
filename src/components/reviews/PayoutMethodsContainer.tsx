@@ -6,14 +6,17 @@ import { Website } from '@/data/websites'
 import PayoutMethodsGrid from './PayoutMethodsGrid'
 import PayoutMethodsFilterSidebar from './PayoutMethodsFilterSidebar'
 import { FilterCriteria, SortOption } from './FilterSidebar'
+import { CATEGORY_PAGE_SIZE, filterWebsites, paginateWebsites, sortWebsites } from '@/lib/websiteFilters'
 
-export const PAYOUT_METHODS_PAGE_SIZE = 10
+export const PAYOUT_METHODS_PAGE_SIZE = CATEGORY_PAGE_SIZE
 
 interface PayoutMethodsContainerProps {
   payoutMethod: string
   methodSlug: string
   currentPage?: number
   filters: FilterCriteria
+  initialWebsites?: Website[]
+  initialFilteredWebsites?: Website[]
 }
 
 export default function PayoutMethodsContainer({
@@ -21,17 +24,27 @@ export default function PayoutMethodsContainer({
   methodSlug,
   currentPage = 1,
   filters,
+  initialWebsites,
+  initialFilteredWebsites,
 }: PayoutMethodsContainerProps) {
   const router = useRouter()
   const basePath = `/payout-methods/${methodSlug}`
-  const [websites, setWebsites] = useState<Website[]>([])
-  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [websites, setWebsites] = useState<Website[]>(initialWebsites || [])
+  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>(initialFilteredWebsites || [])
+  const [isLoading, setIsLoading] = useState(!initialFilteredWebsites)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
   useEffect(() => {
+    if (initialWebsites && initialFilteredWebsites) {
+      setWebsites(initialWebsites)
+      setFilteredWebsites(initialFilteredWebsites)
+      setIsLoading(false)
+      setError(null)
+      return
+    }
+
     const fetchWebsites = async () => {
       try {
         setIsLoading(true)
@@ -45,7 +58,7 @@ export default function PayoutMethodsContainer({
         const data = await response.json()
         setWebsites(data)
         // Apply category filter immediately
-        const filtered = applyPayoutMethodFilter(data, payoutMethod)
+        const filtered = filterWebsites(data, filters, { payoutMethod })
         setFilteredWebsites(filtered)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
@@ -56,37 +69,11 @@ export default function PayoutMethodsContainer({
     }
 
     fetchWebsites()
-  }, [payoutMethod])
+  }, [payoutMethod, filters, initialWebsites, initialFilteredWebsites])
 
   // Apply sorting to the filtered websites
   const applySorting = (websitesToSort: Website[], sortOption: SortOption) => {
-    const sorted = [...websitesToSort]
-    
-    switch (sortOption) {
-      case 'earning-high-to-low':
-        return sorted.sort((a, b) => {
-          const earningA = parseFloat(a.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          const earningB = parseFloat(b.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          return earningB - earningA
-        })
-      
-      case 'withdrawal-low-to-high':
-        return sorted.sort((a, b) => {
-          const withdrawalA = parseFloat(a.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          const withdrawalB = parseFloat(b.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          return withdrawalA - withdrawalB
-        })
-      
-      case 'rating-high-to-low':
-        return sorted.sort((a, b) => {
-          const ratingA = parseFloat(a.expertRating?.split(' ')[0] || '0')
-          const ratingB = parseFloat(b.expertRating?.split(' ')[0] || '0')
-          return ratingB - ratingA
-        })
-      
-      default:
-        return sorted
-    }
+    return sortWebsites(websitesToSort, sortOption)
   }
 
   const applyPayoutMethodFilter = (websitesToFilter: Website[], targetPayoutMethod: string) => {
@@ -220,23 +207,15 @@ export default function PayoutMethodsContainer({
   const hasActiveFilters = !!(filters.expertRating || filters.earningPotential || filters.waysToEarn.length > 0 || filters.investmentRequired)
 
   useEffect(() => {
-    let result = applyPayoutMethodFilter(websites, payoutMethod)
-    
-    // Then apply additional filters if any are active
-    if (hasActiveFilters) {
-      result = applyFilters(result, filters)
-    }
-    
-    // Finally apply sorting
-    result = applySorting(result, sortBy)
-    
-    setFilteredWebsites(result)
-  }, [websites, payoutMethod, filters, sortBy, hasActiveFilters])
+    const result = sortWebsites(
+      filterWebsites(websites, filters, { payoutMethod }),
+      sortBy
+    )
 
-  const paginatedWebsites = filteredWebsites.slice(
-    (currentPage - 1) * PAYOUT_METHODS_PAGE_SIZE,
-    currentPage * PAYOUT_METHODS_PAGE_SIZE
-  )
+    setFilteredWebsites(result)
+  }, [websites, payoutMethod, filters, sortBy])
+
+  const paginatedWebsites = paginateWebsites(filteredWebsites, currentPage, PAYOUT_METHODS_PAGE_SIZE)
 
   const clearFilters = () => {
     router.push(basePath)

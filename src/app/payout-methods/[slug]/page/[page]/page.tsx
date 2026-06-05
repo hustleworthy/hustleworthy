@@ -3,8 +3,10 @@ import type { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import PayoutMethodsContainer from '@/components/reviews/PayoutMethodsContainer'
 import { getPayoutMethodBySlug } from '@/data/payoutMethodsCategories'
+import { getAllWebsites } from '@/data/websites'
 import { parsePayoutMethodsSearchParams } from '@/lib/payoutMethodsFilters'
 import { createPageMetadata } from '@/lib/seo'
+import { CATEGORY_PAGE_SIZE, filterWebsites } from '@/lib/websiteFilters'
 
 interface PayoutMethodsPaginationPageProps {
   params: Promise<{ slug: string; page: string }>
@@ -54,6 +56,13 @@ export default async function PayoutMethodsPaginationPage({
   }
 
   const filters = parsePayoutMethodsSearchParams(query)
+  const websites = await getAllWebsites()
+  const filteredWebsites = filterWebsites(websites, filters, { payoutMethod: method.name })
+  const totalPages = Math.max(1, Math.ceil(filteredWebsites.length / CATEGORY_PAGE_SIZE))
+
+  if (filteredWebsites.length > 0 && pageNumber > totalPages) {
+    notFound()
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -70,6 +79,8 @@ export default async function PayoutMethodsPaginationPage({
           methodSlug={slug}
           currentPage={pageNumber}
           filters={filters}
+          initialWebsites={websites}
+          initialFilteredWebsites={filteredWebsites}
         />
       </div>
 

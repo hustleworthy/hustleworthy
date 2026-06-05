@@ -4,31 +4,44 @@ import { useState, useEffect } from 'react'
 import { Website } from '@/data/websites'
 import ReviewsGrid from './ReviewsGrid'
 import FilterSidebar, { FilterCriteria, SortOption } from './FilterSidebar'
+import { REVIEWS_PAGE_SIZE, sortWebsites } from '@/lib/websiteFilters'
 
 interface ReviewsContainerProps {
   currentPage?: number
   pageSize?: number
   filters?: FilterCriteria
+  initialWebsites?: Website[]
+  initialTotalWebsitesCount?: number
 }
 
-export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filters = {
+export default function ReviewsContainer({ currentPage = 1, pageSize = REVIEWS_PAGE_SIZE, filters = {
   expertRating: '',
   earningPotential: '',
   waysToEarn: [],
   payoutMethods: [],
   investmentRequired: false
-} }: ReviewsContainerProps) {
-  const [websites, setWebsites] = useState<Website[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+}, initialWebsites, initialTotalWebsitesCount }: ReviewsContainerProps) {
+  const [websites, setWebsites] = useState<Website[]>(initialWebsites || [])
+  const [isLoading, setIsLoading] = useState(!initialWebsites)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   //const [filtersState, setFiltersState] = useState<FilterCriteria>(filters)
 
   const [sortBy, setSortBy] = useState<SortOption>('default')
 
-  const [totalWebsitesCount, setTotalWebsitesCount] = useState(0)
+  const [totalWebsitesCount, setTotalWebsitesCount] = useState(
+    initialTotalWebsitesCount || initialWebsites?.length || 0
+  )
 
   useEffect(() => {
+    if (initialWebsites) {
+      setWebsites(initialWebsites)
+      setTotalWebsitesCount(initialTotalWebsitesCount || initialWebsites.length)
+      setIsLoading(false)
+      setError(null)
+      return
+    }
+
     const fetchWebsites = async () => {
       //console.log('hit api call');
       const params = new URLSearchParams({
@@ -51,7 +64,7 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
     }
 
     fetchWebsites()
-  }, [currentPage, filters])
+  }, [currentPage, filters, initialWebsites, initialTotalWebsitesCount])
 
   // console.log('websites', websites);
   // console.log('totalWebsitesCount', totalWebsitesCount);
@@ -63,33 +76,7 @@ export default function ReviewsContainer({ currentPage = 1, pageSize = 20, filte
 
   // Apply sorting to the filtered websites
   const applySorting = (websitesToSort: Website[], sortOption: SortOption) => {
-    const sorted = [...websitesToSort]
-    
-    switch (sortOption) {
-      case 'earning-high-to-low':
-        return sorted.sort((a, b) => {
-          const earningA = parseFloat(a.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          const earningB = parseFloat(b.earningPotentialIn1hr?.replace(/[^0-9.]/g, '') || '0')
-          return earningB - earningA
-        })
-      
-      case 'withdrawal-low-to-high':
-        return sorted.sort((a, b) => {
-          const withdrawalA = parseFloat(a.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          const withdrawalB = parseFloat(b.minimumWithdrawl?.replace(/[^0-9.]/g, '') || '0')
-          return withdrawalA - withdrawalB
-        })
-      
-      case 'rating-high-to-low':
-        return sorted.sort((a, b) => {
-          const ratingA = parseFloat(a.expertRating?.split(' ')[0] || '0')
-          const ratingB = parseFloat(b.expertRating?.split(' ')[0] || '0')
-          return ratingB - ratingA
-        })
-      
-      default:
-        return sorted
-    }
+    return sortWebsites(websitesToSort, sortOption)
   }
 
   // Check if filters are active

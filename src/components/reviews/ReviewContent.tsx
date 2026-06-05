@@ -8,7 +8,6 @@ import { getDisplayName } from '@/lib/displayUtils'
 import ClaimProfileButton from '@/components/ClaimProfileButton'
 import EditWebsiteButton from '@/components/EditWebsiteButton'
 import VideoWithOverlay from '@/components/VideoWithOverlay'
-import useCheckDeviceWidth from '@/hooks/CheckDevicWidth'
 import type { Website } from '@/data/websites'
 
 interface ReviewContentProps {
@@ -32,11 +31,9 @@ function StarRating({ rating, className }: { rating: number; className?: string 
 }
 
 export default function ReviewContent({ website, averageUserRating }: ReviewContentProps) {
-  const { isDesktop } = useCheckDeviceWidth()
-
-  if (isDesktop) {
-    return (
-      <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+  return (
+    <>
+      <div className="hidden lg:grid lg:grid-cols-4 lg:gap-8">
         {/* Desktop layout content - same as before */}
         {/* Main Content - All sections for desktop */}
         <div className="lg:col-span-3 space-y-8">
@@ -434,12 +431,8 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </div>
         </div>
       </div>
-    )
-  }
 
-  // Mobile layout - return the mobile version
-  return (
-    <div className="space-y-8">
+      <div className="space-y-8 lg:hidden">
       {/* Mobile layout content - same structure as desktop but different styling */}
       <div className="bg-white rounded-lg shadow-sm p-4">
         <div className="flex flex-col items-center text-center gap-4">
@@ -824,6 +817,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

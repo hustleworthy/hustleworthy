@@ -5,6 +5,7 @@ import { FilterCriteria } from '@/components/reviews/FilterSidebar'
 import JsonLd from '@/components/JsonLd'
 import { getAllWebsites } from '@/data/websites'
 import { createPageMetadata, itemListSchema } from '@/lib/seo'
+import { REVIEWS_PAGE_SIZE, createReviewPath, filterWebsites, paginateWebsites } from '@/lib/websiteFilters'
 
 const title = 'List Of Money Making Sites | Hustle Worthy'
 const description =
@@ -32,6 +33,9 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
     payoutMethods: Array.isArray(query.payoutMethods) ? query.payoutMethods : query.payoutMethods ? [query.payoutMethods] : [],
     investmentRequired: query.investmentRequired === 'true',
   }
+  const filteredWebsites = filterWebsites(websites, filtersValue)
+  const initialWebsites = paginateWebsites(filteredWebsites, 1, REVIEWS_PAGE_SIZE)
+
   return (
     <div className="min-h-screen bg-gray-50">
       <JsonLd
@@ -39,7 +43,7 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
           'Money making site reviews',
           websites.slice(0, 20).map((website) => ({
             name: website.websiteName || 'Website review',
-            path: `/reviews/${encodeURIComponent(website.websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`,
+            path: createReviewPath(website),
             description: website.about || website.noteEarningPotential || undefined,
           }))
         )}
@@ -59,7 +63,13 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
 
       {/* Reviews Container */}
       <div className="container mx-auto px-6 py-12">
-        <ReviewsContainer currentPage={1} filters={filtersValue} />
+        <ReviewsContainer
+          currentPage={1}
+          pageSize={REVIEWS_PAGE_SIZE}
+          filters={filtersValue}
+          initialWebsites={initialWebsites}
+          initialTotalWebsitesCount={filteredWebsites.length}
+        />
       </div>
 
       <Footer />
