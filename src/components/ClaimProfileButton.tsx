@@ -2,7 +2,10 @@
 
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import TurnstileWidget from './TurnstileWidget';
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || '0x4AAAAAADfa6Ff3eCbrruJt';
 
 export default function ClaimProfileButton({ websiteName, domain }: { websiteName: string, domain: string }) {
   const { data: session } = useSession();
@@ -199,7 +202,22 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRequestingManual, setIsRequestingManual] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileError, setTurnstileError] = useState('');
+  const [turnstileResetCounter, setTurnstileResetCounter] = useState(0);
   const embedCode = ` <a href="https://hustleworthy.com/reviews/${encodeURIComponent(websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}" target="_blank" rel="nofollow"><img width="300" src="https://hustleworthy.com/images/featuredon.png"></a>`;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTurnstileToken('');
+      setTurnstileError('');
+    }
+  }, [isOpen]);
+
+  const resetTurnstile = () => {
+    setTurnstileToken('');
+    setTurnstileResetCounter((counter) => counter + 1);
+  };
 
   const handleCopyCode = async () => {
     try {
@@ -221,20 +239,47 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
   };
 
   const handleVerifyCode = async () => {
-    setIsVerifying(true);
-    const response = await fetch(`/api/embed-code-verify?url=${encodeURIComponent(domain)}`);
-    const data = await response.json();
-    //console.log(data.html);
-    if(data.html.includes(embedCode)) {
-      alert('Website is verified');
-      onClose();
-      redirect(`/reviews/${encodeURIComponent(websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`);
-    }
-    else {
-      alert('Sorry something went wrong. Please request manual verification.');
-      //onClose();
-      setIsVerifying(false);
+    if (!turnstileToken) {
+      setTurnstileError('Please complete the captcha before verifying.');
       return;
+    }
+
+    setIsVerifying(true);
+    setTurnstileError('');
+
+    try {
+      const response = await fetch('/api/embed-code-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: domain,
+          turnstileToken,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || 'Captcha verification failed. Please try again.');
+        return;
+      }
+
+      if(data.html.includes(embedCode)) {
+        alert('Website is verified');
+        onClose();
+        redirect(`/reviews/${encodeURIComponent(websiteName?.toLowerCase().replace(/\s+/g, '-') || 'website')}`);
+      }
+      else {
+        alert('Sorry something went wrong. Please request manual verification.');
+        return;
+      }
+    } catch (error) {
+      console.error('Error verifying embed code:', error);
+      alert('Failed to verify the code. Please try again.');
+    } finally {
+      setIsVerifying(false);
+      resetTurnstile();
     }
   };
 
@@ -244,7 +289,13 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
       return;
     }
 
+    if (!turnstileToken) {
+      setTurnstileError('Please complete the captcha before requesting verification.');
+      return;
+    }
+
     setIsRequestingManual(true);
+    setTurnstileError('');
     
     try {
       const response = await fetch('/api/manual-verification', {
@@ -256,6 +307,7 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
           userEmail: session.user.email,
           websiteName,
           domain,
+          turnstileToken,
         }),
       });
 
@@ -271,6 +323,7 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
       alert('Failed to send verification request. Please try again.');
     } finally {
       setIsRequestingManual(false);
+      resetTurnstile();
     }
   };
 
@@ -385,15 +438,42 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
 
         </div>
 
+        <div className="px-6 pt-4 border-t border-gray-100 bg-white">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
+            <p className="text-sm font-semibold text-gray-700 text-center mb-3">Security check</p>
+            <TurnstileWidget
+              siteKey={TURNSTILE_SITE_KEY}
+              resetSignal={turnstileResetCounter}
+              onVerify={(token) => {
+                setTurnstileToken(token);
+                setTurnstileError('');
+              }}
+              onExpire={() => {
+                setTurnstileToken('');
+                setTurnstileError('Captcha expired. Please verify again.');
+              }}
+              onError={() => {
+                setTurnstileToken('');
+                setTurnstileError('Captcha failed to load. Please try again.');
+              }}
+            />
+            {turnstileError && (
+              <p className="mt-2 text-center text-sm text-red-600">{turnstileError}</p>
+            )}
+          </div>
+        </div>
+
         {/* Footer - Fixed */}
         <div className="p-6 border-t border-gray-200 flex-shrink-0 rounded-b-2xl bg-white">
           <div className="space-y-3 lg:flex block sm:flex items-center justify-center gap-4">
             <button 
               onClick={handleVerifyCode}
-              disabled={isVerifying}
+              disabled={isVerifying || !turnstileToken}
               className={`w-full font-semibold px-6 py-3 text-sm rounded-full transition-all transform shadow-lg flex items-center justify-center ${
                 isVerifying 
                   ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white cursor-not-allowed' 
+                  : !turnstileToken
+                    ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed'
                   : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white hover:scale-105'
               }`}
             >
@@ -415,10 +495,12 @@ function EmbeedCodePopup({ isOpen, onClose, websiteName, domain }: EmbeedCodePop
             </button>
             <button 
               onClick={handleManualVerification}
-              disabled={isRequestingManual}
+              disabled={isRequestingManual || !turnstileToken}
               className={`w-full font-semibold px-6 py-3 text-sm rounded-full transition-all transform shadow-lg flex items-center justify-center ${
                 isRequestingManual 
                   ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed' 
+                  : !turnstileToken
+                    ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white hover:scale-105'
               }`}
             >

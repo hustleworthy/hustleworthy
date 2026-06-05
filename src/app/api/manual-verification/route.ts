@@ -1,16 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { prisma } from '@/lib/prisma';
+import { getRequestIp, verifyTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userEmail, websiteName, domain } = await request.json();
+    const { userEmail, websiteName, domain, turnstileToken } = await request.json();
 
     // Validate required fields
     if (!userEmail || !websiteName || !domain) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    const turnstileResult = await verifyTurnstileToken(
+      turnstileToken,
+      getRequestIp(request.headers)
+    );
+
+    if (!turnstileResult.success) {
+      return NextResponse.json(
+        {
+          error: turnstileResult.error,
+          errorCodes: turnstileResult.errorCodes,
+        },
+        { status: turnstileResult.status }
       );
     }
 
