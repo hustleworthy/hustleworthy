@@ -54,6 +54,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                           width="100px" 
                           height="100px" 
                           style={{width: '100%'}} 
+                          priority
                         />
                       </div>
                     </div>
@@ -452,6 +453,7 @@ export default function ReviewContent({ website, averageUserRating }: ReviewCont
                       width={96}
                       height={96}
                       style={{width: '100%'}} 
+                      priority
                     />
                   </div>
                 </div>

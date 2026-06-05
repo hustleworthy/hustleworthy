@@ -12,6 +12,7 @@ interface WebsiteImageProps {
   height?: number | string
   style?: CSSProperties
   className?: string
+  priority?: boolean
 }
 
 function parsePixelValue(value: number | string | undefined, fallback: number) {
@@ -34,7 +35,8 @@ export default function WebsiteImage({
   width = "100px", 
   height = "100px", 
   style,
-  className 
+  className,
+  priority = false,
 }: WebsiteImageProps) {
   const [failed, setFailed] = useState(false)
   const numericWidth = parsePixelValue(width, 100)
@@ -69,6 +71,7 @@ export default function WebsiteImage({
       className={className || 'w-[100px] h-auto object-contain'}
       src={imageUrl}
       sizes={`${numericWidth}px`}
+      priority={priority}
       onError={() => setFailed(true)}
     />
   )

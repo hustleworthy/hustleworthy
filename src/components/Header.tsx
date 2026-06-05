@@ -31,7 +31,13 @@ export default function Header() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link href="/" className="text-xl font-bold text-white">
-                <img src="/images/logo.png" alt="Hustleworthy" width="130" height="120" />
+                <img
+                  src="/images/logo.png"
+                  alt="Hustleworthy"
+                  width="130"
+                  height="56"
+                  className="h-14 w-[130px] object-contain object-left"
+                />
               </Link>
             </div>
 

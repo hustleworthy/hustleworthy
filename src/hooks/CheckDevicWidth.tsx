@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 export default function useCheckDeviceWidth() {
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
-    const [isDesktop, setIsDesktop] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(true);
 
     useEffect(() => {
         const handleResize = () => {
