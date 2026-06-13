@@ -146,6 +146,7 @@ export function articleSchema({
   path,
   image,
   author,
+  authorUrl,
   publishedAt,
   updatedAt,
 }: {
@@ -154,9 +155,19 @@ export function articleSchema({
   path: string
   image?: string
   author?: string
+  authorUrl?: string
   publishedAt?: string
   updatedAt?: string
 }) {
+  const authorData: Record<string, string> = {
+    '@type': 'Person',
+    name: author || 'Hustleworthy Team',
+  }
+
+  if (authorUrl) {
+    authorData.url = authorUrl
+  }
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -166,10 +177,7 @@ export function articleSchema({
     image: image ? absoluteUrl(image) : absoluteUrl(DEFAULT_OG_IMAGE),
     datePublished: publishedAt,
     dateModified: updatedAt || publishedAt,
-    author: {
-      '@type': 'Person',
-      name: author || 'Hustleworthy Team',
-    },
+    author: authorData,
     publisher: {
       '@id': organizationSchema['@id'],
     },

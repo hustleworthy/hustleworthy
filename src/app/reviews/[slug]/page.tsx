@@ -4,11 +4,14 @@ import { getWebsiteBySlug } from '@/data/websites'
 import Footer from '@/components/Footer'
 import ReviewContent from '@/components/reviews/ReviewContent'
 import JsonLd from '@/components/JsonLd'
-import { breadcrumbSchema, createPageMetadata, organizationSchema } from '@/lib/seo'
+import { articleSchema, breadcrumbSchema, createPageMetadata, organizationSchema } from '@/lib/seo'
 
 interface ReviewPageProps {
   params: Promise<{ slug: string }>
 }
+
+const REVIEW_AUTHOR_NAME = 'Folasade Oluwagbenga'
+const REVIEW_AUTHOR_LINKEDIN = 'https://www.linkedin.com/in/folasade-oluwagbenga-9b8318242/'
 
 export default async function ReviewPage({ params }: ReviewPageProps) {
   const { slug } = await params
@@ -39,6 +42,10 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     reviewDates.length > 0 ? new Date(Math.min(...reviewDates)).toISOString() : undefined
   const dateModifiedIso =
     reviewDates.length > 0 ? new Date(Math.max(...reviewDates)).toISOString() : new Date().toISOString()
+  const websiteName = website.websiteName || 'This Website'
+  const earningMonthly = website.earningPotentialinaMonth || 'an extra $0'
+  const reviewTitle = `${websiteName} Review - Legit or Scam? Earnings Explained`
+  const reviewDescription = `Our review answers if ${websiteName} is legit. Read User reviews, cashout threshold, proof of payment, and how to earn up to ${earningMonthly} a month.`
 
   const softwareApplicationSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -70,6 +77,16 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
       : {}),
   }
 
+  const reviewArticleSchema = articleSchema({
+    title: reviewTitle,
+    description: reviewDescription,
+    path: `/reviews/${slug}`,
+    author: REVIEW_AUTHOR_NAME,
+    authorUrl: REVIEW_AUTHOR_LINKEDIN,
+    publishedAt: dateCreatedIso || dateModifiedIso,
+    updatedAt: dateModifiedIso,
+  })
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <JsonLd
@@ -80,6 +97,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             { name: website.websiteName || 'Review', path: `/reviews/${slug}` },
           ]),
           softwareApplicationSchema,
+          reviewArticleSchema,
         ]}
       />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-20 py-8">
