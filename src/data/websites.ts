@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { isRemovedWebsiteName, isRemovedWebsiteSlug } from '@/data/removedWebsites'
 
 export interface Website {
   sNo: number
@@ -303,6 +304,10 @@ function transformWebsiteData(data: any): Website {
 }
 
 export async function getWebsiteBySlug(slug: string): Promise<Website | null> {
+  if (isRemovedWebsiteSlug(slug)) {
+    return null
+  }
+
   try {
     // Try to find by websiteName (exact match first)
     let website = await prisma.websites.findFirst({
@@ -394,11 +399,11 @@ export async function getAllWebsites(): Promise<Website[]> {
       }
     })
     
-    return websitesData.map(transformWebsiteData)
+    return websitesData.map(transformWebsiteData).filter((website) => !isRemovedWebsiteName(website.websiteName))
   } catch (error) {
     console.error('Database connection error, falling back to mock data:', error)
     // Fallback to mock data if database connection fails
-    return websites
+    return websites.filter((website) => !isRemovedWebsiteName(website.websiteName))
   }
 }
 
@@ -417,10 +422,10 @@ export async function getAllWebsitesForSitemap(): Promise<Website[]> {
       },
     })
 
-    return websitesData.map(transformWebsiteData)
+    return websitesData.map(transformWebsiteData).filter((website) => !isRemovedWebsiteName(website.websiteName))
   } catch (error) {
     console.error('Database connection error, falling back to mock data:', error)
-    return websites
+    return websites.filter((website) => !isRemovedWebsiteName(website.websiteName))
   }
 }
 
@@ -593,7 +598,9 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
     // Combine Swagbucks (if found) with remaining websites
     const allWebsites = swagbucks ? [swagbucks, ...remainingWebsites] : remainingWebsites
     
-    return allWebsites.map(transformWebsiteData)
+    return allWebsites
+      .map(transformWebsiteData)
+      .filter((website) => !isRemovedWebsiteName(website.websiteName))
   } catch (error) {
     console.error('Database connection error, falling back to mock data:', error)
     // Fallback to mock data if database connection fails
@@ -615,6 +622,6 @@ export async function getFeaturedWebsites(limit: number = 3): Promise<Website[]>
     // Combine Swagbucks (if found) with remaining websites
     const allWebsites = swagbucks ? [swagbucks, ...remainingWebsites] : remainingWebsites
     
-    return allWebsites
+    return allWebsites.filter((website) => !isRemovedWebsiteName(website.websiteName))
   }
 }
